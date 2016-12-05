@@ -1,11 +1,7 @@
 <?php
+
 namespace Shieldfy;
-use Shieldfy\Shieldfy;
-use Shieldfy\Cache;
-use Shieldfy\User;
-use Shieldfy\Request;
-use Shieldfy\Session;
-use Shieldfy\Headers;
+
 use Shieldfy\Callbacks\CallbackHandler;
 use Shieldfy\Exceptions\ExceptionHandler;
 
@@ -13,11 +9,12 @@ class Guard
 {
     /**
      * Initialize Shielfy guard.
-     * @param Array $config
+     *
+     * @param array $config
+     *
      * @return object
      */
-
-    public static function init(Array $config)
+    public static function init(array $config)
     {
         // Defines Shieldfy's own exception handler
         ExceptionHandler::setHandler();
@@ -27,13 +24,12 @@ class Guard
         // If no cache instance found, init FileCacheDriver
         // inside the package folder
 
-        if(Cache::getInstance() === null){
+        if (Cache::getInstance() === null) {
             Cache::setDriver('file', [
-                'path'=>realpath(__dir__.'/../tmp').'/'
+                'path'=> realpath(__dir__.'/../tmp').'/',
             ]);
         }
 
-        
         //Send required headers
         Headers::expose($config['disabledHeaders']);
 
@@ -50,8 +46,8 @@ class Guard
         $session = Session::load($user);
 
         $session->request = [
-                'created'=>time(),
-                'info' => $request->getInfo()
+                'created'=> time(),
+                'info'   => $request->getInfo(),
         ];
 
         //start analyzing
@@ -64,11 +60,12 @@ class Guard
     }
 
     /**
-     * A mirror to catchCallbacks in callback handler
+     * A mirror to catchCallbacks in callback handler.
+     *
      * @return void
      */
-
-    public static function catchCallbacks(){
+    public static function catchCallbacks()
+    {
         $handler = new CallbackHandler();
         $handler->catchCallbacks();
     }

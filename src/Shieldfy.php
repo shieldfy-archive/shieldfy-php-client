@@ -1,6 +1,6 @@
 <?php
-namespace Shieldfy;
 
+namespace Shieldfy;
 
 class Shieldfy
 {
@@ -10,53 +10,53 @@ class Shieldfy
      * */
     const VERSION = '0.1';
 
-
     /**
-     * @var string $rootDir current directory
-     * @var string $appKey
-     * @var string $appSecret
+     * @var string   current directory
+     * @var string   $appKey
+     * @var string   $appSecret
      * @var string[] $disabledHeaders
-     * @var mixed[] $config Default class configuration
+     * @var mixed[]  $config Default class configuration
      */
-
     protected static $rootDir;
     protected static $appKey;
     protected static $appSecret;
     protected static $disabledHeaders = [];
     protected static $config = [
-        'debug'=>false,
-        'action'=>'block',
-        'disabledHeaders'=>[]
+        'debug'          => false,
+        'action'         => 'block',
+        'disabledHeaders'=> [],
     ];
 
     /**
-     * @var string $endpoint
+     * @var string
      */
-
     public static $endpoint = 'http://api.shieldfy.io/v1';
-
 
     /**
      * Sets user defined class config.
-     * @param Array $config
-     * @return Array merged config $config
+     *
+     * @param array $config
+     *
+     * @return array merged config $config
      */
-
-    public static function setConfig(Array $config)
+    public static function setConfig(array $config)
     {
         self::setApiKey([
-            'app_key' => $config['app_key'],
-            'app_secret' => $config['app_secret']
+            'app_key'    => $config['app_key'],
+            'app_secret' => $config['app_secret'],
         ]);
 
         self::mergeConfig($config);
         self::setRootDir(__dir__);
+
         return self::$config;
     }
 
     /**
-     * Set root dir for the package
-     * @param string $rootDir 
+     * Set root dir for the package.
+     *
+     * @param string $rootDir
+     *
      * @return void
      */
     public static function setRootDir($rootDir)
@@ -65,7 +65,8 @@ class Shieldfy
     }
 
     /**
-     * get the root dir for the package
+     * get the root dir for the package.
+     *
      * @return string $rootDir
      */
     public static function getRootDir()
@@ -74,22 +75,25 @@ class Shieldfy
     }
 
     /**
-     * Merge user config with default config
-     * @param Array $config
+     * Merge user config with default config.
+     *
+     * @param array $config
+     *
      * @return void
      */
-
-    public static function mergeConfig(Array $config){
+    public static function mergeConfig(array $config)
+    {
         self::$config = array_replace_recursive(self::$config, $config);
     }
 
     /**
      * Sets user defined API key/secret.
-     * @param Array $api
+     *
+     * @param array $api
+     *
      * @return type
      */
-
-    public static function setApiKey(Array $api)
+    public static function setApiKey(array $api)
     {
         self::$appKey = $api['app_key'];
         self::$appSecret = $api['app_secret'];
@@ -97,29 +101,32 @@ class Shieldfy
 
     /**
      * Returns an array of app key/secret.
+     *
      * @return string[]
      */
-    public static function getAppKeys(){
+    public static function getAppKeys()
+    {
         return [
-            'app_key'=>self::$appKey,
-            'app_secret'=>self::$appSecret
+            'app_key'   => self::$appKey,
+            'app_secret'=> self::$appSecret,
         ];
     }
 
     /**
      * Return API version.
+     *
      * @return string
      */
-
-    public static function getApiVersion(){
+    public static function getApiVersion()
+    {
         return self::VERSION;
     }
 
     /**
-     * Returns configuration
+     * Returns configuration.
+     *
      * @return mixed[] $config
      */
-
     public static function getConfig()
     {
         return self::$config;
