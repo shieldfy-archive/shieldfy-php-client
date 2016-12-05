@@ -6,7 +6,7 @@ class LogsCallback implements CallbackInterface
 {
     public static function handle(){
         //verify callback 
-        $path = realpath(Shieldfy::Shieldfy::getRootDir().'/../log');
+        $path = realpath(Shieldfy::getRootDir().'/../log');
         $data = [];
         $contents = scandir($path);
         foreach($contents as $file){
