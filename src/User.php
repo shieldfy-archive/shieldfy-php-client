@@ -4,8 +4,8 @@ namespace Shieldfy;
 
 class User
 {
-    private $id = ''; //identifier for the visitor
-    private $ip = '';
+    private $userId = ''; //identifier for the visitor
+    private $userIp = '';
     private $userAgent = '';
 
     public function __construct()
@@ -17,31 +17,31 @@ class User
 
     public function setID()
     {
-        $this->id = ip2long($this->ip);
+        $this->userId = ip2long($this->userIp);
     }
 
     public function setIp()
     {
-        $ip = '0.0.0.0'; //unknown ip
+        $userIp = '0.0.0.0'; //unknown ip
 
         if (array_key_exists('REMOTE_ADDR', $_SERVER)) {
-            $ip = $_SERVER['REMOTE_ADDR'];
+            $userIp = $_SERVER['REMOTE_ADDR'];
         }
 
         if (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER)) {
             $header = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-            $ip = $header[0];
+            $userIp = $header[0];
         }
 
         if (array_key_exists('HTTP_CLIENT_IP', $_SERVER)) {
-            $ip = $_SERVER['HTTP_CLIENT_IP'];
+            $userIp = $_SERVER['HTTP_CLIENT_IP'];
         }
 
         if (array_key_exists('HTTP_X_REAL_IP', $_SERVER)) {
-            $ip = $_SERVER['HTTP_X_REAL_IP'];
+            $userIp = $_SERVER['HTTP_X_REAL_IP'];
         }
 
-        $this->ip = $ip;
+        $this->userIp = $userIp;
     }
 
     public function setUserAgent()
@@ -53,14 +53,14 @@ class User
 
     public function getID()
     {
-        return $this->id;
+        return $this->userId;
     }
 
     public function getInfo()
     {
         return [
-            'id'       => $this->id,
-            'ip'       => $this->ip,
+            'id'       => $this->userId,
+            'ip'       => $this->userIp,
             'userAgent'=> $this->userAgent,
         ];
     }

@@ -74,8 +74,6 @@ class ApiClient
     {
         $res = json_decode($result);
         if (!$res) {
-            print_r($result);
-            exit;
             $this->errors = [
                 'code'   => '001',
                 'message'=> 'Unexpected Server Response',

@@ -34,15 +34,15 @@ class Cache
      *
      * @return object $driver
      */
-    public static function setDriver($driver_type, $config = [])
+    public static function setDriver($driverType, $config = [])
     {
-        if (!isset(self::$drivers[$driver_type])) {
+        if (!isset(self::$drivers[$driverType])) {
             ExceptionHandler::throwException(new FailedExtentionLoadingException('Caching driver not found or supported.'));
 
             return; //return to avoid extra execution if errors is off
         }
 
-        $driverClass = self::$drivers[$driver_type];
+        $driverClass = self::$drivers[$driverType];
         self::$driver = new $driverClass($config, self::SESSION_TIMEOUT);
     }
 
