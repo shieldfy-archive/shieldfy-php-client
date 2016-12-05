@@ -1,0 +1,41 @@
+{
+    "name": "shieldfy/shieldfy-php-client",
+    "description": "shieldfy firewall component for php",
+    "keywords": [
+        "shieldfy",
+        "security",
+        "firewall",
+        "detection",
+        "application",
+        "attack",
+        "bypass",
+        "ips",
+        "ids"
+    ],
+    "authors": [
+        {
+            "name": "Shieldfy Inc.",
+            "homepage":"https://shieldfy.com",
+            "email": "team@shieldfy.com"
+        },
+        {
+            "name": "Eslam Salem",
+            "email": "eslam@shieldfy.com"
+        }
+    ],
+    "autoload": {
+      "psr-4": {
+        "Shieldfy\\": "src/"
+      }
+    },
+    "require": {
+        "php": ">=5.5",
+        "shieldfy/normalizer":"1.*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "5.5.*",
+        "mikey179/vfsStream": "^1.6",
+        "phpdocumentor/phpdocumentor": "2.*"
+    },
+    "prefer-stable": true
+}
