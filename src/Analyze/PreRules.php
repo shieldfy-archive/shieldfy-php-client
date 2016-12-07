@@ -6,7 +6,7 @@ use Shieldfy\Analyze\RulesBagInterface;
 use Shieldfy\Config;
 use Shieldfy\Analyze\Rule;
 
-class SoftRules implements RulesBagInterface
+class PreRules implements RulesBagInterface
 {
     /**
      * @var config
@@ -41,7 +41,7 @@ class SoftRules implements RulesBagInterface
      */
     public function load()
     {
-        $rules = json_decode(file_get_contents($this->config['rootDir'].'/data/soft_rules'), 1);
+        $rules = json_decode(file_get_contents($this->config['rootDir'].'/data/pre_rules'), 1);
         foreach($rules as $key=>$rule){
             $this->rules[] = new Rule($key,$rule);
         }
@@ -60,6 +60,13 @@ class SoftRules implements RulesBagInterface
         $score = 0;
         $rulesIds = [];
 
+        if ($value === '') {
+            return $this;
+        } //dont test against empty values
+        if (is_numeric($value)) {
+            return $this;
+        } //dont test against integer values
+
         foreach($this->rules as $rule){
             $result = $rule->execute($value);
             if($result){
@@ -68,18 +75,6 @@ class SoftRules implements RulesBagInterface
                 $rulesIds[] = $rule->getId();
             }
         }
-
-
-        if ($score > 0) {
-            if (($length >= (strlen($value) / 3))) {
-                $score += 5;
-            }
-
-            if (($method == 'GET')) {
-                $score += 5;
-            }
-        }
-
 
         $this->score =  $score;
         $this->rulesIds  =  $rulesIds;

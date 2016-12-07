@@ -2,6 +2,193 @@
 
 namespace Shieldfy;
 
+use Shieldfy\User;
+use Shieldfy\Request;
+use Shieldfy\Event;
+use Shieldfy\Cache\CacheInterface;
+
+class Session
+{
+    /**
+     * @var boolean firstvisit
+     */
+    protected $firstVisit = false;
+
+    /**
+     * user instance
+     */
+    protected $user;
+
+    /**
+     * request instance
+     */
+    protected $request;
+
+    /**
+     * @var string session id
+     */
+    protected $sessionId;
+
+    /**
+     * @var array history
+     */
+    protected $history = [];
+
+    /**
+     * Constructor
+     * @param User $user 
+     * @param Request $request 
+     * @param Event $event 
+     * @param CacheInterface $cache 
+     */
+    public function __construct(User $user, Request $request,Event $event,CacheInterface $cache)
+    {
+        $this->user = $user;
+        $this->request = $request;
+        $this->event = $event;
+        $this->cache = $cache;
+
+        if ($this->cache->has($this->user->getId())) {
+            //old user;
+            $this->loadExistingUser();
+            return;
+        }
+
+        //new user
+        $this->loadNewUser();
+
+    }
+
+    /**
+     * loads new user 
+     */
+    private function loadNewUser()
+    {
+        $this->firstVisit = true;
+        $this->analyzeUser();
+    }
+
+    /**
+     * analyze the new user
+     */
+    private function analyzeUser()
+    {
+        $response = $this->event->trigger('session', ['user'=>$this->user->getInfo()]);
+        if ($response && $response->status == 'success') {
+            $this->sessionId = $response->sessionId;
+            $this->user->setSessionId($response->sessionId);
+            $this->user->setScore($response->score);
+            return;
+        }
+
+        // failed for somereason , generate temporary sessionID 
+        $this->user->setSessionId(md5(time() * mt_rand()));
+        $this->user->setScore(0);
+    }
+
+    /**
+     * load existing user
+     */
+    private function loadExistingUser()
+    {
+        $info =  $this->cache->get($this->user->getId());
+
+        $this->user->setSessionId($info['sessionId']);
+        $this->user->setScore($info['score']);
+
+        $this->sessionId = $info['sessionId'];
+
+        $cachedHistory = $this->cache->get($info['sessionId']);
+        $this->history = (count($cachedHistory)) ? $cachedHistory : [];
+    }
+
+    /**
+     * if its user first visit ?
+     * @return boolean
+     */
+    public function isFirstVisit()
+    {
+        return $this->firstVisit;
+    }
+
+    /**
+     * get session id
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->sessionId;
+    }
+
+    /**
+     * get session history
+     * @return array
+     */
+    public function getHistory()
+    {
+        return $this->history;
+    }
+
+    /**
+     * Get session info
+     * @return array
+     */
+    public function getInfo()
+    {
+        return [
+            'sessionId' => $this->sessionId,
+            'user' => $this->user,
+            'request' => $this->request,
+            'history' => $this->history
+        ];
+    }
+
+    /**
+     * Save the session
+     * @param type|bool $saveAsHistory 
+     * @return type
+     */
+    public function save($saveAsHistory = true)
+    {
+        
+
+        $requestInfo = $this->request->getInfo();
+
+        //we don't save everything it could be private info 
+        $requestInfo['info']['params']['get'] = [];
+        $requestInfo['info']['params']['post'] = [];
+
+
+
+        if ($this->isFirstVisit()) {
+
+            $this->cache->set($this->user->getId(), $this->user->getInfo());
+            $this->cache->set($this->sessionId, [$requestInfo]);
+
+        } else {
+
+            if ($saveAsHistory) {
+
+                $history = $this->history;
+                $history[] = $requestInfo;
+                $this->cache->set($this->sessionId, $history);
+
+            } else {
+
+                //clear history cache its already synced
+                $this->cache->set($this->sessionId, []);
+            }
+
+        }
+    }
+}
+
+
+
+
+
+
+/*
 use Shieldfy\Analyze\Analyzer;
 
 class Session
@@ -14,7 +201,7 @@ class Session
         $cache = Cache::getInstance();
         $userData = $user->getInfo();
         if (!$cache->has($userData['id'])) {
-            /* analyze the ip */
+            // analyze the ip 
             return (new self())->markAsFirstVisit()->setUser($userData);
         }
 
@@ -31,7 +218,7 @@ class Session
 
             return $userData;
         }
-        /* failed for somereason , generate temporary sessionID */
+        // failed for somereason , generate temporary sessionID 
         $userData['sessionID'] = md5(time() * mt_rand());
         $userData['score'] = 0;
 
@@ -96,7 +283,7 @@ class Session
     private function save()
     {
         $cache = Cache::getInstance();
-        /* we don't save everything it could be private info */
+        // we don't save everything it could be private info 
         if ($this->request !== '') {
             $this->data['request']['info']['params']['get'] = [];
             $this->data['request']['info']['params']['post'] = [];
@@ -129,3 +316,4 @@ class Session
         }
     }
 }
+*/

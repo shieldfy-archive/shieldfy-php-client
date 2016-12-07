@@ -1,12 +1,27 @@
 <?php
 
 namespace Shieldfy;
-
+use Base;
 /**
  * Headers class.
  */
 class Headers
 {
+    /**
+     * @var $config 
+     */
+    protected $config;
+
+    /**
+     * Constructor
+     * @param Config $config 
+     * @return type
+     */
+    public function __construct(Config $config)
+    {
+        $this->config = $config;
+    }
+
     /**
      * Exposes useful headers in the request.
      *
@@ -14,31 +29,30 @@ class Headers
      *
      * @return void
      */
-    public static function expose($disabledHeaders = [])
+    public function expose()
     {
         /* expose useful headers */
-        if (!in_array('x-xss-protection', $disabledHeaders)) {
+        if (!in_array('x-xss-protection', $this->config['disabledHeaders'])) {
             header('X-XSS-Protection: 1; mode=block');
         }
 
-        if (!in_array('x-content-type-options', $disabledHeaders)) {
+        if (!in_array('x-content-type-options', $this->config['disabledHeaders'])) {
             header('X-Content-Type-Options: nosniff');
         }
 
-        if (!in_array('x-frame-options', $disabledHeaders)) {
+        if (!in_array('x-frame-options', $this->config['disabledHeaders'])) {
             header('X-Frame-Options: SAMEORIGIN');
         }
 
         // TODO: Check for SSL before enabling.
         //header('Strict-Transport-Security: max-age=31536000')
 
-        // This header loads only local/origin libraries.
+        // CSP security Header.
         //header('Content-Security-Policy: script-src 'self'')
 
         header('X-Powered-By: NA');
-
-        $api = Shieldfy::getAppKeys();
-        $signature = hash_hmac('sha256', $api['app_key'], $api['app_secret']);
+        
+        $signature = hash_hmac('sha256', $this->config['app_key'], $this->config['app_secret']);
 
         header('X-Web-Shield: ShieldfyWebShield');
         header('X-Shieldfy-Signature: '.$signature);

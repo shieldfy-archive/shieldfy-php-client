@@ -2,6 +2,9 @@
 
 namespace Shieldfy\Exceptions;
 
-class FailedExtentionLoadingException extends \Exception
+use Exception;
+
+class FailedExtentionLoadingException extends Exception
 {
+
 }

@@ -4,65 +4,113 @@ namespace Shieldfy;
 
 class Request
 {
-    protected $requestMethod = '';
-    protected $ajax = 0;
+    /**
+     * Request method taken from ($_SERVER).
+     */ 
+    protected $requestMethod;
+
+    /**
+     * Query string parameters ($_GET).
+     */
+    public $get;
+
+    /**
+     * Request body parameters ($_POST).
+     */
+    public $post;
+
+    /**
+     * Server and execution environment parameters ($_SERVER).
+     */
+    public $server;
+
+    /**
+     * Cookies ($_COOKIE).
+     */
+    public $cookies;
+
+    /**
+     * Uploaded files ($_FILES).
+     */
+    public $files;
+
+    /**
+     * store request parameter in short way
+     */ 
     protected $params;
 
-    public function __construct()
+    /**
+     * @var timestamp request creation time
+     */
+    protected $created;
+
+
+    /**
+     * constructor
+     * @param array|array $get 
+     * @param array|array $post 
+     * @param array|array $server 
+     * @param array|array $cookies 
+     * @param array|array $files 
+     */
+    public function __construct($get = [],$post = [],$server = [],$cookies = [],$files = [])
     {
-        $this->requestMethod = $_SERVER['REQUEST_METHOD'];
-        $this->setParams();
+        $this->get = $get;
+        $this->post = $post;
+        $this->server = $server;
+        $this->cookies = $cookies;
+        $this->files = $files;
+        $this->requestMethod = $server['REQUEST_METHOD'];
+        $this->created = time();
+        $this->params = $this->prepare();
     }
 
-    private function setParams()
-    {
-        $params = $this->prepare([
-            'get'   => $_GET,
-            'post'  => $_POST,
-            'server'=> $_SERVER,
-        ]);
-        $this->params = $params;
-    }
-
-    private function prepare($params)
+    /**
+     * prepare a short copy of request 
+     * @return array $data;
+     */
+    private function prepare()
     {
         $data = [
-            'get' => $params['get'],
-            'post'=> $params['post'],
+            'get' => $this->get,
+            'post'=> $this->post,
         ];
 
-        if (isset($params['server']['PHP_SELF'])) {
-            $data['server']['ps'] = $params['server']['PHP_SELF'];
+        if (isset($this->server['PHP_SELF'])) {
+            $data['server']['ps'] = $this->server['PHP_SELF'];
         }
-        if (isset($params['server']['PATH_INFO'])) {
-            $data['server']['pi'] = $params['server']['PATH_INFO'];
+        if (isset($this->server['PATH_INFO'])) {
+            $data['server']['pi'] = $this->server['PATH_INFO'];
         }
-        if (isset($params['server']['REQUEST_URI'])) {
-            $data['server']['uri'] = $params['server']['REQUEST_URI'];
+        if (isset($this->server['REQUEST_URI'])) {
+            $data['server']['uri'] = $this->server['REQUEST_URI'];
         }
-        if (isset($params['server']['HTTP_ORIGIN'])) {
-            $data['server']['ho'] = $params['server']['HTTP_ORIGIN'];
+        if (isset($this->server['HTTP_ORIGIN'])) {
+            $data['server']['ho'] = $this->server['HTTP_ORIGIN'];
         }
-        if (isset($params['server']['HTTP_HOST'])) {
-            $data['server']['hh'] = $params['server']['HTTP_HOST'];
+        if (isset($this->server['HTTP_HOST'])) {
+            $data['server']['hh'] = $this->server['HTTP_HOST'];
         }
-        if (isset($params['server']['HTTP_REFERER'])) {
-            $data['server']['r'] = $params['server']['HTTP_REFERER'];
+        if (isset($this->server['HTTP_REFERER'])) {
+            $data['server']['r'] = $this->server['HTTP_REFERER'];
         }
 
         return $data;
     }
 
+    /**
+     * get request info
+     * @return array info
+     */
     public function getInfo()
     {
         return [
-            'method'=> $this->requestMethod,
-            'params'=> $this->getParams(),
+            'created' => $this->created,
+            'info' => [
+                'method' => $this->requestMethod,
+                'params' => $this->params
+            ]
         ];
     }
 
-    public function getParams()
-    {
-        return $this->params;
-    }
 }

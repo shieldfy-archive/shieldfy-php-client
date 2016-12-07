@@ -2,7 +2,7 @@
 
 namespace Shieldfy;
 
-class Shieldfy
+class Base
 {
     /**
      * @const string VERSION API version
@@ -17,11 +17,11 @@ class Shieldfy
      * @var string[] $disabledHeaders
      * @var mixed[]  $config Default class configuration
      */
-    protected static $rootDir;
-    protected static $appKey;
-    protected static $appSecret;
-    protected static $disabledHeaders = [];
-    protected static $config = [
+    protected $rootDir;
+    protected $appKey;
+    protected $appSecret;
+    protected $disabledHeaders = [];
+    protected $config = [
         'debug'          => false,
         'action'         => 'block',
         'disabledHeaders'=> [],
@@ -30,7 +30,7 @@ class Shieldfy
     /**
      * @var string
      */
-    public static $endpoint = 'http://api.shieldfy.io/v1';
+    public $endpoint = 'http://api.shieldfy.io/v1';
 
     /**
      * Sets user defined class config.
@@ -39,7 +39,7 @@ class Shieldfy
      *
      * @return array merged config $config
      */
-    public static function setConfig(array $config)
+    public function setConfig(array $config)
     {
         self::setApiKey([
             'app_key'    => $config['app_key'],
@@ -59,7 +59,7 @@ class Shieldfy
      *
      * @return void
      */
-    public static function setRootDir($rootDir)
+    public function setRootDir($rootDir)
     {
         self::$rootDir = $rootDir;
     }
@@ -69,7 +69,7 @@ class Shieldfy
      *
      * @return string $rootDir
      */
-    public static function getRootDir()
+    public function getRootDir()
     {
         return self::$rootDir;
     }
@@ -81,7 +81,7 @@ class Shieldfy
      *
      * @return void
      */
-    public static function mergeConfig(array $config)
+    public function mergeConfig(array $config)
     {
         self::$config = array_replace_recursive(self::$config, $config);
     }
@@ -93,7 +93,7 @@ class Shieldfy
      *
      * @return type
      */
-    public static function setApiKey(array $api)
+    public function setApiKey(array $api)
     {
         self::$appKey = $api['app_key'];
         self::$appSecret = $api['app_secret'];
@@ -104,7 +104,7 @@ class Shieldfy
      *
      * @return string[]
      */
-    public static function getAppKeys()
+    public function getAppKeys()
     {
         return [
             'app_key'   => self::$appKey,
@@ -117,7 +117,7 @@ class Shieldfy
      *
      * @return string
      */
-    public static function getApiVersion()
+    public function getApiVersion()
     {
         return self::VERSION;
     }
@@ -127,7 +127,7 @@ class Shieldfy
      *
      * @return mixed[] $config
      */
-    public static function getConfig()
+    public function getConfig()
     {
         return self::$config;
     }

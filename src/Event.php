@@ -2,30 +2,50 @@
 
 namespace Shieldfy;
 
-use Shieldfy\Exceptions\EventNotExists;
+use Shieldfy\Exceptions\EventNotExistsException;
 use Shieldfy\Exceptions\ExceptionHandler;
 
 class Event
 {
-    private static $events = ['install', 'update', 'session', 'activity', 'exception'];
-    public static $apiClient = null;
+    /**
+     * @var $events supported events list
+     */
+    private $events = ['install', 'update', 'session', 'activity', 'exception'];
 
-    public static function trigger($event, $data = [])
+    /**
+     * @var api
+     * @var exceptionHandler
+     */
+    protected $api;
+    protected $exceptionHandler;
+
+    /**
+     * Constructor
+     * @param ApiClient $api 
+     * @param ExceptionHandler $exceptionHandler 
+     * @return void
+     */
+    public function __construct(ApiClient $api, ExceptionHandler $exceptionHandler)
     {
-        if (!in_array($event, self::$events)) {
-            ExceptionHandler::throwException(new EventNotExists('Event '.$event.' not loaded'));
+        $this->api = $api;
+        $this->exceptionHandler = $exceptionHandler;
+    }
 
-            return; //return to avoid extra execution if errors is off
-        }
-
-        //check if apiclient set
-        if (self::$apiClient instanceof ApiClient === false) {
-            self::$apiClient = new ApiClient();
+    /**
+     * trigger the event
+     * @param string $event 
+     * @param array $data 
+     * @return result of the event | false
+     */
+    public function trigger($event, $data = [])
+    {
+        if (!in_array($event, $this->events)) {
+            $this->exceptionHandler->throwException(new EventNotExistsException('Event '.$event.' not loaded'));
+            return false; //return to avoid extra execution if errors is off
         }
 
         $data = json_encode($data);
-        $res = self::$apiClient->request('/'.$event, $data);
-
+        $res = $this->api->request('/'.$event, $data);
         return $res;
     }
 }

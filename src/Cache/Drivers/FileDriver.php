@@ -4,7 +4,7 @@ namespace Shieldfy\Cache\Drivers;
 
 use Shieldfy\Cache\CacheInterface;
 
-class FileCacheDriver implements CacheInterface
+class FileDriver implements CacheInterface
 {
     private $path;
     private $timeout = 3600;

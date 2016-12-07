@@ -4,106 +4,126 @@ namespace Shieldfy\Test;
 
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
-use Shieldfy\ApiClient;
+
+use Shieldfy\Config;
 use Shieldfy\Cache;
 use Shieldfy\Event;
+use Shieldfy\Exceptions\ExceptionHandler;
+use Shieldfy\User;
 use Shieldfy\Request;
 use Shieldfy\Session;
-use Shieldfy\Shieldfy;
-use Shieldfy\User;
 
 class SessionTest extends TestCase
 {
     protected $root;
-    protected $api;
+    protected $cache;
     protected $sampleSessionId;
     protected $sampleUserScore;
+    protected $event;
 
     public function setup()
     {
-
-        //set virtual filesystem
-        $this->root = vfsStream::setup();
+    	$this->root = vfsStream::setup();
         mkdir($this->root->url().'/tmp/', 0700, true);
         mkdir($this->root->url().'/data/', 0700, true);
-        Cache::setDriver('file', [
+
+        $config = New Config;
+        $config['debug'] = true;
+        $this->exceptionHandler = new ExceptionHandler($config);
+
+        $this->cache = (new Cache($this->exceptionHandler))->setDriver('file', [
             'path'=> $this->root->url().'/tmp/',
         ]);
+
         $this->sampleSessionId = 'abcdefgh';
         $this->sampleUserScore = 5; //clean
 
-        $exampleData = json_encode([
+        // mock api class	
+        $this->event = $this->createMock(Event::class);
+
+        $this->exampleData = json_encode([
             'status'   => 'success',
-            'sessionID'=> $this->sampleSessionId,
-            'score'    => $this->sampleUserScore,
+            'sessionId'=> $this->sampleSessionId,
+            'score'    => $this->sampleUserScore
         ]);
-        //set mocking for the webservice
-        $api = $this->createMock(ApiClient::class);
-        $api->method('request')
-             ->willReturn(json_decode($exampleData));
-        $this->api = $api;
-
-        Event::$apiClient = $this->api;
-
-        Shieldfy::setRootDir($this->root->url());
-        //simulate rules in harddisk
-        file_put_contents($this->root->url().'/data/pre_rules', '[]');
+        $this->event->method('trigger')
+             ->willReturn(json_decode($this->exampleData));
     }
+
 
     public function testLoadNewUser()
     {
+    	$request = new Request([],[],[
+    		'REQUEST_METHOD'=>'get'
+    	]);
+    	$user = new User($request);
+    	$session = new Session($user,$request,$this->event,$this->cache);
 
-        //capture the current user
-        $user = new User();
+    	$this->assertTrue($session->isFirstVisit());
 
-        //load session details
-        $session = Session::load($user);
-        $userInfo = $session->user;
+    	$session->save();
 
-        $this->assertEquals($userInfo['sessionID'], $this->sampleSessionId);
-        $this->assertEquals($userInfo['score'], $this->sampleUserScore);
-        $this->assertEquals($session->sessionID, $this->sampleSessionId);
-        $this->assertTrue($session->isFirstVisit());
+    	$this->assertTrue($this->root->hasChild('tmp/'.$user->getId().'.json'));
 
-        $request = new Request();
-        $session->request = [
-                'created'=> time(),
-                'info'   => $request->getInfo(),
-        ];
+    	$userInfo = json_decode($this->root->getChild('tmp/'.$user->getId().'.json')->getContent(),1);
 
-        $session->analyze();
-        //test
-        $this->assertTrue($this->root->hasChild('tmp/'.$userInfo['id'].'.json'));
+    	$expectedUserInfo = $user->getInfo();
+    	$expectedUserInfo['sessionId'] = $this->sampleSessionId;
+    	$expectedUserInfo['score'] = $this->sampleUserScore;
+
+    	$this->assertEquals($expectedUserInfo , $userInfo);
+
         $this->assertTrue($this->root->hasChild('tmp/'.$this->sampleSessionId.'.json'));
+
+        $savedRequestInfo = json_decode($this->root->getChild('tmp/'.$this->sampleSessionId.'.json')->getContent(),1);
+        $expectedRequest = [$request->getInfo()];
+
+        $this->assertEquals($expectedRequest, $savedRequestInfo);
+
+        //test save after sync
+        $session->save(false);
+        $savedRequestInfo = json_decode($this->root->getChild('tmp/'.$this->sampleSessionId.'.json')->getContent(),1);
+
+        $expectedRequest = $request->getInfo();
+        $expectedRequest['info']['params']['get'] = [];
+        $expectedRequest['info']['params']['post'] = [];
+        $expectedRequest = [$expectedRequest];
+
+        $this->assertEquals($expectedRequest, $savedRequestInfo);
     }
 
     public function testLoadExistUser()
     {
-        $_SERVER['REMOTE_ADDR'] = $ip = '8.8.8.8';
-        $oldUserInfo = [
+    	$ip = '127.0.0.1';
+    	$request = new Request([],[],[
+    		'REQUEST_METHOD'=>'get',
+    		'REMOTE_ADDR'=>$ip
+    	]);
+    	$user = new User($request);
+
+    	$oldUserInfo = [
             'id'       => ip2long($ip),
             'ip'       => $ip,
             'userAgent'=> 'Mozilla',
-            'sessionID'=> 'defghij',
+            'sessionId'=> 'defghij',
             'score'    => 3,
         ];
+
         //set fake visit
         file_put_contents($this->root->url().'/tmp/'.ip2long($ip).'.json', json_encode($oldUserInfo));
         $sampleHistory = '[{"created":1479298788,"info":{"method":"GET","params":{"get":[],"post":[],"server":{"ps":"\/index.php","uri":"\/","hh":"example.com"}}}}]';
-        file_put_contents($this->root->url().'/tmp/'.$oldUserInfo['sessionID'].'.json', $sampleHistory);
+        file_put_contents($this->root->url().'/tmp/'.$oldUserInfo['sessionId'].'.json', $sampleHistory);
 
-        //now lets retrive the session
-
-        //capture the current user
-        $user = new User();
-        //load session details
-        $session = Session::load($user);
-        $userInfo = $session->user;
-
+        $session = new Session($user,$request,$this->event,$this->cache);
         $this->assertFalse($session->isFirstVisit());
-        $this->assertEquals($userInfo['sessionID'], 'defghij');
-        $this->assertEquals($userInfo['score'], 3);
-        $this->assertEquals($session->sessionID, 'defghij');
-        $this->assertEquals($session->history, json_decode($sampleHistory, 1));
+
+        $info = $session->getInfo();
+
+        $this->assertEquals('defghij', $info['sessionId']);
+        $userInfo = $info['user']->getInfo();
+        $this->assertEquals(3, $userInfo['score']);
+        $this->assertEquals(json_decode($sampleHistory, 1), $info['history']);
+
     }
+
 }
