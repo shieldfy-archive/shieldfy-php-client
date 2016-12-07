@@ -3,7 +3,6 @@
 namespace Shieldfy\Exceptions;
 
 use Exception;
-use Shieldfy\Event;
 use Shieldfy\Config;
 
 /**
@@ -12,13 +11,12 @@ use Shieldfy\Config;
  */
 class ExceptionHandler
 {
-
     protected $config;
 
     public function __construct(Config $config)
     {
         $this->config = $config;
-    }   
+    }
 
     /**
      * Sets the error handler and logs errors.
@@ -54,10 +52,8 @@ class ExceptionHandler
             $error = json_encode($lastError);
             $error .= "\n";
             file_put_contents($filename, $error, FILE_APPEND | LOCK_EX);
-
         });
     }
-
 
     public function throwException(Exception $exception)
     {

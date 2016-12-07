@@ -1,23 +1,26 @@
 <?php
+
 namespace Shieldfy;
 
 use ArrayAccess;
 
 class Config implements ArrayAccess
 {
-	/**
+    /**
      * All of the configuration items.
-     * @var array 
+     *
+     * @var array
      */
     protected $items = [];
 
     /**
      * Create a new configuration container.
-     * 
+     *
      * Merge the user configurations with the default config
-     * 
-     * @param array $defaults 
-     * @param array $userConfig 
+     *
+     * @param array $defaults
+     * @param array $userConfig
+     *
      * @return void
      */
     public function __construct(array $defaults = [], array $userConfig = [])
@@ -26,12 +29,15 @@ class Config implements ArrayAccess
     }
 
     /**
-     * Set configuration
-     * @param string $key 
-     * @param mixed $value 
+     * Set configuration.
+     *
+     * @param string $key
+     * @param mixed  $value
+     *
      * @return void
      */
-    public function offsetSet($key, $value) {
+    public function offsetSet($key, $value)
+    {
         if (is_null($key)) {
             $this->items[] = $value;
         } else {
@@ -40,30 +46,38 @@ class Config implements ArrayAccess
     }
 
     /**
-     * Check if key exists
-     * @param type $key 
-     * @return boolean
+     * Check if key exists.
+     *
+     * @param type $key
+     *
+     * @return bool
      */
-    public function offsetExists($key) {
+    public function offsetExists($key)
+    {
         return isset($this->items[$key]);
     }
 
     /**
-     * Remove config item
-     * @param type $key 
-     * @return boolean
+     * Remove config item.
+     *
+     * @param type $key
+     *
+     * @return bool
      */
-    public function offsetUnset($key) {
+    public function offsetUnset($key)
+    {
         unset($this->items[$key]);
     }
 
     /**
-     * Get config item
-     * @param type $key 
+     * Get config item.
+     *
+     * @param type $key
+     *
      * @return mixed value
      */
-    public function offsetGet($key) {
+    public function offsetGet($key)
+    {
         return isset($this->items[$key]) ? $this->items[$key] : null;
     }
-
 }

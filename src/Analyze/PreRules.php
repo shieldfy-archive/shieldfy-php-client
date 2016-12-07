@@ -2,9 +2,7 @@
 
 namespace Shieldfy\Analyze;
 
-use Shieldfy\Analyze\RulesBagInterface;
 use Shieldfy\Config;
-use Shieldfy\Analyze\Rule;
 
 class PreRules implements RulesBagInterface
 {
@@ -18,7 +16,7 @@ class PreRules implements RulesBagInterface
     protected $rules = [];
 
     /**
-     * @var integer score
+     * @var int score
      */
     protected $score = 0;
 
@@ -28,8 +26,9 @@ class PreRules implements RulesBagInterface
     protected $rulesIds = [];
 
     /**
-     * Constructor
-     * @param Config $config 
+     * Constructor.
+     *
+     * @param Config $config
      */
     public function __construct(Config $config)
     {
@@ -37,22 +36,24 @@ class PreRules implements RulesBagInterface
     }
 
     /**
-     * Load rules from store
+     * Load rules from store.
      */
     public function load()
     {
         $rules = json_decode(file_get_contents($this->config['rootDir'].'/data/pre_rules'), 1);
-        foreach($rules as $key=>$rule){
-            $this->rules[] = new Rule($key,$rule);
+        foreach ($rules as $key=> $rule) {
+            $this->rules[] = new Rule($key, $rule);
         }
+
         return $this;
     }
 
     /**
-     * Run the rules against request
-     * @param string $method 
-     * @param string $key 
-     * @param mixed $value 
+     * Run the rules against request.
+     *
+     * @param string $method
+     * @param string $key
+     * @param mixed  $value
      */
     public function run($method, $key, $value)
     {
@@ -67,24 +68,25 @@ class PreRules implements RulesBagInterface
             return $this;
         } //dont test against integer values
 
-        foreach($this->rules as $rule){
+        foreach ($this->rules as $rule) {
             $result = $rule->execute($value);
-            if($result){
+            if ($result) {
                 $length += $rule->getLength();
                 $score += $rule->getScore();
                 $rulesIds[] = $rule->getId();
             }
         }
 
-        $this->score =  $score;
-        $this->rulesIds  =  $rulesIds;
+        $this->score = $score;
+        $this->rulesIds = $rulesIds;
 
         return $this;
     }
 
     /**
-     * Get score
-     * @return integer score
+     * Get score.
+     *
+     * @return int score
      */
     public function getScore()
     {
@@ -92,12 +94,12 @@ class PreRules implements RulesBagInterface
     }
 
     /**
-     * get founded rules ids
+     * get founded rules ids.
+     *
      * @return array rulesIds
      */
     public function getRulesIds()
     {
         return $this->rulesIds;
-    }   
-
+    }
 }

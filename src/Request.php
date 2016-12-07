@@ -6,7 +6,7 @@ class Request
 {
     /**
      * Request method taken from ($_SERVER).
-     */ 
+     */
     protected $requestMethod;
 
     /**
@@ -35,8 +35,8 @@ class Request
     public $files;
 
     /**
-     * store request parameter in short way
-     */ 
+     * store request parameter in short way.
+     */
     protected $params;
 
     /**
@@ -44,16 +44,16 @@ class Request
      */
     protected $created;
 
-
     /**
-     * constructor
-     * @param array|array $get 
-     * @param array|array $post 
-     * @param array|array $server 
-     * @param array|array $cookies 
-     * @param array|array $files 
+     * constructor.
+     *
+     * @param array|array $get
+     * @param array|array $post
+     * @param array|array $server
+     * @param array|array $cookies
+     * @param array|array $files
      */
-    public function __construct($get = [],$post = [],$server = [],$cookies = [],$files = [])
+    public function __construct($get = [], $post = [], $server = [], $cookies = [], $files = [])
     {
         $this->get = $get;
         $this->post = $post;
@@ -66,7 +66,8 @@ class Request
     }
 
     /**
-     * prepare a short copy of request 
+     * prepare a short copy of request.
+     *
      * @return array $data;
      */
     private function prepare()
@@ -99,18 +100,18 @@ class Request
     }
 
     /**
-     * get request info
+     * get request info.
+     *
      * @return array info
      */
     public function getInfo()
     {
         return [
             'created' => $this->created,
-            'info' => [
+            'info'    => [
                 'method' => $this->requestMethod,
-                'params' => $this->params
-            ]
+                'params' => $this->params,
+            ],
         ];
     }
-
 }

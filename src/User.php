@@ -1,39 +1,39 @@
 <?php
 
 namespace Shieldfy;
-use Shieldfy\Request;
+
 class User
 {
-
     /**
-     * Identify the user with ID
+     * Identify the user with ID.
      */
     private $userId;
 
     /**
-     * User IP 
+     * User IP.
      */
     private $userIp;
 
     /**
-     * User Agent
+     * User Agent.
      */
     private $userAgent;
 
     /**
-     * Session ID
+     * Session ID.
      */
-
     private $sessionId;
 
     /**
-     * User Score
+     * User Score.
      */
     private $score;
 
     /**
-     * Constructor
-     * @param Request $request 
+     * Constructor.
+     *
+     * @param Request $request
+     *
      * @return type
      */
     public function __construct(Request $request)
@@ -44,8 +44,9 @@ class User
     }
 
     /**
-     * Set user IP
-     * @param array|array $server 
+     * Set user IP.
+     *
+     * @param array|array $server
      */
     public function setIp(array $server = [])
     {
@@ -72,7 +73,7 @@ class User
     }
 
     /**
-     * Set user ID
+     * Set user ID.
      */
     public function setId()
     {
@@ -80,8 +81,9 @@ class User
     }
 
     /**
-     * Set User agent
-     * @param array|array $server 
+     * Set User agent.
+     *
+     * @param array|array $server
      */
     public function setUserAgent(array $server = [])
     {
@@ -91,7 +93,8 @@ class User
     }
 
     /**
-     * get user ID
+     * get user ID.
+     *
      * @return ID
      */
     public function getId()
@@ -100,8 +103,9 @@ class User
     }
 
     /**
-     * Set user session id
-     * @param string $sessionID 
+     * Set user session id.
+     *
+     * @param string $sessionID
      */
     public function setSessionId($sessionId)
     {
@@ -109,8 +113,9 @@ class User
     }
 
     /**
-     * Get user session id
-     * @return string $sessionID 
+     * Get user session id.
+     *
+     * @return string $sessionID
      */
     public function getSessionId()
     {
@@ -118,8 +123,9 @@ class User
     }
 
     /**
-     * Set user score
-     * @param integer $score 
+     * Set user score.
+     *
+     * @param int $score
      */
     public function setScore($score)
     {
@@ -127,8 +133,9 @@ class User
     }
 
     /**
-     * Get user score
-     * @return integer $score 
+     * Get user score.
+     *
+     * @return int $score
      */
     public function getScore()
     {
@@ -136,7 +143,8 @@ class User
     }
 
     /**
-     * get user info
+     * get user info.
+     *
      * @return array info
      */
     public function getInfo()
@@ -146,7 +154,7 @@ class User
             'ip'        => $this->userIp,
             'userAgent' => $this->userAgent,
             'sessionId' => $this->sessionId,
-            'score'     => $this->score
+            'score'     => $this->score,
         ];
     }
 }

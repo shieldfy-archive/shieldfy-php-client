@@ -4,13 +4,12 @@ namespace Shieldfy\Test;
 
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
-
-use Shieldfy\Config;
 use Shieldfy\ApiClient;
+use Shieldfy\Config;
 use Shieldfy\Event;
 use Shieldfy\Exceptions\ExceptionHandler;
-use Shieldfy\Request;
 use Shieldfy\Install;
+use Shieldfy\Request;
 
 class InstallTest extends TestCase
 {
@@ -26,12 +25,12 @@ class InstallTest extends TestCase
         $this->root = vfsStream::setup();
         mkdir($this->root->url().'/data/', 0700, true);
 
-        $this->config = new Config;
+        $this->config = new Config();
         $this->config['rootDir'] = $this->root->url();
 
         $this->exceptionHandler = new ExceptionHandler($this->config);
-        
-        // mock event class 
+
+        // mock event class
         $api = $this->createMock(ApiClient::class);
 
         $this->exampleData = json_encode([
@@ -41,29 +40,28 @@ class InstallTest extends TestCase
                 'pre_rules'  => ['pre_rules_1'],
                 'hard_rules' => ['hard_rules_1'],
                 'soft_rules' => ['soft_rules_1'],
-            ]
+            ],
         ]);
         $api->method('request')
              ->willReturn(json_decode($this->exampleData));
 
         $this->api = $api;
-        $this->event = new Event($this->api,$this->exceptionHandler);
+        $this->event = new Event($this->api, $this->exceptionHandler);
 
         //set default data
-        $this->request = new Request([],[],[
-            'REQUEST_METHOD' => 'GET',
-            'HTTP_HOST' => 'unittest',
-            'SERVER_ADDR'=> '127.0.0.1',
+        $this->request = new Request([], [], [
+            'REQUEST_METHOD'  => 'GET',
+            'HTTP_HOST'       => 'unittest',
+            'SERVER_ADDR'     => '127.0.0.1',
             'SERVER_SOFTWARE' => '',
-            'SERVER_PORT' => ''
+            'SERVER_PORT'     => '',
         ]);
-
     }
 
     public function testAlreadyInstalled()
     {
         file_put_contents($this->root->url().'/data/installed', 1);
-        $install = new Install($this->config,$this->request,$this->event, $this->exceptionHandler);
+        $install = new Install($this->config, $this->request, $this->event, $this->exceptionHandler);
         $res = $install->run();
         $this->assertFalse($res);
         unlink($this->root->url().'/data/installed');
@@ -71,8 +69,7 @@ class InstallTest extends TestCase
 
     public function testInstallProcess()
     {
-
-        $install = new Install($this->config,$this->request,$this->event, $this->exceptionHandler);
+        $install = new Install($this->config, $this->request, $this->event, $this->exceptionHandler);
         $res = $install->run();
 
         $this->assertTrue($res);

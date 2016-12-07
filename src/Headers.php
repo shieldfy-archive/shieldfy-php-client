@@ -1,20 +1,22 @@
 <?php
 
 namespace Shieldfy;
-use Base;
+
 /**
  * Headers class.
  */
 class Headers
 {
     /**
-     * @var $config 
+     * @var
      */
     protected $config;
 
     /**
-     * Constructor
-     * @param Config $config 
+     * Constructor.
+     *
+     * @param Config $config
+     *
      * @return type
      */
     public function __construct(Config $config)
@@ -51,7 +53,7 @@ class Headers
         //header('Content-Security-Policy: script-src 'self'')
 
         header('X-Powered-By: NA');
-        
+
         $signature = hash_hmac('sha256', $this->config['app_key'], $this->config['app_secret']);
 
         header('X-Web-Shield: ShieldfyWebShield');

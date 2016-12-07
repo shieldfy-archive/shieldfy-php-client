@@ -2,16 +2,13 @@
 
 namespace Shieldfy;
 
-use Shieldfy\Config;
-use Shieldfy\Event;
 use Shieldfy\Exceptions\ExceptionHandler;
 use Shieldfy\Exceptions\InstallationException;
 
 class Install
 {
-
     /**
-     * @var config 
+     * @var config
      * @var request
      * @var event
      * @var exceptionHandler
@@ -22,21 +19,24 @@ class Install
     protected $exceptionHandler;
 
     /**
-     * Constructor
-     * @param Config $config 
-     * @param Event $event 
-     * @param ExceptionHandler $exceptionHandler 
+     * Constructor.
+     *
+     * @param Config           $config
+     * @param Event            $event
+     * @param ExceptionHandler $exceptionHandler
+     *
      * @return type
      */
-    public function __construct(Config $config,Request $request,Event $event, ExceptionHandler $exceptionHandler)
+    public function __construct(Config $config, Request $request, Event $event, ExceptionHandler $exceptionHandler)
     {
         $this->config = $config;
         $this->request = $request;
         $this->event = $event;
         $this->exceptionHandler = $exceptionHandler;
     }
+
     /**
-     * run installation if not installed
+     * run installation if not installed.
      *
      * @return bool $installed
      */
@@ -44,8 +44,10 @@ class Install
     {
         if (!$this->isInstalled()) {
             $this->install();
+
             return true;
         }
+
         return false;
     }
 
@@ -118,7 +120,7 @@ class Install
      *
      * @return bool
      */
-    private  function isSecure()
+    private function isSecure()
     {
         return
         (!empty($this->request->server['HTTPS']) && $this->request->server['HTTPS'] !== 'off')

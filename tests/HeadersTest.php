@@ -8,27 +8,27 @@ use Shieldfy\Headers;
 
 class HeadersTest extends TestCase
 {
-	protected $config;
+    protected $config;
 
-	public function setup()
-	{
-		$this->config = new Config;
-		$this->config['app_key'] = 'testKey';
-		$this->config['app_secret'] = 'testSecret';
-		$this->config['disabledHeaders'] = [];
-	}
-	/**
+    public function setup()
+    {
+        $this->config = new Config();
+        $this->config['app_key'] = 'testKey';
+        $this->config['app_secret'] = 'testSecret';
+        $this->config['disabledHeaders'] = [];
+    }
+
+    /**
      * @runInSeparateProcess
      */
     public function testExpose()
     {
-
         $headers = new Headers($this->config);
         $headers->expose();
         if (function_exists('xdebug_get_headers')) {
             $headers = xdebug_get_headers(1);
             //expected headers
-            
+
             $signature = hash_hmac('sha256', $this->config['app_key'], $this->config['app_secret']);
             $expectedHeaders = [
                 'X-XSS-Protection: 1; mode=block',
@@ -50,15 +50,15 @@ class HeadersTest extends TestCase
      */
     public function testPartialExpose()
     {
-    	$this->config['disabledHeaders'] = [
-    		'x-frame-options'
-    	];
+        $this->config['disabledHeaders'] = [
+            'x-frame-options',
+        ];
         $headers = new Headers($this->config);
         $headers->expose();
-        
+
         if (function_exists('xdebug_get_headers')) {
             $headers = xdebug_get_headers(1);
-            //expected headers            
+            //expected headers
             $signature = hash_hmac('sha256', $this->config['app_key'], $this->config['app_secret']);
             $expectedHeaders = [
                 'X-XSS-Protection: 1; mode=block',
