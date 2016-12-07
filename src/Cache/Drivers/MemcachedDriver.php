@@ -13,9 +13,6 @@ class MemcachedDriver implements CacheInterface
 
     public function __construct($config = [], $timeout = '')
     {
-        if (!extension_loaded('memcached')) {
-            ExceptionHandler::throwException(new FailedExtentionLoadingException('Memcached extension failed to load.'));
-        }
         if ($timeout) {
             $this->timeout = $timeout;
         }
