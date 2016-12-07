@@ -2,8 +2,8 @@
 
 namespace Shieldfy;
 
-use Shieldfy\Exceptions\ExceptionHandler;
 use Shieldfy\Exceptions\CacheDriverNotExistsException;
+use Shieldfy\Exceptions\ExceptionHandler;
 
 /**
  * Caching class.
@@ -19,27 +19,28 @@ class Cache
      * @var null     Driver class
      * @var string[] $config Contains dirver class config
      * @var string[] $drivers Supported driver types
-     */ 
+     */
     private $driver = null;
     private $config = [];
     private $drivers = [
         'file'      => \Shieldfy\Cache\Drivers\FileDriver::class,
         'memcached' => \Shieldfy\Cache\Drivers\MemcachedDriver::class,
-        'null' => \Shieldfy\Cache\Drivers\NullDriver::class,
+        'null'      => \Shieldfy\Cache\Drivers\NullDriver::class,
     ];
 
     /**
-     * @var Object ExceptionHandler
-     */ 
+     * @var object ExceptionHandler
+     */
     protected $exceptionHandler;
 
     /**
-     * Constructor
-     * @param type $driverType 
-     * @param type|array $config 
+     * Constructor.
+     *
+     * @param type       $driverType
+     * @param type|array $config
+     *
      * @return type
      */
-
     public function __construct(ExceptionHandler $exceptionHandler)
     {
         $this->exceptionHandler = $exceptionHandler;
@@ -61,8 +62,7 @@ class Cache
         }
 
         $driverClass = $this->drivers[$driverType];
+
         return new $driverClass($config, self::SESSION_TIMEOUT);
     }
-
-    
 }

@@ -8,11 +8,9 @@ use Shieldfy\User;
 
 class UserTest extends TestCase
 {
-
     public function testUserInfoNoIp()
     {
-
-        $request = new Request([],[],['REQUEST_METHOD'=>'get']);
+        $request = new Request([], [], ['REQUEST_METHOD'=>'get']);
         $user = new User($request);
         $info = $user->getInfo();
         $this->assertEquals('0.0.0.0', $info['ip']);
@@ -21,17 +19,17 @@ class UserTest extends TestCase
 
     public function testUserGetID()
     {
-        $request = new Request([],[],['REQUEST_METHOD'=>'get']);
+        $request = new Request([], [], ['REQUEST_METHOD'=>'get']);
         $user = new User($request);
-        $this->assertEquals( ip2long('0.0.0.0'), $user->getId());
+        $this->assertEquals(ip2long('0.0.0.0'), $user->getId());
     }
 
     public function testUserInfoThroughProxy1()
     {
-        $request = new Request([],[],[
-            'REQUEST_METHOD'=>'get',
-            'REMOTE_ADDR'=>'55.44.33.22', //proxy ip
-            'HTTP_X_FORWARDED_FOR' => '114.113.112.111,113.112.111.110'
+        $request = new Request([], [], [
+            'REQUEST_METHOD'       => 'get',
+            'REMOTE_ADDR'          => '55.44.33.22', //proxy ip
+            'HTTP_X_FORWARDED_FOR' => '114.113.112.111,113.112.111.110',
         ]);
         $user = new User($request);
         $info = $user->getInfo();
@@ -41,10 +39,10 @@ class UserTest extends TestCase
 
     public function testUserInfoThroughProxy2()
     {
-        $request = new Request([],[],[
-            'REQUEST_METHOD'=>'get',
-            'REMOTE_ADDR'=>'55.44.33.22', //proxy ip
-            'HTTP_CLIENT_IP' => '114.113.112.111'
+        $request = new Request([], [], [
+            'REQUEST_METHOD' => 'get',
+            'REMOTE_ADDR'    => '55.44.33.22', //proxy ip
+            'HTTP_CLIENT_IP' => '114.113.112.111',
         ]);
         $user = new User($request);
 
@@ -55,10 +53,10 @@ class UserTest extends TestCase
 
     public function testUserInfoThroughProxy3()
     {
-        $request = new Request([],[],[
-            'REQUEST_METHOD'=>'get',
-            'REMOTE_ADDR'=>'55.44.33.22', //proxy ip
-            'HTTP_X_REAL_IP' => '114.113.112.111'
+        $request = new Request([], [], [
+            'REQUEST_METHOD' => 'get',
+            'REMOTE_ADDR'    => '55.44.33.22', //proxy ip
+            'HTTP_X_REAL_IP' => '114.113.112.111',
         ]);
         $user = new User($request);
 
@@ -69,9 +67,9 @@ class UserTest extends TestCase
 
     public function testUserInfoDirectAccess()
     {
-        $request = new Request([],[],[
-            'REQUEST_METHOD'=>'get',
-            'REMOTE_ADDR'=>'114.113.112.111', //proxy ip
+        $request = new Request([], [], [
+            'REQUEST_METHOD'=> 'get',
+            'REMOTE_ADDR'   => '114.113.112.111', //proxy ip
         ]);
         $user = new User($request);
         $info = $user->getInfo();
@@ -81,9 +79,9 @@ class UserTest extends TestCase
 
     public function testUserInfoUserAgent()
     {
-        $request = new Request([],[],[
-            'REQUEST_METHOD'=>'get',
-            'HTTP_USER_AGENT'=>'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1', //proxy ip
+        $request = new Request([], [], [
+            'REQUEST_METHOD' => 'get',
+            'HTTP_USER_AGENT'=> 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1', //proxy ip
         ]);
         $user = new User($request);
         $info = $user->getInfo();
@@ -92,9 +90,9 @@ class UserTest extends TestCase
 
     public function testOutsiteInfo()
     {
-        $request = new Request([],[],[
-            'REQUEST_METHOD'=>'get',
-            'HTTP_USER_AGENT'=>'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1', //proxy ip
+        $request = new Request([], [], [
+            'REQUEST_METHOD' => 'get',
+            'HTTP_USER_AGENT'=> 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1', //proxy ip
         ]);
         $user = new User($request);
         $user->setSessionId('123456');
@@ -105,7 +103,6 @@ class UserTest extends TestCase
 
         $info = $user->getInfo();
         $this->assertEquals('123456', $info['sessionId']);
-        $this->assertEquals(3,$info['score']);
-
+        $this->assertEquals(3, $info['score']);
     }
 }

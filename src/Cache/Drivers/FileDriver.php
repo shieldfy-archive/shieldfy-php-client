@@ -23,7 +23,7 @@ class FileDriver implements CacheInterface
         if (file_exists($filename)) {
             if ((filemtime($filename) + $this->timeout) > time()) {
                 return true;
-            } 
+            }
             unlink($filename);
         }
 
@@ -42,6 +42,7 @@ class FileDriver implements CacheInterface
             return false;
         }
         $filename = $this->path.$key.'.json';
+
         return json_decode(file_get_contents($filename), 1);
     }
 }

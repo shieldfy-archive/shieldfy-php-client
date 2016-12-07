@@ -1,16 +1,15 @@
 <?php
+
 namespace Shieldfy\Analyze;
 
-use Shieldfy\Normalizer\Normalizer;
-
-use Shieldfy\Session;
 use Shieldfy\Cache\CacheInterface;
-use Shieldfy\Request;
 use Shieldfy\Config;
+use Shieldfy\Normalizer\Normalizer;
+use Shieldfy\Request;
+use Shieldfy\Session;
 
 class Analyzer
-{   
-
+{
     const DANGEROUS = 1;
     const SUSPICIOUS = 2;
     const CLEAN = 0;
@@ -21,22 +20,22 @@ class Analyzer
 
     private $skippedKeys = [
         'server.ps',
-        'server.uri', 
-        'server.hh', 
-        'server.ho', 
-        'server.r'
+        'server.uri',
+        'server.hh',
+        'server.ho',
+        'server.r',
     ];
     protected $user;
     protected $request;
     protected $history;
     protected $result = [
-        'status' => self::CLEAN,
+        'status'      => self::CLEAN,
         'total_score' => 0,
-        'request' => []
+        'request'     => [],
 
     ];
 
-    public function __construct(Session $session,CacheInterface $cache, Config $config)
+    public function __construct(Session $session, CacheInterface $cache, Config $config)
     {
         $this->session = $session;
 
@@ -48,10 +47,7 @@ class Analyzer
 
         $this->cache = $cache;
         $this->config = $config;
-
     }
-
-    
 
     public function run()
     {
@@ -60,21 +56,19 @@ class Analyzer
         $params = $this->prepareRequestParameter($this->request);
 
         /** @todo cache  */
-
         $requestInfo = $this->request->getInfo();
 
         $requestResult = [];
 
-        foreach($params as $key=>$value)
-        {
-            if(in_array($key, $this->skippedKeys)){
+        foreach ($params as $key=>$value) {
+            if (in_array($key, $this->skippedKeys)) {
                 continue;
             }
 
             //prerules
             $rules = new PreRules($this->config);
-            $rules->load()->run($requestInfo['info']['method'],$key,$value);
-            if($rules->getScore() === 0){
+            $rules->load()->run($requestInfo['info']['method'], $key, $value);
+            if ($rules->getScore() === 0) {
                 continue;
             }
 
@@ -83,12 +77,12 @@ class Analyzer
 
             //softrules
             $rules = new SoftRules($this->config);
-            $rules->load()->run($requestInfo['info']['method'],$key,$value);
+            $rules->load()->run($requestInfo['info']['method'], $key, $value);
 
-            if($rules->getScore() > 0){
+            if ($rules->getScore() > 0) {
                 $requestResult[$key] = [
                     'score' => $rules->getScore(),
-                    'keys'  => $rules->getRulesIds()
+                    'keys'  => $rules->getRulesIds(),
                 ];
             }
         }
@@ -98,13 +92,13 @@ class Analyzer
         //$this->prepareResult($requestResult);
     }
 
-    private function analyze(array $requestResult = [],array $userResult = [])
+    private function analyze(array $requestResult = [], array $userResult = [])
     {
-
         $requestScore = 0;
-        
+
         if (count($requestResult) === 0) {
             $this->result['status'] = self::CLEAN;
+
             return; //clean
         }
 
@@ -123,27 +117,28 @@ class Analyzer
 
         if ($totalScore >= 80) {
             $this->result['status'] = self::DANGEROUS;
+
             return 1; //dangerous
         }
 
         if ($totalScore >= 40) {
             $this->result['status'] = self::SUSPICIOUS;
+
             return 2; //suspicious
         }
 
         $this->result['status'] = self::CLEAN;
     }
 
-    
     public function getResult()
     {
         return $this->result;
     }
 
-
     private function prepareRequestParameter(Request $request)
     {
         $info = $request->getInfo();
+
         return $this->prepareRequestParameterRecursive($info['info']['params']);
     }
 
@@ -159,5 +154,4 @@ class Analyzer
 
         return $data;
     }
-
 }

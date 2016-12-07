@@ -35,13 +35,13 @@ class RequestTest extends TestCase
             ],
         ];
         $this->created = time();
-        $this->request = new Request($this->get,$this->post,$this->server);
+        $this->request = new Request($this->get, $this->post, $this->server);
     }
 
     public function testGetInfo()
     {
         $info = $this->request->getInfo();
-        $this->assertLessThanOrEqual($info['created'],$this->created);
+        $this->assertLessThanOrEqual($info['created'], $this->created);
         $this->assertEquals($info['info']['method'], $this->server['REQUEST_METHOD']);
         $this->assertEquals($info['info']['params']['get'], $this->get);
         $this->assertEquals($info['info']['params']['post'], $this->post);

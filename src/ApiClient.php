@@ -2,7 +2,6 @@
 
 namespace Shieldfy;
 
-use Shieldfy\Config;
 use Shieldfy\Exceptions\ExceptionHandler;
 use Shieldfy\Exceptions\FailedExtentionLoadingException;
 use Shieldfy\Exceptions\ServerErrorException;
@@ -10,8 +9,8 @@ use Shieldfy\Exceptions\ServerErrorException;
 class ApiClient
 {
     /**
-     * Const TIMEOUT Connectio Timeout
-     */ 
+     * Const TIMEOUT Connectio Timeout.
+     */
     const TIMEOUT = 30;
     /**
      * @var Config
@@ -21,7 +20,7 @@ class ApiClient
     protected $exceptionHandler;
 
     /**
-     * curl private vars
+     * curl private vars.
      */
     private $curl = null;
     private $useragent = 'shieldfy-php/1.0';
@@ -30,14 +29,15 @@ class ApiClient
     private $errors = [];
 
     /**
-     * constructor
-     * @param Config $config 
-     * @param ExceptionHandler $exceptionHandler 
+     * constructor.
+     *
+     * @param Config           $config
+     * @param ExceptionHandler $exceptionHandler
+     *
      * @return void
      */
     public function __construct(Config $config, ExceptionHandler $exceptionHandler)
     {
-
         $this->config = $config;
         $this->exceptionHandler = $exceptionHandler;
 
@@ -48,8 +48,8 @@ class ApiClient
         $this->curl = curl_init();
 
         $this->setApiKey([
-            'app_key'=>$this->config['app_key'],
-            'app_secret'=>$this->config['app_secret']
+            'app_key'   => $this->config['app_key'],
+            'app_secret'=> $this->config['app_secret'],
         ]);
         $this->setBaseUrl($this->config['apiEndpoint']);
 
@@ -60,9 +60,11 @@ class ApiClient
     }
 
     /**
-     * Make the actual curl request
-     * @param string $url 
-     * @param mixed $body 
+     * Make the actual curl request.
+     *
+     * @param string $url
+     * @param mixed  $body
+     *
      * @return mixed $res
      */
     public function request($url, $body)
@@ -103,8 +105,10 @@ class ApiClient
     }
 
     /**
-     * parse the result
-     * @param mixed $result 
+     * parse the result.
+     *
+     * @param mixed $result
+     *
      * @return mixed $res
      */
     public function parseResult($result)
@@ -115,6 +119,7 @@ class ApiClient
                 'code'   => '001',
                 'message'=> 'Unexpected Server Response',
             ];
+
             return false;
         }
 
@@ -131,8 +136,9 @@ class ApiClient
     }
 
     /**
-     * Set Api Keys
-     * @param type $keys 
+     * Set Api Keys.
+     *
+     * @param type $keys
      */
     private function setApiKey($keys)
     {
@@ -140,8 +146,9 @@ class ApiClient
     }
 
     /**
-     * Set Base Url
-     * @param type $url 
+     * Set Base Url.
+     *
+     * @param type $url
      */
     private function setBaseUrl($url)
     {
@@ -149,7 +156,7 @@ class ApiClient
     }
 
     /**
-     * Set UserAgent
+     * Set UserAgent.
      */
     public function setUserAgent()
     {
@@ -157,8 +164,9 @@ class ApiClient
     }
 
     /**
-     * Set Timeout
-     * @param integer $seconds 
+     * Set Timeout.
+     *
+     * @param int $seconds
      */
     public function setTimeout($seconds)
     {
@@ -166,7 +174,8 @@ class ApiClient
     }
 
     /**
-     * Set default options
+     * Set default options.
+     *
      * @return type
      */
     public function setDefaultOptions()
@@ -175,7 +184,7 @@ class ApiClient
     }
 
     /**
-     * Set SSL Certificates
+     * Set SSL Certificates.
      */
     private function setCertificate()
     {
@@ -185,8 +194,9 @@ class ApiClient
     }
 
     /**
-     * Setup Authentication Headers
-     * @param String $hash 
+     * Setup Authentication Headers.
+     *
+     * @param string $hash
      */
     private function setupHeaders($hash)
     {
@@ -199,8 +209,10 @@ class ApiClient
     }
 
     /**
-     * Calculate Body Hash for authentication
-     * @param mixed $body 
+     * Calculate Body Hash for authentication.
+     *
+     * @param mixed $body
+     *
      * @return string calculated hash
      */
     private function calculateBodyHash($body)
@@ -209,10 +221,12 @@ class ApiClient
     }
 
     /**
-     * set curl options
-     * @param mixed $option 
-     * @param mixed $value 
-     * @return boolean
+     * set curl options.
+     *
+     * @param mixed $option
+     * @param mixed $value
+     *
+     * @return bool
      */
     public function setOpt($option, $value)
     {
@@ -220,7 +234,7 @@ class ApiClient
     }
 
     /**
-     * Close curl connection
+     * Close curl connection.
      */
     public function close()
     {
@@ -230,7 +244,8 @@ class ApiClient
     }
 
     /**
-     * Get curl errors
+     * Get curl errors.
+     *
      * @return mixed $errors
      */
     public function getError()
@@ -239,8 +254,10 @@ class ApiClient
     }
 
     /**
-     * Get curl info
-     * @param type $opt 
+     * Get curl info.
+     *
+     * @param type $opt
+     *
      * @return type
      */
     public function getInfo($opt)
