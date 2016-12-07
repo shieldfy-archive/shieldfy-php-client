@@ -3,8 +3,6 @@
 namespace Shieldfy\Cache\Drivers;
 
 use Shieldfy\Cache\CacheInterface;
-use Shieldfy\Exceptions\ExceptionHandler;
-use Shieldfy\Exceptions\FailedExtentionLoadingException;
 
 class MemcachedDriver implements CacheInterface
 {
