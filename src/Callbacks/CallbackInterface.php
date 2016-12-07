@@ -1,6 +1,7 @@
 <?php
 
 namespace Shieldfy\Callbacks;
+
 use Shieldfy\Config;
 use Shieldfy\Event;
 

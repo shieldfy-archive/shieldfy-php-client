@@ -37,7 +37,6 @@ class Guard
     protected $config;
     protected $event;
 
-
     /**
      * Initialize Shielfy guard.
      *

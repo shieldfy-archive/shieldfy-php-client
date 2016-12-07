@@ -37,8 +37,8 @@ class CallbackHandler
             }
             //verified lets process
             $callback = $this->hooks[$hook];
-            $callback::handle($this->config , $this->event);
-            
+            $callback::handle($this->config, $this->event);
+
             $this->closeConnection();
         }
     }
