@@ -2,14 +2,16 @@
 
 namespace Shieldfy\Callbacks;
 
-use Shieldfy\Shieldfy;
+use Shieldfy\Config;
+use Shieldfy\Event;
+
 
 class LogsCallback implements CallbackInterface
 {
-    public static function handle()
+    public static function handle(Config $config, Event $event)
     {
         //verify callback
-        $path = realpath(Shieldfy::getRootDir().'/../log');
+        $path = realpath($config['rootDir'].'/../log');
         $data = [];
         $contents = scandir($path);
         foreach ($contents as $file) {

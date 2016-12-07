@@ -2,13 +2,15 @@
 
 namespace Shieldfy\Callbacks;
 
-use Shieldfy\Shieldfy;
+use Shieldfy\Config;
+use Shieldfy\Event;
+
 
 class PingCallback implements CallbackInterface
 {
-    public static function handle()
+    public static function handle(Config $config, Event $event)
     {
         //ping callback
-        echo json_encode(['status'=>'success', 'message'=>Shieldfy::getApiVersion()]);
+        echo json_encode(['status'=>'success', 'message'=>$config['version']]);
     }
 }

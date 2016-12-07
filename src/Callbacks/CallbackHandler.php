@@ -2,7 +2,8 @@
 
 namespace Shieldfy\Callbacks;
 
-use Shieldfy\Shieldfy;
+use Shieldfy\Config;
+use Shieldfy\Event;
 
 class CallbackHandler
 {
@@ -12,8 +13,13 @@ class CallbackHandler
         'logs'  => LogsCallback::class,
     ];
 
-    public function __construct()
+    protected $config;
+    protected $event;
+
+    public function __construct(Config $config, Event $event)
     {
+        $this->config = $config;
+        $this->event = $event;
     }
 
     public function catchCallbacks()
@@ -31,7 +37,8 @@ class CallbackHandler
             }
             //verified lets process
             $callback = $this->hooks[$hook];
-            $callback::handle();
+            $callback::handle($this->config , $this->event);
+            
             $this->closeConnection();
         }
     }

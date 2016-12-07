@@ -19,6 +19,11 @@ class Guard
     public $apiEndpoint = 'http://api.shieldfy.io/v1';
 
     /**
+     * @var version
+     */
+    public $version = '1.0.0';
+
+    /**
      * Default configurations items.
      *
      * @var array
@@ -28,6 +33,10 @@ class Guard
         'action'         => 'block',
         'disabledHeaders'=> [],
     ];
+
+    protected $config;
+    protected $event;
+
 
     /**
      * Initialize Shielfy guard.
@@ -53,6 +62,9 @@ class Guard
         //set base non override by user config
         $config['apiEndpoint'] = $this->apiEndpoint;
         $config['rootDir'] = __dir__;
+        $config['version'] = $this->version;
+
+        $this->config = $config;
 
         // Defines Shieldfy's own exception handler
         $exceptionHandler = new ExceptionHandler($config);
@@ -79,6 +91,7 @@ class Guard
         /* init api & event for further needs */
         $api = new ApiClient($config, $exceptionHandler);
         $event = new Event($api, $exceptionHandler);
+        $this->event = $event;
 
         //install if not installed
         $install = new Install($config, $request, $event, $exceptionHandler);
@@ -126,7 +139,7 @@ class Guard
      */
     public function catchCallbacks()
     {
-        $handler = new CallbackHandler();
+        $handler = new CallbackHandler($this->config, $this->event);
         $handler->catchCallbacks();
     }
 }
