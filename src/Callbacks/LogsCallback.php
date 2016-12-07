@@ -5,7 +5,6 @@ namespace Shieldfy\Callbacks;
 use Shieldfy\Config;
 use Shieldfy\Event;
 
-
 class LogsCallback implements CallbackInterface
 {
     public static function handle(Config $config, Event $event)
