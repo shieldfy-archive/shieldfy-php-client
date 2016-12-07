@@ -2,11 +2,45 @@
 
 namespace Shieldfy;
 
-use Shieldfy\Callbacks\CallbackHandler;
+
+use Shieldfy\Config;
 use Shieldfy\Exceptions\ExceptionHandler;
+
+use Shieldfy\Cache;
+use Shieldfy\Headers;
+use Shieldfy\Request;
+use Shieldfy\User;
+use Shieldfy\ApiClient;
+use Shieldfy\Event;
+use Shieldfy\Install;
+use Shieldfy\Session;
+use Shieldfy\Analyze\Analyzer;
+
+use Shieldfy\Callbacks\CallbackHandler;
 
 class Guard
 {
+
+    /** 
+    * @var Singleton Reference to singleton class instance 
+    */
+    private static $instance;
+
+    /**
+     * @var api endpoint 
+     */
+    public $apiEndpoint = 'http://api.shieldfy.io/v1';
+
+    /**
+     * Default configurations items
+     * @var array
+     */
+    protected $defaults = [
+        'debug'          => false,
+        'action'         => 'block',
+        'disabledHeaders'=> []
+    ];
+
     /**
      * Initialize Shielfy guard.
      *
@@ -14,57 +48,100 @@ class Guard
      *
      * @return object
      */
-    public static function init(array $config)
+    public static function init(array $config,$cache = null)
     {
+        if (!isset(self::$instance)) {
+            self::$instance = new self($config);
+        }
+        return self::$instance;
+    }
+
+
+    private function __construct(array $config, $cache = null) {
+
+        //set config container
+        $config = New Config($this->defaults,$config);
+        //set base non override by user config
+        $config['apiEndpoint'] = $this->apiEndpoint;
+        $config['rootDir'] = __dir__;
+
         // Defines Shieldfy's own exception handler
-        ExceptionHandler::setHandler();
+        $exceptionHandler = new ExceptionHandler($config);
+        $exceptionHandler->setHandler();
 
-        $config = Shieldfy::setConfig($config);
 
-        // If no cache instance found, init FileCacheDriver
-        // inside the package folder
-
-        if (Cache::getInstance() === null) {
-            Cache::setDriver('file', [
-                'path'=> realpath(__dir__.'/../tmp').'/',
+        if($cache == null)
+        {
+            //create a new file cache
+            $cache = new Cache($exceptionHandler);
+            $cache = $cache->setDriver('file',[
+                'path'=> realpath($config['rootDir'].'/../tmp').'/'
             ]);
         }
 
-        //Send required headers
-        Headers::expose($config['disabledHeaders']);
+        //expose useful headers
+        $headers = new Headers($config);
+        $headers->expose();
 
-        // Check if Shieldfy is installed.
-        Install::init();
-
-        //capture the current user
-        $user = new User();
 
         //capture the current request
-        $request = new Request();
+        $request = new Request($_GET,$_POST,$_SERVER,$_COOKIE,$_FILES);
 
-        //load session details
-        $session = Session::load($user);
+        //capture the current user
+        $user = new User($request);
 
-        $session->request = [
-                'created'=> time(),
-                'info'   => $request->getInfo(),
-        ];
+        /* init api & event for further needs */
+        $api = new ApiClient($config,$exceptionHandler);
+        $event = new Event($api,$exceptionHandler);
 
-        //start analyzing
-        $session->analyze();
+        //install if not installed
+        $install = new Install($config,$request,$event,$exceptionHandler);
+        $install->run();
+
+        $session = new Session($user,$request,$event,$cache);
+        $analyzer = new Analyzer($session,$cache,$config);
+        $analyzer->run();
+
+        $result = $analyzer->getResult();
+
+        if($result['status'] != Analyzer::CLEAN){
+            //dangerous spotted lets report it
+            $response = $event->trigger('activity',[
+                'sessionId' => $session->getId(),
+                'status' => $result['status'],
+                'request' => $request->getInfo(),
+                'user' => $user->getInfo(),
+                'result' => $result,
+                'history' =>  $session->getHistory()
+            ]);
+
+            $incidentId = '';
+            if ($response && $response->status == 'success') {
+                $incidentId = $response->incidentId;
+            }
+
+            if($result['status'] == Analyzer::DANGEROUS && $config['action'] == 'block')
+            {
+                (new Action)->block($incidentId);
+            }
+
+            $session->save(false);
+        }else{
+            $session->save();
+        }
 
         // Close Shieldfy's exception handler
-        ExceptionHandler::closeHandler();
+        $exceptionHandler->closeHandler();
 
-        return new CallbackHandler();
     }
+
 
     /**
      * A mirror to catchCallbacks in callback handler.
      *
      * @return void
      */
-    public static function catchCallbacks()
+    public function catchCallbacks()
     {
         $handler = new CallbackHandler();
         $handler->catchCallbacks();

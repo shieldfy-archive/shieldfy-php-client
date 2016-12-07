@@ -2,29 +2,51 @@
 
 namespace Shieldfy;
 
+use Shieldfy\Config;
+use Shieldfy\Event;
 use Shieldfy\Exceptions\ExceptionHandler;
 use Shieldfy\Exceptions\InstallationException;
 
 class Install
 {
-    private static $installed = null;
 
     /**
-     * check if installed or not.
+     * @var config 
+     * @var request
+     * @var event
+     * @var exceptionHandler
+     */
+    protected $config;
+    protected $request;
+    protected $event;
+    protected $exceptionHandler;
+
+    /**
+     * Constructor
+     * @param Config $config 
+     * @param Event $event 
+     * @param ExceptionHandler $exceptionHandler 
+     * @return type
+     */
+    public function __construct(Config $config,Request $request,Event $event, ExceptionHandler $exceptionHandler)
+    {
+        $this->config = $config;
+        $this->request = $request;
+        $this->event = $event;
+        $this->exceptionHandler = $exceptionHandler;
+    }
+    /**
+     * run installation if not installed
      *
      * @return bool $installed
      */
-    public static function init()
+    public function run()
     {
-        if (null === self::$installed) {
-            if (!self::isInstalled()) {
-                self::install();
-            }
-
-            return self::$installed = true;
+        if (!$this->isInstalled()) {
+            $this->install();
+            return true;
         }
-
-        return self::$installed;
+        return false;
     }
 
     /**
@@ -32,9 +54,9 @@ class Install
      *
      * @return bool
      */
-    private static function isInstalled()
+    private function isInstalled()
     {
-        if (file_exists(Shieldfy::getRootDir().'/data/installed')) {
+        if (file_exists($this->config['rootDir'].'/data/installed')) {
             return true;
         }
 
@@ -46,15 +68,15 @@ class Install
      *
      * @return bool true
      */
-    public static function install()
+    public function install()
     {
-        $response = Event::trigger('install', [
-            'host'  => $_SERVER['HTTP_HOST'],
+        $response = $this->event->trigger('install', [
+            'host'  => $this->request->server['HTTP_HOST'],
             'https' => self::isSecure(),
-            'ip'    => $_SERVER['SERVER_ADDR'],
+            'ip'    => $this->request->server['SERVER_ADDR'],
             'server'=> [
                 'lang'              => 'php',
-                'webserver'         => $_SERVER['SERVER_SOFTWARE'],
+                'webserver'         => $this->request->server['SERVER_SOFTWARE'],
                 'php_version'       => PHP_VERSION,
                 'sapi_type'         => @php_sapi_name(),
                 'os_info'           => @php_uname(),
@@ -70,25 +92,25 @@ class Install
         ]);
 
         if ($response->status == 'success') {
-            file_put_contents(Shieldfy::getRootDir().'/data/installed', time());
+            file_put_contents($this->config['rootDir'].'/data/installed', time());
             $data = (array) $response->data;
             if (isset($data['site_rules'])) {
-                file_put_contents(Shieldfy::getRootDir().'/data/site_rules', json_encode($data['site_rules']));
+                file_put_contents($this->config['rootDir'].'/data/site_rules', json_encode($data['site_rules']));
             }
             if (isset($data['pre_rules'])) {
-                file_put_contents(Shieldfy::getRootDir().'/data/pre_rules', json_encode($data['pre_rules']));
+                file_put_contents($this->config['rootDir'].'/data/pre_rules', json_encode($data['pre_rules']));
             }
             if (isset($data['hard_rules'])) {
-                file_put_contents(Shieldfy::getRootDir().'/data/hard_rules', json_encode($data['hard_rules']));
+                file_put_contents($this->config['rootDir'].'/data/hard_rules', json_encode($data['hard_rules']));
             }
             if (isset($data['soft_rules'])) {
-                file_put_contents(Shieldfy::getRootDir().'/data/soft_rules', json_encode($data['soft_rules']));
+                file_put_contents($this->config['rootDir'].'/data/soft_rules', json_encode($data['soft_rules']));
             }
         } else {
             ExceptionHandler::throwException(new InstallationException($response->code, $response->message));
         }
 
-        return self::$installed = true;
+        return true;
     }
 
     /**
@@ -96,10 +118,10 @@ class Install
      *
      * @return bool
      */
-    private static function isSecure()
+    private  function isSecure()
     {
         return
-        (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
-        || $_SERVER['SERVER_PORT'] == 443;
+        (!empty($this->request->server['HTTPS']) && $this->request->server['HTTPS'] !== 'off')
+        || $this->request->server['SERVER_PORT'] == 443;
     }
 }

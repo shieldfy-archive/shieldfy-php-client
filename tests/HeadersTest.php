@@ -3,36 +3,66 @@
 namespace Shieldfy\Test;
 
 use PHPUnit\Framework\TestCase;
+use Shieldfy\Config;
 use Shieldfy\Headers;
-use Shieldfy\Shieldfy;
 
 class HeadersTest extends TestCase
 {
-    public function setup()
+	protected $config;
+
+	public function setup()
+	{
+		$this->config = new Config;
+		$this->config['app_key'] = 'testKey';
+		$this->config['app_secret'] = 'testSecret';
+		$this->config['disabledHeaders'] = [];
+	}
+	/**
+     * @runInSeparateProcess
+     */
+    public function testExpose()
     {
-        $config = [
-            'app_key'   => 'testKey',
-            'app_secret'=> 'testSecret',
-        ];
-        Shieldfy::setConfig($config);
+
+        $headers = new Headers($this->config);
+        $headers->expose();
+        if (function_exists('xdebug_get_headers')) {
+            $headers = xdebug_get_headers(1);
+            //expected headers
+            
+            $signature = hash_hmac('sha256', $this->config['app_key'], $this->config['app_secret']);
+            $expectedHeaders = [
+                'X-XSS-Protection: 1; mode=block',
+                'X-Content-Type-Options: nosniff',
+                'X-Frame-Options: SAMEORIGIN',
+                'X-Powered-By: NA',
+                'X-Web-Shield: ShieldfyWebShield',
+                'X-Shieldfy-Signature: '.$signature,
+            ];
+            //print_r($headers);
+            foreach ($expectedHeaders as $expectedHeader) {
+                $this->assertContains($expectedHeader, $headers);
+            }
+        }
     }
 
     /**
      * @runInSeparateProcess
      */
-    public function testExpose()
+    public function testPartialExpose()
     {
-        Headers::expose();
-
+    	$this->config['disabledHeaders'] = [
+    		'x-frame-options'
+    	];
+        $headers = new Headers($this->config);
+        $headers->expose();
+        
         if (function_exists('xdebug_get_headers')) {
             $headers = xdebug_get_headers(1);
-            //expected headers
-            $api = Shieldfy::getAppKeys();
-            $signature = hash_hmac('sha256', $api['app_key'], $api['app_secret']);
+            //expected headers            
+            $signature = hash_hmac('sha256', $this->config['app_key'], $this->config['app_secret']);
             $expectedHeaders = [
                 'X-XSS-Protection: 1; mode=block',
                 'X-Content-Type-Options: nosniff',
-                'X-Frame-Options: SAMEORIGIN',
                 'X-Powered-By: NA',
                 'X-Web-Shield: ShieldfyWebShield',
                 'X-Shieldfy-Signature: '.$signature,

@@ -3,7 +3,7 @@
 namespace Shieldfy;
 
 use Shieldfy\Exceptions\ExceptionHandler;
-use Shieldfy\Exceptions\FailedExtentionLoadingException;
+use Shieldfy\Exceptions\CacheDriverNotExistsException;
 
 /**
  * Caching class.
@@ -12,19 +12,38 @@ class Cache
 {
     /**
      * @const int SESSION_TIMEOUT
-     *
-     * @var null     Driver class
-     * @var string[] $config Contains dirver class config
-     * @var string[] $drivers Supported driver types
      */
     const SESSION_TIMEOUT = 3600; // one hour
 
-    private static $driver = null;
-    private static $config = [];
-    private static $drivers = [
-        'file'      => \Shieldfy\Cache\Drivers\FileCacheDriver::class,
+    /**
+     * @var null     Driver class
+     * @var string[] $config Contains dirver class config
+     * @var string[] $drivers Supported driver types
+     */ 
+    private $driver = null;
+    private $config = [];
+    private $drivers = [
+        'file'      => \Shieldfy\Cache\Drivers\FileDriver::class,
         'memcached' => \Shieldfy\Cache\Drivers\MemcachedDriver::class,
+        'null' => \Shieldfy\Cache\Drivers\NullDriver::class,
     ];
+
+    /**
+     * @var Object ExceptionHandler
+     */ 
+    protected $exceptionHandler;
+
+    /**
+     * Constructor
+     * @param type $driverType 
+     * @param type|array $config 
+     * @return type
+     */
+
+    public function __construct(ExceptionHandler $exceptionHandler)
+    {
+        $this->exceptionHandler = $exceptionHandler;
+    }
 
     /**
      * Sets the caching driver.
@@ -34,25 +53,16 @@ class Cache
      *
      * @return object $driver
      */
-    public static function setDriver($driverType, $config = [])
+    public function setDriver($driverType, $config = [])
     {
-        if (!isset(self::$drivers[$driverType])) {
-            ExceptionHandler::throwException(new FailedExtentionLoadingException('Caching driver not found or supported.'));
-
-            return; //return to avoid extra execution if errors is off
+        if (!isset($this->drivers[$driverType])) {
+            $this->exceptionHandler->throwException(new CacheDriverNotExistsException('Caching driver not found or supported.'));
+            $driverType = 'null';
         }
 
-        $driverClass = self::$drivers[$driverType];
-        self::$driver = new $driverClass($config, self::SESSION_TIMEOUT);
+        $driverClass = $this->drivers[$driverType];
+        return new $driverClass($config, self::SESSION_TIMEOUT);
     }
 
-    /**
-     * Gets current driver instance.
-     *
-     * @return $driver
-     */
-    public static function getInstance()
-    {
-        return self::$driver;
-    }
+    
 }

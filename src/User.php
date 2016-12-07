@@ -1,67 +1,152 @@
 <?php
 
 namespace Shieldfy;
-
+use Shieldfy\Request;
 class User
 {
-    private $userId = ''; //identifier for the visitor
-    private $userIp = '';
-    private $userAgent = '';
 
-    public function __construct()
+    /**
+     * Identify the user with ID
+     */
+    private $userId;
+
+    /**
+     * User IP 
+     */
+    private $userIp;
+
+    /**
+     * User Agent
+     */
+    private $userAgent;
+
+    /**
+     * Session ID
+     */
+
+    private $sessionId;
+
+    /**
+     * User Score
+     */
+    private $score;
+
+    /**
+     * Constructor
+     * @param Request $request 
+     * @return type
+     */
+    public function __construct(Request $request)
     {
-        $this->setIP();
-        $this->setID();
-        $this->setUserAgent();
+        $this->setIp($request->server);
+        $this->setId();
+        $this->setUserAgent($request->server);
     }
 
-    public function setID()
-    {
-        $this->userId = ip2long($this->userIp);
-    }
-
-    public function setIp()
+    /**
+     * Set user IP
+     * @param array|array $server 
+     */
+    public function setIp(array $server = [])
     {
         $userIp = '0.0.0.0'; //unknown ip
 
-        if (array_key_exists('REMOTE_ADDR', $_SERVER)) {
-            $userIp = $_SERVER['REMOTE_ADDR'];
+        if (array_key_exists('REMOTE_ADDR', $server)) {
+            $userIp = $server['REMOTE_ADDR'];
         }
 
-        if (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER)) {
-            $header = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+        if (array_key_exists('HTTP_X_FORWARDED_FOR', $server)) {
+            $header = explode(',', $server['HTTP_X_FORWARDED_FOR']);
             $userIp = $header[0];
         }
 
-        if (array_key_exists('HTTP_CLIENT_IP', $_SERVER)) {
-            $userIp = $_SERVER['HTTP_CLIENT_IP'];
+        if (array_key_exists('HTTP_CLIENT_IP', $server)) {
+            $userIp = $server['HTTP_CLIENT_IP'];
         }
 
-        if (array_key_exists('HTTP_X_REAL_IP', $_SERVER)) {
-            $userIp = $_SERVER['HTTP_X_REAL_IP'];
+        if (array_key_exists('HTTP_X_REAL_IP', $server)) {
+            $userIp = $server['HTTP_X_REAL_IP'];
         }
 
         $this->userIp = $userIp;
     }
 
-    public function setUserAgent()
+    /**
+     * Set user ID
+     */
+    public function setId()
     {
-        if (array_key_exists('HTTP_USER_AGENT', $_SERVER)) {
-            $this->userAgent = $_SERVER['HTTP_USER_AGENT'];
+        $this->userId = ip2long($this->userIp);
+    }
+
+    /**
+     * Set User agent
+     * @param array|array $server 
+     */
+    public function setUserAgent(array $server = [])
+    {
+        if (array_key_exists('HTTP_USER_AGENT', $server)) {
+            $this->userAgent = $server['HTTP_USER_AGENT'];
         }
     }
 
-    public function getID()
+    /**
+     * get user ID
+     * @return ID
+     */
+    public function getId()
     {
         return $this->userId;
     }
 
+    /**
+     * Set user session id
+     * @param string $sessionID 
+     */
+    public function setSessionId($sessionId)
+    {
+        $this->sessionId = $sessionId;
+    }
+
+    /**
+     * Get user session id
+     * @return string $sessionID 
+     */
+    public function getSessionId()
+    {
+        return $this->sessionId;
+    }
+
+    /**
+     * Set user score
+     * @param integer $score 
+     */
+    public function setScore($score)
+    {
+        $this->score = $score;
+    }
+
+    /**
+     * Get user score
+     * @return integer $score 
+     */
+    public function getScore()
+    {
+        return $this->score;
+    }
+
+    /**
+     * get user info
+     * @return array info
+     */
     public function getInfo()
     {
         return [
-            'id'       => $this->userId,
-            'ip'       => $this->userIp,
-            'userAgent'=> $this->userAgent,
+            'id'        => $this->userId,
+            'ip'        => $this->userIp,
+            'userAgent' => $this->userAgent,
+            'sessionId' => $this->sessionId,
+            'score'     => $this->score
         ];
     }
 }

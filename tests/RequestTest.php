@@ -11,10 +11,11 @@ class RequestTest extends TestCase
     protected $server;
     protected $get;
     protected $post;
+    protected $created;
 
     public function setup()
     {
-        $this->server = $_SERVER = [
+        $this->server = [
             'REQUEST_METHOD' => 'POST',
             'PHP_SELF'       => '/index.php',
             'PATH_INFO'      => '/hi/',
@@ -23,30 +24,32 @@ class RequestTest extends TestCase
             'HTTP_HOST'      => 'example.com',
             'HTTP_REFERER'   => 'https://facebook.com',
         ];
-        $this->get = $_GET = [
+        $this->get = [
             'x'=> 1,
         ];
-        $this->post = $_POST = [
+        $this->post = [
             'name'   => 'hello',
             'contact'=> [
                 'address'=> 'some street',
                 'tel'    => '111 111 111',
             ],
         ];
-        $this->request = new Request();
+        $this->created = time();
+        $this->request = new Request($this->get,$this->post,$this->server);
     }
 
     public function testGetInfo()
     {
         $info = $this->request->getInfo();
-        $this->assertEquals($info['method'], $this->server['REQUEST_METHOD']);
-        $this->assertEquals($info['params']['get'], $this->get);
-        $this->assertEquals($info['params']['post'], $this->post);
-        $this->assertEquals($info['params']['server']['ps'], $this->server['PHP_SELF']);
-        $this->assertEquals($info['params']['server']['pi'], $this->server['PATH_INFO']);
-        $this->assertEquals($info['params']['server']['uri'], $this->server['REQUEST_URI']);
-        $this->assertEquals($info['params']['server']['ho'], $this->server['HTTP_ORIGIN']);
-        $this->assertEquals($info['params']['server']['hh'], $this->server['HTTP_HOST']);
-        $this->assertEquals($info['params']['server']['r'], $this->server['HTTP_REFERER']);
+        $this->assertLessThanOrEqual($info['created'],$this->created);
+        $this->assertEquals($info['info']['method'], $this->server['REQUEST_METHOD']);
+        $this->assertEquals($info['info']['params']['get'], $this->get);
+        $this->assertEquals($info['info']['params']['post'], $this->post);
+        $this->assertEquals($info['info']['params']['server']['ps'], $this->server['PHP_SELF']);
+        $this->assertEquals($info['info']['params']['server']['pi'], $this->server['PATH_INFO']);
+        $this->assertEquals($info['info']['params']['server']['uri'], $this->server['REQUEST_URI']);
+        $this->assertEquals($info['info']['params']['server']['ho'], $this->server['HTTP_ORIGIN']);
+        $this->assertEquals($info['info']['params']['server']['hh'], $this->server['HTTP_HOST']);
+        $this->assertEquals($info['info']['params']['server']['r'], $this->server['HTTP_REFERER']);
     }
 }

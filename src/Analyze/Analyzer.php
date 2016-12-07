@@ -1,119 +1,163 @@
 <?php
-
 namespace Shieldfy\Analyze;
 
-use Shieldfy\Cache;
 use Shieldfy\Normalizer\Normalizer;
 
-class Analyzer
-{
-    private $data;
-    private $result;
+use Shieldfy\Session;
+use Shieldfy\Cache\CacheInterface;
+use Shieldfy\Request;
+use Shieldfy\Config;
 
-    public function __construct($data = [])
+class Analyzer
+{   
+
+    const DANGEROUS = 1;
+    const SUSPICIOUS = 2;
+    const CLEAN = 0;
+
+    protected $config;
+    protected $session;
+    protected $cache;
+
+    private $skippedKeys = [
+        'server.ps',
+        'server.uri', 
+        'server.hh', 
+        'server.ho', 
+        'server.r'
+    ];
+    protected $user;
+    protected $request;
+    protected $history;
+    protected $result = [
+        'status' => self::CLEAN,
+        'total_score' => 0,
+        'request' => []
+
+    ];
+
+    public function __construct(Session $session,CacheInterface $cache, Config $config)
     {
-        $this->data = $data;
+        $this->session = $session;
+
+        //load user from session
+        $sessionInfo = $this->session->getInfo();
+        $this->user = $sessionInfo['user'];
+        $this->request = $sessionInfo['request'];
+        $this->history = $sessionInfo['history'];
+
+        $this->cache = $cache;
+        $this->config = $config;
+
     }
+
+    
 
     public function run()
     {
 
-        /* prepare data */
-        $this->prepare();
+        //prepare parameters
+        $params = $this->prepareRequestParameter($this->request);
 
-        $cache = Cache::getInstance();
-        $cacheKey = md5(json_encode($this->data['request']['info']));
-        if ($cache->has($cacheKey)) {
-            return 0;
-        }
+        /** @todo cache  */
 
-        $params = $this->data['request']['info']['params'];
+        $requestInfo = $this->request->getInfo();
 
-        foreach ($params as $key=>$value) {
-            if (in_array($key, ['server.ps', 'server.uri', 'server.hh', 'server.ho', 'server.r'])) {
+        $requestResult = [];
+
+        foreach($params as $key=>$value)
+        {
+            if(in_array($key, $this->skippedKeys)){
                 continue;
             }
 
-            $preResult = PreAnalyzer::run($key, $value);
-            if (!$preResult) {
+            //prerules
+            $rules = new PreRules($this->config);
+            $rules->load()->run($requestInfo['info']['method'],$key,$value);
+            if($rules->getScore() === 0){
                 continue;
             }
 
+            //normalizer
             $value = (new Normalizer($value))->runAll();
 
-            $softResult = SoftRules::run($this->data['request']['info']['method'], $key, $value);
+            //softrules
+            $rules = new SoftRules($this->config);
+            $rules->load()->run($requestInfo['info']['method'],$key,$value);
 
-            if (!$softResult) {
-                continue;
+            if($rules->getScore() > 0){
+                $requestResult[$key] = [
+                    'score' => $rules->getScore(),
+                    'keys'  => $rules->getRulesIds()
+                ];
             }
-
-            //found infection
-            $this->result['request'][$key] = SoftRules::getResult();
-        }
-        $analyzeResult = $this->analyze();
-
-        if ($analyzeResult) {
-            return $analyzeResult;
         }
 
-        $cache->set($cacheKey, '1');
-
-        return 0;
+        //result has the request results
+        $this->analyze($requestResult, $this->user->getInfo());
+        //$this->prepareResult($requestResult);
     }
 
-    private function analyze()
+    private function analyze(array $requestResult = [],array $userResult = [])
     {
-        $requestScore = 0;
 
-        if (!$this->result) {
-            return 0; //clean
+        $requestScore = 0;
+        
+        if (count($requestResult) === 0) {
+            $this->result['status'] = self::CLEAN;
+            return; //clean
         }
-        foreach ($this->result['request'] as $param) {
+
+        $this->result['request'] = $requestResult;
+
+        foreach ($requestResult as $param) {
             $requestScore += $param['score'];
         }
 
-        $userScore = $this->data['user']['score'];
+        $userScore = $userResult['score'];
+
         $totalScore = (($userScore + ($requestScore * 2)) / 50) * 100;
 
         /* save in result */
-        $this->result['user'] = ['score'=>$userScore];
         $this->result['total_score'] = $totalScore;
 
-        //echo '======='.$totalScore.'==========';
         if ($totalScore >= 80) {
-            $this->result['status'] = 1;
-
+            $this->result['status'] = self::DANGEROUS;
             return 1; //dangerous
         }
-        if ($totalScore >= 40) {
-            $this->result['status'] = 2;
 
+        if ($totalScore >= 40) {
+            $this->result['status'] = self::SUSPICIOUS;
             return 2; //suspicious
         }
 
-        return 0; //clean
+        $this->result['status'] = self::CLEAN;
     }
 
-    private function prepare()
+    
+    public function getResult()
     {
-        $this->data['request']['info']['params'] = $this->prep($this->data['request']['info']['params']);
+        return $this->result;
     }
 
-    private function prep($arr, $prefix = '', $data = [])
+
+    private function prepareRequestParameter(Request $request)
     {
-        foreach ($arr as $key=> $value):
+        $info = $request->getInfo();
+        return $this->prepareRequestParameterRecursive($info['info']['params']);
+    }
+
+    private function prepareRequestParameterRecursive($params, $prefix = '', $data = [])
+    {
+        foreach ($params as $key=> $value):
             if (!is_array($value)) {
                 $data[$prefix.$key] = $value;
             } else {
-                $data = array_merge($data, $this->prep($value, $prefix.$key.'.'));
+                $data = array_merge($data, $this->prepareRequestParameterRecursive($value, $prefix.$key.'.'));
             }
         endforeach;
 
         return $data;
     }
 
-    public function getResult()
-    {
-        return $this->result;
-    }
 }
