@@ -6,6 +6,7 @@ Shieldfy is strong application protection platform that help businesses to secur
 
 [![Packagist](https://img.shields.io/packagist/v/shieldfy/shieldfy-php-client.svg?label=Packagist&style=flat-square)](https://packagist.org/packages/shieldfy/shieldfy-php-client)
 [![Code Climate](https://img.shields.io/codeclimate/github/shieldfy/shieldfy-php-client.svg)](https://codeclimate.com/github/shieldfy/shieldfy-php-client)
+[![StyleCI](https://styleci.io/repos/75610075/shield)](https://styleci.io/repos/75610075)
 [![Travis](https://img.shields.io/travis/shieldfy/shieldfy-php-client.svg)](https://travis-ci.org/shieldfy/shieldfy-php-client)
 
 
