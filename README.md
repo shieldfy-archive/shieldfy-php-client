@@ -3,6 +3,13 @@
 
 Shieldfy is strong application protection platform that help businesses to secure thier applications online.
 
+
+[![Packagist](https://img.shields.io/packagist/v/shieldfy/shieldfy-php-client.svg?label=Packagist&style=flat-square)](https://packagist.org/packages/shieldfy/shieldfy-php-client)
+[![Code Climate](https://img.shields.io/codeclimate/github/shieldfy/shieldfy-php-client.svg)](https://codeclimate.com/github/shieldfy/shieldfy-php-client)
+[![Travis](https://img.shields.io/travis/shieldfy/shieldfy-php-client.svg)](https://travis-ci.org/shieldfy/shieldfy-php-client)
+
+
+
 ## Installation
 
 You will need first to register on [shieldfy.io](https://shieldfy.io/) to get your APP Key & APP Secret.
