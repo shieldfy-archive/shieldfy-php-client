@@ -1,7 +1,7 @@
 # [Shieldfy PHP Client](https://shieldfy.io/) 
 
 
-Shieldfy is strong application protection platform that help businesses to secure thier applications online.
+Shieldfy is strong application protection platform that help businesses to secure their applications online.
 
 
 [![Packagist](https://img.shields.io/packagist/v/shieldfy/shieldfy-php-client.svg?label=Packagist&style=flat-square)](https://packagist.org/packages/shieldfy/shieldfy-php-client)
