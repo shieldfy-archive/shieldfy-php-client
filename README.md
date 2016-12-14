@@ -1,11 +1,11 @@
-# [Shieldfy](https://shieldfy.com/) PHP Agent
+# [Shieldfy PHP Client](https://shieldfy.io/) 
 
 
 Shieldfy is strong application protection platform that help businesses to secure thier applications online.
 
 ## Installation
 
-You will need first to register on [shieldfy.com](https://shieldfy.com/) to get your APP Key & APP Secret.
+You will need first to register on [shieldfy.io](https://shieldfy.io/) to get your APP Key & APP Secret.
 
 
 Through Composer (the recommended way)
@@ -36,7 +36,7 @@ Shieldfy\Guard::init([
 ])->catchCallbacks();
 ```
 
-for more information about configurations and usage , go to the official documentation [shieldfy.com/docs](https://shieldfy.com/docs)
+for more information about configurations and usage , go to the official documentation [shieldfy.io/docs](https://shieldfy.io/docs)
 
 ## Contributing 
 
