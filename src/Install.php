@@ -74,7 +74,7 @@ class Install
     {
         $response = $this->event->trigger('install', [
             'host'  => $this->request->server['HTTP_HOST'],
-            'https' => self::isSecure(),
+            'https' => $this->isSecure(),
             'ip'    => $this->request->server['SERVER_ADDR'],
             'server'=> [
                 'lang'              => 'php',
@@ -109,7 +109,7 @@ class Install
                 file_put_contents($this->config['rootDir'].'/data/soft_rules', json_encode($data['soft_rules']));
             }
         } else {
-            ExceptionHandler::throwException(new InstallationException($response->code, $response->message));
+            $this->exceptionHandler->throwException(new InstallationException($response->code, $response->message));
         }
 
         return true;

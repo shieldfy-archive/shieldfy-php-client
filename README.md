@@ -1,5 +1,6 @@
-# [Shieldfy PHP Client](https://shieldfy.io/) 
+# Shieldfy PHP SDK 
 
+This is the official PHP SDK for Shieldfy (shieldfy.io) https://shieldfy.io
 
 Shieldfy is strong application protection platform that help businesses to secure their applications online.
 
