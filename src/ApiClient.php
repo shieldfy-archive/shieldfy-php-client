@@ -42,7 +42,8 @@ class ApiClient
         $this->exceptionHandler = $exceptionHandler;
 
         if (!extension_loaded('curl')) {
-            $this->exceptionHandler->throwException(new FailedExtentionLoadingException('cURL library is not loaded'));
+            //critical error package cannot load without
+            throw new FailedExtentionLoadingException('cURL library is not loaded');
         }
 
         $this->curl = curl_init();
