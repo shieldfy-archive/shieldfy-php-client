@@ -1,0 +1,49 @@
+{
+    "name": "shieldfy/normalizer",
+    "description": "This package is useful for the input normalization, before running hardcore IDS/IPS rules. It normalize the inputs to fight against WAF Bypassing techniques using obfuscation or other techniques to hide payloads.",
+    "keywords": [
+        "obfuscation",
+        "normalize",
+        "shieldfy",
+        "security",
+        "firewall",
+        "detection",
+        "application",
+        "attack",
+        "bypass",
+        "ips",
+        "ids"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Shieldfy Inc.",
+            "homepage": "https://shieldfy.com",
+            "email": "team@shieldfy.com"
+        },
+        {
+            "name": "Eslam Salem",
+            "email": "eslam@shieldfy.com",
+            "role": "Maintainer"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Shieldfy\\Normalizer\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=5.6",
+        "shieldfy/sniffer": "1.*"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
