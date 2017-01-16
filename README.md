@@ -1,8 +1,8 @@
-# Shieldfy PHP SDK 
+# Shieldfy PHP SDK
 
 This is the official PHP SDK for Shieldfy (shieldfy.io) https://shieldfy.io
 
-Shieldfy is strong application protection platform that help businesses to secure their applications online.
+Shieldfy is a strong application protection platform that help businesses to secure their applications online.
 
 
 [![Packagist](https://img.shields.io/packagist/v/shieldfy/shieldfy-php-client.svg?label=Packagist&style=flat-square)](https://packagist.org/packages/shieldfy/shieldfy-php-client)
@@ -17,7 +17,7 @@ Shieldfy is strong application protection platform that help businesses to secur
 You will need first to register on [shieldfy.io](https://shieldfy.io/) to get your APP Key & APP Secret.
 
 
-Through Composer (the recommended way)
+Through Composer (the recommended way):
 
 ```
 composer require shieldfy/shieldfy-php-client
@@ -39,15 +39,15 @@ Shieldfy\Guard::init([
 Shieldfy\Guard::init([
         'app_key'=>'YourAppKey',
         'app_secret'=>'YourAppSecret',
-        'debug'=>false, //default is false
-        'action'=>'block', // what do do when detecting threat . default is block
-        'disabledHeaders'=>[] //a list of headers you want to disable.
+        'debug'=>false, // Default is false.
+        'action'=>'block', // What to do when detecting threats. Default is block.
+        'disabledHeaders'=>[] // A list of headers you want to disable.
 ])->catchCallbacks();
 ```
 
-for more information about configurations and usage , go to the official documentation [shieldfy.io/docs](https://shieldfy.io/docs)
+For more information about configurations and usage, refer to the official documentation [shieldfy.io/docs](https://shieldfy.io/docs)
 
-## Contributing 
+## Contributing
 
 Thank you for considering contributing to this project!
 Bug reports, feature requests, and pull requests are very welcome.
@@ -56,5 +56,3 @@ Bug reports, feature requests, and pull requests are very welcome.
 ## Security Vulnerabilities
 
 If you discover a security vulnerability within this project, please send an e-mail to security@shieldfy.com.
-
-
