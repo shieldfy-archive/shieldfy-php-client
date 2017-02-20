@@ -1,5 +1,4 @@
 <?php
-
 namespace shieldfy;
 
 class Guard
@@ -9,6 +8,11 @@ class Guard
      */
     public function __construct()
     {
-        // constructor body
+        //start handle exceptions
+        // init the configurations
+        // init caching
+        // start collecting data
+        // start monitors
+        //end handle exceptions
     }
 }
