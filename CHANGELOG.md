@@ -1,6 +1,6 @@
 # Changelog
 
-All Notable changes to `shieldfy-php-sdk` will be documented in this file.
+All Notable changes to `shieldfy-php-client` will be documented in this file.
 
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 

@@ -1,19 +1,18 @@
 {
-    "name": "shieldfy/shieldfy-php-sdk",
+    "name": "shieldfy/shieldfy-php-client",
     "type": "library",
     "description": "This is the official PHP SDK for Shieldfy (shieldfy.io)",
     "keywords": [
         "shieldfy",
-        "shieldfy-php-sdk"
+        "shieldfy-php-client"
     ],
-    "homepage": "https://github.com/shieldfy/shieldfy-php-sdk",
+    "homepage": "https://github.com/shieldfy/shieldfy-php-client",
     "license": "MIT",
     "authors": [
         {
-            "name": "Shieldfy",
+            "name": "Shieldfy Inc.",
             "email": "team@shieldfy.com",
-            "homepage": "https://shieldfy.io",
-            "role": "Developer"
+            "homepage": "https://shieldfy.io"
         }
     ],
     "require": {
@@ -25,23 +24,18 @@
     },
     "autoload": {
         "psr-4": {
-            "shieldfy\\shieldfy-php-sdk\\": "src"
+            "shieldfy\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "shieldfy\\shieldfy-php-sdk\\": "tests"
+            "shieldfy\\": "tests"
         }
     },
     "scripts": {
         "test": "phpunit",
         "check-style": "phpcs -p --standard=PSR2 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 src tests",
         "fix-style": "phpcbf -p --standard=PSR2 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 src tests"
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.0-dev"
-        }
     },
     "config": {
         "sort-packages": true
