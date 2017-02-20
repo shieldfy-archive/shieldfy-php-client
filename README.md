@@ -1,60 +1,83 @@
-# Shieldfy PHP SDK 
+# shieldfy-php-sdk
 
-This is the official PHP SDK for Shieldfy (shieldfy.io) https://shieldfy.io
+[![Latest Version on Packagist][ico-version]][link-packagist]
+[![Software License][ico-license]](LICENSE.md)
+[![Build Status][ico-travis]][link-travis]
+[![Coverage Status][ico-scrutinizer]][link-scrutinizer]
+[![Quality Score][ico-code-quality]][link-code-quality]
+[![Total Downloads][ico-downloads]][link-downloads]
 
-Shieldfy is strong application protection platform that help businesses to secure their applications online.
+**Note:** Replace ```Shieldfy``` ```shieldfy``` ```https://shieldfy.io``` ```team@shieldfy.com``` ```shieldfy``` ```shieldfy-php-sdk``` ```This is the official PHP SDK for Shieldfy (shieldfy.io)``` with their correct values in [README.md](README.md), [CHANGELOG.md](CHANGELOG.md), [CONTRIBUTING.md](CONTRIBUTING.md), [LICENSE.md](LICENSE.md) and [composer.json](composer.json) files, then delete this line. You can run `$ php prefill.php` in the command line to make all replacements at once. Delete the file prefill.php as well.
 
+This is where your description should go. Try and limit it to a paragraph or two, and maybe throw in a mention of what
+PSRs you support to avoid any confusion with users and contributors.
 
-[![Packagist](https://img.shields.io/packagist/v/shieldfy/shieldfy-php-client.svg?label=Packagist&style=flat-square)](https://packagist.org/packages/shieldfy/shieldfy-php-client)
-[![Code Climate](https://img.shields.io/codeclimate/github/shieldfy/shieldfy-php-client.svg)](https://codeclimate.com/github/shieldfy/shieldfy-php-client)
-[![StyleCI](https://styleci.io/repos/75610075/shield)](https://styleci.io/repos/75610075)
-[![Travis](https://img.shields.io/travis/shieldfy/shieldfy-php-client.svg)](https://travis-ci.org/shieldfy/shieldfy-php-client)
+## Structure
 
-
-
-## Installation
-
-You will need first to register on [shieldfy.io](https://shieldfy.io/) to get your APP Key & APP Secret.
-
-
-Through Composer (the recommended way)
+If any of the following are applicable to your project, then the directory structure should follow industry best practises by being named the following.
 
 ```
-composer require shieldfy/shieldfy-php-client
+bin/        
+config/
+src/
+tests/
+vendor/
 ```
 
+
+## Install
+
+Via Composer
+
+``` bash
+$ composer require shieldfy/shieldfy-php-sdk
+```
 
 ## Usage
 
-```php
-Shieldfy\Guard::init([
-        'app_key'=>'YourAppKey',
-        'app_secret'=>'YourAppSecret'
-])->catchCallbacks();
+``` php
+$skeleton = new shieldfy\shieldfy-php-sdk();
+echo $skeleton->echoPhrase('Hello, League!');
 ```
 
-## Configurations
+## Change log
 
-```php
-Shieldfy\Guard::init([
-        'app_key'=>'YourAppKey',
-        'app_secret'=>'YourAppSecret',
-        'debug'=>false, //default is false
-        'action'=>'block', // what do do when detecting threat . default is block
-        'disabledHeaders'=>[] //a list of headers you want to disable.
-])->catchCallbacks();
+Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
+
+## Testing
+
+``` bash
+$ composer test
 ```
 
-for more information about configurations and usage , go to the official documentation [shieldfy.io/docs](https://shieldfy.io/docs)
+## Contributing
 
-## Contributing 
+Please see [CONTRIBUTING](CONTRIBUTING.md) and [CONDUCT](CONDUCT.md) for details.
 
-Thank you for considering contributing to this project!
-Bug reports, feature requests, and pull requests are very welcome.
+## Security
 
+If you discover any security related issues, please email team@shieldfy.com instead of using the issue tracker.
 
-## Security Vulnerabilities
+## Credits
 
-If you discover a security vulnerability within this project, please send an e-mail to security@shieldfy.com.
+- [Shieldfy][link-author]
+- [All Contributors][link-contributors]
 
+## License
 
+The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+
+[ico-version]: https://img.shields.io/packagist/v/shieldfy/shieldfy-php-sdk.svg?style=flat-square
+[ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
+[ico-travis]: https://img.shields.io/travis/shieldfy/shieldfy-php-sdk/master.svg?style=flat-square
+[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/shieldfy/shieldfy-php-sdk.svg?style=flat-square
+[ico-code-quality]: https://img.shields.io/scrutinizer/g/shieldfy/shieldfy-php-sdk.svg?style=flat-square
+[ico-downloads]: https://img.shields.io/packagist/dt/shieldfy/shieldfy-php-sdk.svg?style=flat-square
+
+[link-packagist]: https://packagist.org/packages/shieldfy/shieldfy-php-sdk
+[link-travis]: https://travis-ci.org/shieldfy/shieldfy-php-sdk
+[link-scrutinizer]: https://scrutinizer-ci.com/g/shieldfy/shieldfy-php-sdk/code-structure
+[link-code-quality]: https://scrutinizer-ci.com/g/shieldfy/shieldfy-php-sdk
+[link-downloads]: https://packagist.org/packages/shieldfy/shieldfy-php-sdk
+[link-author]: https://github.com/shieldfy
+[link-contributors]: ../../contributors
