@@ -24,12 +24,12 @@
     },
     "autoload": {
         "psr-4": {
-            "shieldfy\\": "src"
+            "Shieldfy\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "shieldfy\\": "tests"
+            "Shieldfy\\": "tests"
         }
     },
     "scripts": {
