@@ -2,7 +2,7 @@
 namespace Shieldfy;
 use Shieldfy\Exceptions\InstallationException;
 
-class Install
+class Installer
 {
     /**
      * @var config
@@ -13,6 +13,14 @@ class Install
     protected $config;
     protected $request;
 
-    
+    public function __construct()
+    {
+
+    }
+
+    public function run()
+    {
+    	
+    }
 
 }

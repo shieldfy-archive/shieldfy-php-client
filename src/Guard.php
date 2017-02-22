@@ -4,6 +4,9 @@ namespace shieldfy;
 use Shieldfy\Config;
 use Shieldfy\Installer;
 use Shieldfy\Cache\CacheManager;
+use Shieldfy\Monitors\MonitorsBag;
+use Shieldfy\Collectors\UserCollector;
+use Shieldfy\Collectors\RequestCollector;
 use Shieldfy\Exceptions\ExceptionHandler;
 
 class Guard
@@ -29,13 +32,14 @@ class Guard
      * @var array
      */
     protected $defaults = [
-        'debug'          => false,
-        'action'         => 'block',
-        'headers'  	     => [
-        	'X-XSS-Protection'=>'1; mode=block',
-        	'X-Content-Type-Options'=>'nosniff',
-        	'X-Frame-Options'=>'SAMEORIGIN'
-        ]
+        'debug'          => false, //debug status [true,false]
+        'action'         => 'block', //response action [block, silent]
+        'headers'  	     => [ //list of available headers to expose
+        	'X-XSS-Protection'       =>  '1; mode=block',
+        	'X-Content-Type-Options' =>  'nosniff',
+        	'X-Frame-Options'        =>  'SAMEORIGIN'
+        ],
+        'disable'       =>  [] //list of disabled monitors 
     ];
 
     /**
@@ -110,11 +114,11 @@ class Guard
 
         
         /* collectors */
-        $collectors = new CollectorsBag($this->config);
-        $collectors->run();
+        $request = new RequestCollector($_GET,$_POST,$_SERVER, $_COOKIE, $_FILES);
+        $user = new UserCollector($request);
 
         /* monitors */
-        $monitors = new MonitorsBag($this->config,$this->cache);
+        $monitors = new MonitorsBag($this->config,$this->cache,compact($request,$user));
         $monitors->run();
 
         $this->exposeHeaders();
