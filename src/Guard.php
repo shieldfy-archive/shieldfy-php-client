@@ -1,6 +1,11 @@
 <?php
 namespace shieldfy;
 
+use Shieldfy\Config;
+use Shieldfy\Installer;
+use Shieldfy\Cache\CacheManager;
+use Shieldfy\Exceptions\ExceptionHandler;
+
 class Guard
 {
     /**
@@ -27,19 +32,120 @@ class Guard
         'debug'          => false,
         'action'         => 'block',
         'headers'  	     => [
-        	'x-xss-protection'=>'1; mode=block',
-        	'x-content-type-options'=>'nosniff',
-        	'x-frame-options'=>'SAMEORIGIN'
+        	'X-XSS-Protection'=>'1; mode=block',
+        	'X-Content-Type-Options'=>'nosniff',
+        	'X-Frame-Options'=>'SAMEORIGIN'
         ]
     ];
 
+    /**
+     * @var Config $config
+     * @var CacheManager $cache
+     */
     protected $config;
+    protected $cache;
+
+    /**
+     * Initialize Shieldfy guard.
+     *
+     * @param array $config
+     *
+     * @return object
+     */
+    public static function init(array $config, $cache = null)
+    {
+        if (!isset(self::$instance)) {
+            self::$instance = new self($config,$cache);
+        }
+        return self::$instance;
+    }
 
     /**
      * Create a new Guard Instance
      */
-    public function __construct()
+    public function __construct(array $config, $cache = null)
     {
-        
+        //set config container
+        $this->config = new Config($this->defaults, array_merge($config,[
+            'apiEndpoint' => $this->apiEndpoint,
+            'rootDir'     => __dir__,
+            'version'     => $this->version
+        ]));
+
+        //start handler to catch all errors
+        $handler = new ExceptionHandler($this->config);
+        $handler->setHandler();
+
+        //prepare the cache method if not supplied
+        if ($cache === null) {
+            //create a new file cache
+            $cache = new CacheManager($this->config);
+            $cache = $cache->setDriver('file', [
+                'path'=> realpath($this->config['rootDir'].'/../tmp').'/',
+            ]);
+        }
+        $this->cache = $cache;
+
+        //start shieldfy guard
+        $this->startGuard();
+
+        //release handler to original application exception handler
+        $handler->closeHandler();   
     }
+
+    /**
+      * start the actual guard
+      * @return void
+      */ 
+    protected function startGuard()
+    {
+
+        //check the installation
+        if(!$this->isInstalled())
+        {
+            $install = (new Installer)->run();
+        }
+
+        
+
+        
+        /* collectors */
+        $collectors = new CollectorsBag($this->config);
+        $collectors->run();
+
+        /* monitors */
+        $monitors = new MonitorsBag($this->config,$this->cache);
+        $monitors->run();
+
+        $this->exposeHeaders();
+
+        echo 'starting the guard';
+    }
+
+
+    public function isInstalled()
+    {
+        if (file_exists($this->config['rootDir'].'/data/installed')) {
+            return true;
+        }
+        return false;
+    }
+
+
+    private function exposeHeaders()
+    {
+        if (function_exists('header_remove')) {
+            header_remove('x-powered-by');
+        }
+
+        foreach ($this->config['headers'] as $header => $value) {
+            if($value === false) continue;
+            header($header.' : '.$value);
+        }
+
+        $signature = hash_hmac('sha256', $this->config['app_key'], $this->config['app_secret']);
+        header('X-Web-Shield: ShieldfyWebShield');
+        header('X-Shieldfy-Signature: '.$signature);
+    }
+
 }
