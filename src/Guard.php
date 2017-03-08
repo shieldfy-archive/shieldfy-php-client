@@ -39,7 +39,7 @@ class Guard
         	'X-Content-Type-Options' =>  'nosniff',
         	'X-Frame-Options'        =>  'SAMEORIGIN'
         ],
-        'disable'       =>  [] //list of disabled monitors 
+        'disable'       =>  [] //list of disabled monitors
     ];
 
     /**
@@ -94,13 +94,13 @@ class Guard
         $this->startGuard();
 
         //release handler to original application exception handler
-        $handler->closeHandler();   
+        $handler->closeHandler();
     }
 
     /**
       * start the actual guard
       * @return void
-      */ 
+      */
     protected function startGuard()
     {
 
@@ -110,9 +110,6 @@ class Guard
             $install = (new Installer)->run();
         }
 
-        
-
-        
         /* collectors */
         $request = new RequestCollector($_GET,$_POST,$_SERVER, $_COOKIE, $_FILES);
         $user = new UserCollector($request);
