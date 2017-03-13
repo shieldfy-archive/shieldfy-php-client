@@ -6,7 +6,7 @@ class RequestCollector implements Collectable
     /**
      * Request method taken from ($_SERVER).
      */
-    protected $requestMethod;
+    public $requestMethod;
 
     /**
      * Query string parameters ($_GET).
