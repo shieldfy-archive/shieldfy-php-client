@@ -95,29 +95,6 @@ class RequestCollector implements Collectable
         || $this->server['SERVER_PORT'] == 443;
     }
 
-    private function normalizeFiles(array $files = [])
-    {
-        // if(empty($files)) return $files;
-        // $_files       = [ ];
-        // foreach($files as $input => $content){
-        //     if(!is_array($content['name'])){
-        //         $_files[$input] = $content;
-        //         return;
-        //     }
-        //
-        //     $_content = [];
-        //     $_files_count = count( $content[ 'name' ] );
-        //     $_files_keys  = array_keys( $content );
-        //     for ( $i = 0; $i < $_files_count; $i++ )
-        //         foreach ( $_files_keys as $key )
-        //             $_content[ $i ][ $key ] = $content[ $key ][ $i ];
-        //
-        //     $_files[$input] = $_content;
-        // }
-        // return $_files;
-
-    }
-
     private function prepareRequestParameter($key ,$param)
     {
         return $this->prepareRequestParameterRecursive([

@@ -28,7 +28,7 @@ class Rule
      */
     public function run($value,$target = '*',$tag = '*')
     {
-        //echo $target.' !== '.$this->data['target'].'<br />';
+
         if($target !== '*' && $target !== $this->data['target']) return;
         if($tag !== '*' && $tag !== $this->data['tag']) return;
 
@@ -36,7 +36,7 @@ class Rule
         if($this->data['type'] == 'CONTAIN') $result = $this->runContain($value);
         if($this->data['type'] == 'PREG') $result = $this->runPreg($value);
         if($this->data['type'] == 'RPREG') $result = $this->runRPreg($value);
-        var_dump($result);
+
         if($result){
             return $this->getInfo();
         }
@@ -50,6 +50,17 @@ class Rule
      */
     private function runEqual($value)
     {
+
+        //multiple equals
+        if(strpos($this->data['rule'], '|') !== false){
+            $rules = explode('|',$this->data['rule']);
+            foreach($rules as $rule){
+                if(trim($value) === $rule) return true;
+            }
+            return false;
+        }
+
+        //single equal
         if(trim($value) === $this->data['rule']) return true;
         return false;
     }

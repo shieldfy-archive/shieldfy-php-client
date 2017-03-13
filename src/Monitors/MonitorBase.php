@@ -50,6 +50,7 @@ abstract class MonitorBase
 			//report & block
 			echo 'R & B';
 			print_r($judgment);
+			return;
 		}
 
 		if($judgment['score'] >= self::MEDIUM){
