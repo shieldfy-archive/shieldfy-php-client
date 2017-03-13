@@ -115,7 +115,7 @@ class Guard
         $user = new UserCollector($request);
 
         /* monitors */
-        $monitors = new MonitorsBag($this->config,$this->cache,compact($request,$user));
+        $monitors = new MonitorsBag($this->config,$this->cache,compact('request','user'));
         $monitors->run();
 
         $this->exposeHeaders();

@@ -15,20 +15,53 @@ abstract class MonitorBase
 	protected $collectors;
 
 	/**
+	 * Threholds
+	 */
+	const LOW    = 20;
+	const MEDIUM = 50;
+	const HIGH   = 70;
+
+	/**
 	 * Constructor
-	 * @param Config $config 
-	 * @param CacheInterface $cache 
-	 * @param array $collectors 
+	 * @param Config $config
+	 * @param CacheInterface $cache
+	 * @param array $collectors
 	 */
 	public function __construct(Config $config,CacheInterface $cache,array $collectors)
 	{
 		$this->config = $config;
 		$this->cache = $cache;
-		$this->colelctors = $collectors;
+		$this->collectors = $collectors;
 	}
 
 	/**
 	 * Force children to have its own run function
 	 */
 	abstract public function run();
+
+	/**
+	 * handle the judgment info
+	 * @param  array $judgment judgment informatoin
+	 * @return void
+	 */
+	protected function handle($judgment)
+	{
+		if($judgment['score'] >= self::HIGH ){
+			//report & block
+			echo 'R & B';
+			print_r($judgment);
+		}
+
+		if($judgment['score'] >= self::MEDIUM){
+			//report
+			echo 'R';
+			print_r($judgment);
+		}
+
+		if($judgment['score'] >= self::LOW){
+			//report
+			echo 'R';
+			print_r($judgment);
+		}
+	}
 }

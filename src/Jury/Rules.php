@@ -40,7 +40,7 @@ class Rules implements Exceptionable
 
         $this->rules = $decodedRules;
     }
-    
+
     /**
      * Build rules
      * @param  boolean $normalize [use normalizer before rule]

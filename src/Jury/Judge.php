@@ -12,14 +12,23 @@ trait Judge
     /* load issue rules */
     public function issue($name)
     {
-        $this->rules = (new Rules($name))->build();
+        $this->rules = (new Rules($this->config,$name))->build();
     }
 
     /* the judge */
-    public function sentence($key,$value)
+    public function sentence($value,$target = '*',$tag = '*')
     {
+        $result = [
+            'score'=>0,
+            'ids'=>[]
+        ];
         foreach($this->rules as $rule){
-            $result = $rule->run($key,$value);
+            $res = $rule->run($value,$target,$tag);
+            if($res['score'] > 0){
+                $result['score'] += $res['score'];
+                $result['ids'][] = $res['id'];
+            }
         }
+        return $result;
     }
 }

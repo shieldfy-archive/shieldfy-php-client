@@ -95,6 +95,47 @@ class RequestCollector implements Collectable
         || $this->server['SERVER_PORT'] == 443;
     }
 
+    private function normalizeFiles(array $files = [])
+    {
+        // if(empty($files)) return $files;
+        // $_files       = [ ];
+        // foreach($files as $input => $content){
+        //     if(!is_array($content['name'])){
+        //         $_files[$input] = $content;
+        //         return;
+        //     }
+        //
+        //     $_content = [];
+        //     $_files_count = count( $content[ 'name' ] );
+        //     $_files_keys  = array_keys( $content );
+        //     for ( $i = 0; $i < $_files_count; $i++ )
+        //         foreach ( $_files_keys as $key )
+        //             $_content[ $i ][ $key ] = $content[ $key ][ $i ];
+        //
+        //     $_files[$input] = $_content;
+        // }
+        // return $_files;
+
+    }
+
+    private function prepareRequestParameter($key ,$param)
+    {
+        return $this->prepareRequestParameterRecursive([
+            $key=>$param
+        ]);
+    }
+    private function prepareRequestParameterRecursive($params, $prefix = '', $data = [])
+    {
+        foreach ($params as $key=> $value):
+            if (!is_array($value)) {
+                $data[$prefix.$key] = $value;
+            } else {
+                $data = array_merge($data, $this->prepareRequestParameterRecursive($value, $prefix.$key.'.'));
+            }
+        endforeach;
+        return $data;
+    }
+
     /**
      * get request info.
      *
@@ -105,11 +146,11 @@ class RequestCollector implements Collectable
         return [
             'method'        => $this->requestMethod,
             'created'       => $this->created,
-            'get'           => $this->get,
-            'post'          => $this->post,
-            'server'        => $this->server,
-            'cookies'       => $this->cookies,
-            'files'         => $this->files,
+            'get'           => $this->prepareRequestParameter('get',$this->get),
+            'post'          => $this->prepareRequestParameter('post',$this->post),
+            'server'        => $this->prepareRequestParameter('server',$this->server),
+            'cookies'       => $this->prepareRequestParameter('cookies',$this->cookies),
+            'files'         => $this->prepareRequestParameter('files',$this->files),
             'score'         => $this->score
         ];
     }

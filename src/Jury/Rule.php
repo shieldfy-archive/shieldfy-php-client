@@ -19,40 +19,83 @@ class Rule
         $this->normalize = $normalize;
     }
 
-    public function run($key,$value)
+    /**
+     * run the rule against value
+     * @param  mixed $value
+     * @param  string $target target scope
+     * @param  string $tag    target tag
+     * @return array|false
+     */
+    public function run($value,$target = '*',$tag = '*')
     {
-        if($this->data['type'] == 'EQUAL') $this->runEqual($key,$value);
-        if($this->data['type'] == 'CONTAIN') $this->runContain($key,$value);
-        if($this->data['type'] == 'PREG') $this->runPreg($key,$value);
-        if($this->data['type'] == 'RPEG') $this->runRPreg($key,$value);
-    }
+        //echo $target.' !== '.$this->data['target'].'<br />';
+        if($target !== '*' && $target !== $this->data['target']) return;
+        if($tag !== '*' && $tag !== $this->data['tag']) return;
 
-    private function runEqual($key,$value)
-    {
-        if(trim($value) == $data['rule']) return true;
-        return false;
-    }
-    private function runContain($key,$value)
-    {
-        if(strpos($value, $data['rule']) !== false) return true;
-        return false;
-    }
-    private function runPreg($key,$value)
-    {
-        if(preg_match('/'.$data['rule'].'/isU',$value)) return true;
-        return false;
-    }
-    private function runRPreg($key,$value)
-    {
-        if(preg_match('/'.$data['rule'].'/isU',$value) == false) return true;
+        if($this->data['type'] == 'EQUAL') $result = $this->runEqual($value);
+        if($this->data['type'] == 'CONTAIN') $result = $this->runContain($value);
+        if($this->data['type'] == 'PREG') $result = $this->runPreg($value);
+        if($this->data['type'] == 'RPREG') $result = $this->runRPreg($value);
+        var_dump($result);
+        if($result){
+            return $this->getInfo();
+        }
         return false;
     }
 
+    /**
+     * [runEqual description]
+     * @param  [type] $value [description]
+     * @return [type]        [description]
+     */
+    private function runEqual($value)
+    {
+        if(trim($value) === $this->data['rule']) return true;
+        return false;
+    }
+
+    /**
+     * [runContain description]
+     * @param  [type] $value [description]
+     * @return [type]        [description]
+     */
+    private function runContain($value)
+    {
+        if(strpos($value, $this->data['rule']) !== false) return true;
+        return false;
+    }
+
+    /**
+     * [runPreg description]
+     * @param  [type] $value [description]
+     * @return [type]        [description]
+     */
+    private function runPreg($value)
+    {
+        if(preg_match('/'.$this->data['rule'].'/isU',$value)) return true;
+        return false;
+    }
+
+    /**
+     * [runRPreg description]
+     * @param  [type] $value [description]
+     * @return [type]        [description]
+     */
+    private function runRPreg($value)
+    {
+        if(preg_match('/'.$this->data['rule'].'/isU',$value) == false) return true;
+        return false;
+    }
+
+    /**
+     * [getInfo description]
+     * @return [type] [description]
+     */
     public function getInfo()
     {
         return [
             'id' => $this->id,
-            'score' => $data['score']
+            'score' => $this->data['score']
         ];
     }
 }
