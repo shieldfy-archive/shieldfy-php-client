@@ -7,6 +7,7 @@ use Shieldfy\Cache\CacheManager;
 use Shieldfy\Monitors\MonitorsBag;
 use Shieldfy\Collectors\UserCollector;
 use Shieldfy\Collectors\RequestCollector;
+use Shieldfy\Collectors\ExceptionsCollector;
 use Shieldfy\Exceptions\ExceptionHandler;
 
 class Guard
@@ -77,7 +78,7 @@ class Guard
         ]));
 
         //start handler to catch all errors
-        $handler = new ExceptionHandler($this->config);
+        //$handler = new ExceptionHandler($this->config);
         //$handler->setHandler();
 
         //prepare the cache method if not supplied
@@ -104,23 +105,30 @@ class Guard
     protected function startGuard()
     {
 
+        $exceptions = new ExceptionsCollector($this->config);
+        $request = new RequestCollector($_GET,$_POST,$_SERVER, $_COOKIE, $_FILES);
+        $user = new UserCollector($request);
+
+
         //check the installation
         if(!$this->isInstalled())
         {
             $install = (new Installer)->run();
         }
 
-        /* collectors */
-        $request = new RequestCollector($_GET,$_POST,$_SERVER, $_COOKIE, $_FILES);
-        $user = new UserCollector($request);
-
         /* monitors */
-        $monitors = new MonitorsBag($this->config,$this->cache,compact('request','user'));
+        $monitors = new MonitorsBag($this->config,
+                                    $this->cache,
+                                    [
+                                        'exceptions' => $exceptions,
+                                        'request'    => $request,
+                                        'user'       => $user
+                                    ]);
         $monitors->run();
 
         $this->exposeHeaders();
 
-        echo 'starting the guard';
+        echo '<br />starting the guard <br />';
     }
 
 
