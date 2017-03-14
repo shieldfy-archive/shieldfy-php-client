@@ -1,66 +1,62 @@
 <?php
 namespace Shieldfy\Monitors;
-
+use Throwable;
 class ExceptionMonitor extends MonitorBase
 {
 	protected $original_error_handler = null;
+	protected $signatures = [
+		'message' => [
+				'/(require|require_once|include|include_once)\s*\((.*)\)\s*failed to open stream/isU',
+				'/(require|require_once|include|include_once)\s*\(\)\s*:\s*failed opening required \'(.*)\'/isU',
+				'/unserialize\(\):\s*Error\s*at\s*offset\s*[0-9]+\s*of\s*[0-9]+/isU'
+		],
+		'file' => [
+			'/eval\(\)\'d code/isU'
+		]
+	];
 	/**
 	 * run the monitor
 	 * Monitor for expolits that generates errors
-	 * ex: LFI , RCE [eval , serialize] , SSRF ,
+	 * ex: LFI , RCE [eval , serialize] , SSRF
+	 * Exceptions to Monitor
+	 * Warning: require(xxx):  failed to open stream: No such file or directory ==> exception message
+	 * syntax error .... eval()'d code ==> exception file
+	 * unserialize(): Error at offset [0-9]+ of [0-9] bytes //note: serialize fuzzing may not generate errors
 	 */
 	public function run()
 	{
-
 		$x = $this->collectors['exceptions'];
-		$x->listen(function(){
-				echo '{exception monitor}<br />';
+		$x->listen(function($exception){
+			$this->analyze($exception);
 		});
-		//print_r($x->getInfo());
-
-		// // http://php.net/set_error_handler
-		// $this->original_error_handler = set_error_handler(array($this,'handleErrors'),E_ALL);
-		// // http://php.net/set_exception_handler
-		// $this->original_exception_handler = set_exception_handler(array($this,'handleExceptions'));
-
 	}
 
-	// /**
-	//  * handle errors / warning / notice
-	//  * @param  [type]  $severity [description]
-	//  * @param  [type]  $message  [description]
-	//  * @param  string  $file     [description]
-	//  * @param  integer $line     [description]
-	//  * @param  [type]  $context  [description]
-	//  * @return [type]            [description]
-	//  */
-	// public function handleErrors($severity, $message, $file = '', $line = 0, $context = [])
-	// {
-	// 	//LIMITATION
-	// 	//The following error types cannot be handled with a user defined function:
-	// 	//E_ERROR, E_PARSE, E_CORE_ERROR, E_CORE_WARNING, E_COMPILE_ERROR, E_COMPILE_WARNING, and most of E_STRICT raised in the file where set_error_handler() is called.
-	// 	//see: http://stackoverflow.com/questions/8527894/set-error-handler-doenst-work-for-fatal-error
-	//
-	//
-	// 	$this->handleExceptions(new ErrorException($message,0,$severity,$file,$line));
-	//
-	// 	if($this->original_error_handler !== null){
-	// 		call_user_func( $this->original_error_handler,
-	// 						$severity,
-    //                 		$message,
-    //             			$file,
-    //                 		$line,
-    //                 		$context );
-	// 	}
-	// }
-	//
-	// /**
-	//  * Analyzing the exceptions looking for exploits
-	//  * @param  Throwable $exception
-	//  */
-	// public function handleExceptions(Throwable $exception)
-	// {
-	//
-	// }
+	public function analyze(Throwable $exception)
+	{
+		if(!$this->isInScope($exception)) return;
+		//in scope lets analyze it
+		
+	}
+
+	protected function isInScope(Throwable $exception)
+	{
+		$message = $exception->getMessage();
+		foreach($this->signatures['message'] as $message_sign){
+			if(preg_match($message_sign,$message)){
+				echo 'Error In Score (message)'; return true;
+			}
+		}
+
+		$file = $exception->getFile();
+		foreach($this->signatures['file'] as $file_sign){
+			if(preg_match($file_sign,$file)){
+				echo 'Error In Score (file)'; return true;
+			}
+		}
+
+		return false;
+	}
+
+
 
 }
