@@ -77,10 +77,6 @@ class Guard
             'version'     => $this->version
         ]));
 
-        //start handler to catch all errors
-        //$handler = new ExceptionHandler($this->config);
-        //$handler->setHandler();
-
         //prepare the cache method if not supplied
         if ($cache === null) {
             //create a new file cache
@@ -94,8 +90,6 @@ class Guard
         //start shieldfy guard
         $this->startGuard();
 
-        //release handler to original application exception handler
-        //$handler->closeHandler();
     }
 
     /**
