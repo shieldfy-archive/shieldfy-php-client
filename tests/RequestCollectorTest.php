@@ -36,11 +36,37 @@ class RequestCollectorTest extends TestCase
     public function testGetInfo()
     {
         $info = $this->request->getInfo();
-        $this->assertLessThanOrEqual($info['created'], $this->created);
-        $this->assertEquals($info['method'], $this->server['REQUEST_METHOD']);
-        $this->assertEquals($info['get'], $this->get);
-        $this->assertEquals($info['post'], $this->post);
-        $this->assertEquals($info['server'], $this->server);
+        $this->assertLessThanOrEqual($this->created,$info['created']);
+
+        $this->assertEquals($this->server['REQUEST_METHOD'],$info['method']);
+        $this->assertEquals($this->get,$this->request->get);
+
+        $this->assertEquals(['get.x'=>1],$info['get']);
+        $this->assertEquals([
+                'get'=>['get.x'=>1],
+                'created'=>$this->created,
+                'score'=>null,
+                'method'=>'POST',
+            ],$this->request->getInfo('get'));
+
+        $this->assertEquals($this->post,$this->request->post);
+        $this->assertEquals([
+                'post.name'=>'hello',
+                'post.contact.address'=>'some street',
+                'post.contact.tel'=>'111 111 111'
+            ], $info['post']);
+        $this->assertEquals([
+                'post'=>[
+                    'post.name'=>'hello',
+                    'post.contact.address'=>'some street',
+                    'post.contact.tel'=>'111 111 111'
+                ],
+                'created'=>$this->created,
+                'score'=>null,
+                'method'=>'POST'
+            ], $this->request->getInfo('post'));
+
+        $this->assertEquals($this->server,$this->request->server);
     }
 
     public function testScore()

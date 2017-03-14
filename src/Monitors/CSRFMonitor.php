@@ -10,7 +10,7 @@ class CSRFMonitor extends MonitorBase
 	{
 		$request = $this->collectors['request'];
 		//check origin
-		if(!in_array($rquest->requestMethod,['POST','PUT','PATCH','DELETE'])) return;
+		if(!in_array($request->requestMethod,['POST','PUT','PATCH','DELETE'])) return;
 		if(!isset($request->server['HTTP_ORIGIN'])) return;
 
 		$origin = parse_url($request->server['HTTP_ORIGIN'] ,PHP_URL_HOST);
@@ -25,9 +25,9 @@ class CSRFMonitor extends MonitorBase
 				'score' => 30,
 				'info'  => [
 					'attack' => 'csrf',
-					'origin' => $origin.
+					'origin' => $origin,
 					'host'   => $host,
-					'payload' => $request->getInfo('post');
+					'payload' => $request->getInfo('post')
 				]
 			]);
 		}

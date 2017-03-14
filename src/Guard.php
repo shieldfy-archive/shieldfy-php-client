@@ -78,7 +78,7 @@ class Guard
 
         //start handler to catch all errors
         $handler = new ExceptionHandler($this->config);
-        $handler->setHandler();
+        //$handler->setHandler();
 
         //prepare the cache method if not supplied
         if ($cache === null) {
@@ -94,7 +94,7 @@ class Guard
         $this->startGuard();
 
         //release handler to original application exception handler
-        $handler->closeHandler();
+        //$handler->closeHandler();
     }
 
     /**

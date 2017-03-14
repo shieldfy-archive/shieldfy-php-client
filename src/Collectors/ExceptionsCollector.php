@@ -1,25 +1,23 @@
 <?php
-namespace Shieldfy\Monitors;
-use ErrorException;
-use Throwable;
-class ExceptionMonitor extends MonitorBase
+namespace Shieldfy\Collectors;
+
+class ExceptionsCollector implements Collectable
 {
-	protected $original_error_handler = null;
-	/**
-	 * run the monitor
-	 * Monitor for expolits that generates errors
-	 * ex: LFI , RCE [eval , serialize] , SSRF ,
-	 */
-	public function run()
-	{
-		// http://php.net/set_error_handler
+    protected $original_error_handler = null;
+    protected $original_exception_handler = null;
+
+    protected $currentException = null;
+
+    public function __construct()
+    {
+        // http://php.net/set_error_handler
 		$this->original_error_handler = set_error_handler(array($this,'handleErrors'),E_ALL);
 		// http://php.net/set_exception_handler
 		$this->original_exception_handler = set_exception_handler(array($this,'handleExceptions'));
+    }
 
-	}
 
-	/**
+    /**
 	 * handle errors / warning / notice
 	 * @param  [type]  $severity [description]
 	 * @param  [type]  $message  [description]
@@ -54,7 +52,15 @@ class ExceptionMonitor extends MonitorBase
 	 */
 	public function handleExceptions(Throwable $exception)
 	{
-
+        $this->currentException = $exception;
 	}
 
+    /**
+     * Retrive exception info
+     * @return Throwable $exception
+     */
+    public function getInfo()
+    {
+        return $this->currentException;
+    }
 }

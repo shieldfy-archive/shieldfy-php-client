@@ -115,20 +115,24 @@ class RequestCollector implements Collectable
 
     /**
      * get request info.
-     *
+     * @TODO add function to strip sensetive data before report it (ex: passwords , tokens , creditcards ... )
      * @return array info
      */
-    public function getInfo()
+    public function getInfo($parameter = '')
     {
-        return [
+        $info = [
             'method'        => $this->requestMethod,
             'created'       => $this->created,
-            'get'           => $this->prepareRequestParameter('get',$this->get),
-            'post'          => $this->prepareRequestParameter('post',$this->post),
-            'server'        => $this->prepareRequestParameter('server',$this->server),
-            'cookies'       => $this->prepareRequestParameter('cookies',$this->cookies),
-            'files'         => $this->prepareRequestParameter('files',$this->files),
             'score'         => $this->score
         ];
+
+        if($parameter == '' || $parameter == 'get') $info['get'] = $this->prepareRequestParameter('get',$this->get);
+        if($parameter == '' || $parameter == 'post') $info['post'] = $this->prepareRequestParameter('post',$this->post);
+        if($parameter == '' || $parameter == 'server') $info['server'] = $this->prepareRequestParameter('server',$this->server);
+        if($parameter == '' || $parameter == 'cookies') $info['cookies'] = $this->prepareRequestParameter('cookies',$this->cookies);
+        if($parameter == '' || $parameter == 'files') $info['files'] = $this->prepareRequestParameter('files',$this->files);
+
+        return $info;
+
     }
 }
