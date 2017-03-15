@@ -6,79 +6,101 @@ class UploadMonitor extends MonitorBase
 {
 	use Judge;
 
+	protected $name = "upload";
+
 	/**
 	 * run the monitor
 	 */
 	public function run()
 	{
-
 		//get the request info
 		$request = $this->collectors['request'];
-		$info = $request->getInfo();
+		$info = $request->getInfo('files');
+		//print_r($info);exit;
 
 		if(empty($info['files'])) return;
 
 		//analyze uploaded files
 		$this->issue('upload');
-		$judgment = ['score' => 0];
 
-		foreach($info['files'] as $key => $value) {
-			$result = $this->analyzeFile($key,$value);
-			if($result['score'] > 0){
-				$judgment['score'] += $result['score'];
-				$judgment[$key] = $result;
+
+		//array_walk()
+
+		// print_r(array_filter($info['files'], function($key) {
+		//     $x = explode('.',$key);
+		// 	return ($x[2] == 'name') || $x[2] == 'tmp_name';
+		// }, ARRAY_FILTER_USE_KEY));
+
+		$files = [];
+		array_walk($info['files'], function($value,$key) use (&$files){
+			//grap key
+			$name = explode('.',$key);
+			$name_key = $name[2];
+			unset($name[0],$name[2]);
+			$name = implode('.',$name);
+			if($name_key == 'name'){
+				$files[$name]['name'] = $value;
+			}
+			if($name_key == 'tmp_name'){
+				$files[$name]['tmp_name'] = $value;
+			}
+		});
+
+		$judgment = [
+			'score'=>0,
+			'infection' => []
+		];
+		foreach($files as $input => $file){
+			list($score,$ruleIds) = array_values($this->analyzeFile($input,$file));
+			if($score){
+				$judgment['score'] += $score;
+				$judgment['infection'][$input] = compact('score','ruleIds');
 			}
 		}
+
 		$this->handle($judgment);
 	}
 
-	public function analyzeFile($key,$value)
-	{
-		//if is name
-		if($this->is_name($key)){
-			$extention = pathinfo( $value, PATHINFO_EXTENSION);
+	public function analyzeFile($input = '',$file = []){
+		$score = 0;
+		$ruleIds = [];
 
-			$nameResult = $this->sentence( $value,'FILES:NAME');
-			$extResult = $this->sentence($extention,'FILES:EXTENTION');
-			return [
-				'score'  => $nameResult['score'] + $extResult['score'],
-				'info'   => compact('nameResult','extResult')
-			];
+		//analyze name
+		$nameResult = $this->sentence($file['name'],'FILES:NAME');
+		if($nameResult['score']){
+			$score += $nameResult['score'];
+			$ruleIds = array_merge($ruleIds,$nameResult['ids']);
 		}
 
-		if($this->is_content($key)){
-			$content = file_get_contents($value);
-			$contentResult = $this->sentence($content,'FILES:CONTENT','backdoor');
-			$xmlContentResult = $this->sentence($content,'FILES:CONTENT','xxe');
-			if($xmlContentResult['score'] !== 0){
-				$previous = libxml_disable_entity_loader(true);
-				if($previous === false){
-					$xmlContentResult['score'] += 50;
-					//return to default behaviour , maybe developer uses it anywhere :(
-					libxml_disable_entity_loader($previous);
-				}
+		//analyze extention
+		$extention = pathinfo( $file['name'], PATHINFO_EXTENSION);
+		$extResult = $this->sentence($extention,'FILES:EXTENTION');
+		if($extResult['score']){
+			$score += $extResult['score'];
+			$ruleIds = array_merge($ruleIds,$extResult['ids']);
+		}
+
+		//analyze content
+		$content = file_get_contents($file['tmp_name']);
+		//check for backdoors
+		$backdoorResult = $this->sentence($content,'FILES:CONTENT','backdoor');
+		if($backdoorResult['score']){
+			$score += $backdoorResult['score'];
+			$ruleIds = array_merge($ruleIds,$backdoorResult['ids']);
+		}
+		//check for xxe
+		$xxeResult = $this->sentence($content,'FILES:CONTENT','xxe');
+		if($xxeResult['score']){
+			$score += $xxeResult['score'];
+			$disableEntity = libxml_disable_entity_loader(true);
+			if($disableEntity === false){
+				$score += 50;
+				//retrive old value : maybe developer uses it anywhere :(
+				libxml_disable_entity_loader($disableEntity);
 			}
-
-			return [
-				'score'  => $contentResult['score'] + $xmlContentResult['score'],
-				'info'   => compact('contentResult','xmlContentResult')
-			];
+			$ruleIds = array_merge($ruleIds,$xxeResult['ids']);
 		}
-		return;
+		return compact('score','ruleIds');
 	}
-
-	private function is_name($key)
-	{
-		if(explode('.',$key)[2] == 'name') return true;
-		return false;
-	}
-
-	private function is_content($key)
-	{
-		if(explode('.',$key)[2] == 'tmp_name') return true;
-		return false;
-	}
-
-
 
 }
