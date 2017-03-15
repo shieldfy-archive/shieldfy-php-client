@@ -94,7 +94,7 @@ class Rule
      */
     private function runRPreg($value)
     {
-        if(preg_match('/'.$this->data['rule'].'/isU',$value) == false) return true;
+        if(preg_match('/'.$this->data['rule'].'/isU',$value) === false) return true;
         return false;
     }
 

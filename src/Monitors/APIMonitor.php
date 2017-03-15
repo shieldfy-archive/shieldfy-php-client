@@ -8,10 +8,11 @@ class ApiMonitor extends MonitorBase
 	 */
 	public function run()
 	{
-        $this->checkForJWT();
+        $this->checkForJWTViolation();
+		$this->checkForOAuthViolation();
 	}
 
-    public function checkForJWT()
+    public function checkForJWTViolation()
     {
         //check for headers
         $request = $this->collectors['request'];
@@ -24,4 +25,9 @@ class ApiMonitor extends MonitorBase
         }
 
     }
+
+	public function checkForOAuthViolation()
+	{
+
+	}
 }

@@ -13,6 +13,7 @@ abstract class MonitorBase
 	protected $config;
 	protected $cache;
 	protected $collectors;
+	protected $name = '';
 
 	/**
 	 * Threholds
@@ -46,6 +47,8 @@ abstract class MonitorBase
 	 */
 	protected function handle($judgment)
 	{
+		echo $this->name;
+		echo '<br />';
 		if($judgment['score'] >= self::HIGH ){
 			//report & block
 			echo 'R & B';
