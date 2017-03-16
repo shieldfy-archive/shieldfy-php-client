@@ -25,33 +25,51 @@ class ExceptionMonitor extends MonitorBase
 	 */
 	public function run()
 	{
-		$x = $this->collectors['exceptions'];
-		$x->listen(function($exception){
+		$exceptions = $this->collectors['exceptions'];
+		$exceptions->listen(function($exception){
 			$this->analyze($exception);
 		});
 	}
 
 	public function analyze(Throwable $exception)
 	{
+		$this->issue('exceptions');
 		if(!$this->isInScope($exception)) return;
 		//in scope lets analyze it
-		
+		$request = $this->collectors['request'];
+		$info = $request->getInfo();
+		$params = array_merge($info['get'],$info['post'],$info['cookies']);
+
+		$score = 0;
+		$infection = [];
+		foreach($params as $param => $value){
+			$result = $this->sentence($value,'REQUEST');
+			if($result['score']){
+				$score += $result['score'];
+				$infection[] = [
+					'score' 	=> $result['score'],
+					'ruleIds' 	=> $result['ruleIds']
+				];
+			}
+		}
+		$this->handle([
+			'score'=>$score,
+			'infection'=>$infection
+		]);
 	}
 
 	protected function isInScope(Throwable $exception)
 	{
 		$message = $exception->getMessage();
-		foreach($this->signatures['message'] as $message_sign){
-			if(preg_match($message_sign,$message)){
-				echo 'Error In Score (message)'; return true;
-			}
+		$res = $this->sentence($message,'EXCEPTION:MSG');
+		if($res['score']){
+			return true;
 		}
 
 		$file = $exception->getFile();
-		foreach($this->signatures['file'] as $file_sign){
-			if(preg_match($file_sign,$file)){
-				echo 'Error In Score (file)'; return true;
-			}
+		$res = $this->sentence($file,'EXCEPTION:FILE');
+		if($res['score']){
+			return true;
 		}
 
 		return false;

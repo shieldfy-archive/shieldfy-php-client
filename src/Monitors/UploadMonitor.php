@@ -23,14 +23,7 @@ class UploadMonitor extends MonitorBase
 		//analyze uploaded files
 		$this->issue('upload');
 
-
-		//array_walk()
-
-		// print_r(array_filter($info['files'], function($key) {
-		//     $x = explode('.',$key);
-		// 	return ($x[2] == 'name') || $x[2] == 'tmp_name';
-		// }, ARRAY_FILTER_USE_KEY));
-
+		//prepare for nested uploads
 		$files = [];
 		array_walk($info['files'], function($value,$key) use (&$files){
 			//grap key
