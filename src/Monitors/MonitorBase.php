@@ -47,24 +47,25 @@ abstract class MonitorBase
 	 */
 	protected function handle($judgment)
 	{
-		echo $this->name;
-		echo '<br />';
 		if($judgment['score'] >= self::HIGH ){
 			//report & block
-			echo 'R & B';
+			echo 'R & B <br />';
+			echo $this->name.'<br />';
 			print_r($judgment);
 			return;
 		}
 
 		if($judgment['score'] >= self::MEDIUM){
 			//report
-			echo 'R';
+			echo 'R <br />';
+			echo $this->name.'<br />';
 			print_r($judgment);
 		}
 
 		if($judgment['score'] >= self::LOW){
 			//report
-			echo 'R';
+			echo 'R <br />';
+			echo $this->name.'<br />';
 			print_r($judgment);
 		}
 	}
