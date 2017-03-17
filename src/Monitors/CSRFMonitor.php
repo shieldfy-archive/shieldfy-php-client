@@ -3,6 +3,8 @@ namespace Shieldfy\Monitors;
 
 class CSRFMonitor extends MonitorBase
 {
+
+	protected $name = 'csrf';
 	/**
 	 * run the monitor
 	 */
@@ -31,6 +33,6 @@ class CSRFMonitor extends MonitorBase
 				]
 			]);
 		}
-		
+
 	}
 }
