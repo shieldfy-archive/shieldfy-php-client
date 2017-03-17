@@ -1,19 +1,10 @@
 <?php
 namespace Shieldfy\Monitors;
 use Throwable;
+use use Shieldfy\Jury\Judge;
 class ExceptionMonitor extends MonitorBase
 {
-	protected $original_error_handler = null;
-	protected $signatures = [
-		'message' => [
-				'/(require|require_once|include|include_once)\s*\((.*)\)\s*failed to open stream/isU',
-				'/(require|require_once|include|include_once)\s*\(\)\s*:\s*failed opening required \'(.*)\'/isU',
-				'/unserialize\(\):\s*Error\s*at\s*offset\s*[0-9]+\s*of\s*[0-9]+/isU'
-		],
-		'file' => [
-			'/eval\(\)\'d code/isU'
-		]
-	];
+	use Judge;
 	/**
 	 * run the monitor
 	 * Monitor for expolits that generates errors

@@ -1,8 +1,9 @@
 <?php
 namespace Shieldfy\Monitors;
-
+use Shieldfy\Jury\Judge;
 class ApiMonitor extends MonitorBase
 {
+	use Judge;
 	protected $name = 'api';
 	protected $request;
 
