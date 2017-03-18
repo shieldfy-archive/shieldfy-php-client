@@ -47,6 +47,7 @@ abstract class MonitorBase
 	 */
 	protected function handle($judgment)
 	{
+		
 		if($judgment['score'] >= self::HIGH ){
 			//report & block
 			echo 'R & B <br />';

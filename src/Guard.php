@@ -8,6 +8,7 @@ use Shieldfy\Monitors\MonitorsBag;
 use Shieldfy\Collectors\UserCollector;
 use Shieldfy\Collectors\RequestCollector;
 use Shieldfy\Collectors\ExceptionsCollector;
+use Shieldfy\Collectors\CodeCollector;
 use Shieldfy\Exceptions\ExceptionHandler;
 
 class Guard
@@ -99,10 +100,10 @@ class Guard
     protected function startGuard()
     {
 
-        $exceptions = new ExceptionsCollector($this->config);
-        $request = new RequestCollector($_GET,$_POST,$_SERVER, $_COOKIE, $_FILES);
-        $user = new UserCollector($request);
-
+        $exceptionsCollector = new ExceptionsCollector($this->config);
+        $requestCollector = new RequestCollector($_GET,$_POST,$_SERVER, $_COOKIE, $_FILES);
+        $userCollector = new UserCollector($requestCollector);
+        $codeCollector = new CodeCollector;
 
         //check the installation
         if(!$this->isInstalled())
@@ -114,9 +115,10 @@ class Guard
         $monitors = new MonitorsBag($this->config,
                                     $this->cache,
                                     [
-                                        'exceptions' => $exceptions,
-                                        'request'    => $request,
-                                        'user'       => $user
+                                        'exceptions' => $exceptionsCollector,
+                                        'request'    => $requestCollector,
+                                        'user'       => $userCollector,
+                                        'code'       => $codeCollector
                                     ]);
         $monitors->run();
 

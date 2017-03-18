@@ -49,7 +49,7 @@ class ApiMonitor extends MonitorBase
 
 	public function checkForOAuthViolation()
 	{
-		if(isset($this->request->get['response_type']){
+		if(isset($this->request->get['response_type'])){
 			//traditional oAuth request
 			$result = $this->sentence($this->request->get['response_type'],'OAUTH:RESPONSE_TYPE');
 			if($result['score']){
@@ -57,8 +57,8 @@ class ApiMonitor extends MonitorBase
 				$this->infection['get.response_type'] = $result;
 			}
 		}
-		if(isset($this->request->get('redirect_uri'))){
-			$result = $this->sentence($this->request->get('redirect_uri'),'OAUTH:REDIRECT_URI');
+		if(isset($this->request->get['redirect_uri'])){
+			$result = $this->sentence($this->request->get['redirect_uri'],'OAUTH:REDIRECT_URI');
 			if($result['score']){
 				$this->score += $result['score'];
 				$this->infection['get.redirect_uri'] = $result;

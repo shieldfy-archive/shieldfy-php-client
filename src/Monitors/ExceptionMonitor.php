@@ -1,7 +1,7 @@
 <?php
 namespace Shieldfy\Monitors;
 use Throwable;
-use use Shieldfy\Jury\Judge;
+use Shieldfy\Jury\Judge;
 class ExceptionMonitor extends MonitorBase
 {
 	use Judge;
