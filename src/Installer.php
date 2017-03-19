@@ -59,8 +59,7 @@ class Installer implements Dispatchable, Exceptionable
         }
 
         if($response->status == 'success') {
-            print_r((array)$response->data);
-            //$this->save((array)$response->data);
+            $this->save((array)$response->data);
         }
     }
 
