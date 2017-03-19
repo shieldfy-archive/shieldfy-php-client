@@ -3,6 +3,7 @@ namespace shieldfy;
 
 use Shieldfy\Config;
 use Shieldfy\Installer;
+use Shieldfy\Session;
 use Shieldfy\Cache\CacheManager;
 use Shieldfy\Monitors\MonitorsBag;
 use Shieldfy\Collectors\UserCollector;
@@ -21,7 +22,7 @@ class Guard
     /**
      * @var api endpoint
      */
-    public $apiEndpoint = 'http://api.shieldfy.io/v1';
+    public $apiEndpoint = 'http://api.flash.app';
 
     /**
      * @var version
@@ -108,8 +109,15 @@ class Guard
         //check the installation
         if(!$this->isInstalled())
         {
-            $install = (new Installer)->run();
+            $install = (new Installer($requestCollector,$this->config,$this->version))->run();
         }
+
+        exit;
+
+        //start new session
+        $session = new Session($userCollector, $this->config, $this->cache);
+
+
 
         /* monitors */
         $monitors = new MonitorsBag($this->config,

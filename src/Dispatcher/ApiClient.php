@@ -41,7 +41,7 @@ class ApiClient implements Exceptionable
     public function __construct(Config $config)
     {
         $this->config = $config;
-        
+
 
         if (!extension_loaded('curl')) {
             //critical error package cannot load without
@@ -73,18 +73,10 @@ class ApiClient implements Exceptionable
     public function request($url, $body)
     {
         $hash = $this->calculateBodyHash($body);
-        $this->setupHeaders($hash);
+        $this->setupHeaders(strlen($body),$hash);
 
-        if (!empty($body)) {
-            $postdata = [
-                'body'=> $body,
-            ];
-            $this->setOpt(CURLOPT_POST, count($postdata));
-            $postdata = http_build_query(
-                $postdata
-            );
-            $this->setOpt(CURLOPT_POSTFIELDS, $postdata);
-        }
+        $this->setOpt(CURLOPT_CUSTOMREQUEST,'POST');
+        $this->setOpt(CURLOPT_POSTFIELDS, $body);
 
         $this->setOpt(CURLOPT_URL, $this->baseUrl.$url);
 
@@ -201,12 +193,14 @@ class ApiClient implements Exceptionable
      *
      * @param string $hash
      */
-    private function setupHeaders($hash)
+    private function setupHeaders($length,$hash)
     {
         $this->setOpt(CURLOPT_HTTPHEADER,
             [
                 'X-Shieldfy-Api-Key: '.$this->keys['app_key'],
                 'X-Shieldfy-Api-Hash: '.$hash,
+                'Content-Type: application/json',
+                'Content-Length: ' . $length
             ]
         );
     }

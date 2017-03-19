@@ -88,7 +88,7 @@ class RequestCollector implements Collectable
      *
      * @return bool
      */
-    private function isSecure()
+    public function isSecure()
     {
         return
         (!empty($this->server['HTTPS']) && $this->server['HTTPS'] !== 'off')
