@@ -16,7 +16,12 @@ class HeadersMonitor extends MonitorBase
 		$statusCode = http_response_code();
 		//4xx || 5xx
 		if($statusCode >= 400){
-			$content .= 'report';
+			$this->handle([
+				'score' => 10,
+				'info' 	=> [
+					'statusCode' => $statusCode
+				]
+			]);
 		}
 		return $content;
 	}

@@ -122,15 +122,16 @@ class Guard
 
 
         /* monitors */
-        // $monitors = new MonitorsBag($this->config,
-        //                             $this->cache,
-        //                             [
-        //                                 'exceptions' => $exceptionsCollector,
-        //                                 'request'    => $requestCollector,
-        //                                 'user'       => $userCollector,
-        //                                 'code'       => $codeCollector
-        //                             ]);
-        // $monitors->run();
+        $monitors = new MonitorsBag($this->config,
+                                    $this->cache,
+                                    $this->session,
+                                    [
+                                        'exceptions' => $exceptionsCollector,
+                                        'request'    => $requestCollector,
+                                        'user'       => $userCollector,
+                                        'code'       => $codeCollector
+                                    ]);
+        $monitors->run();
 
         $this->exposeHeaders();
 

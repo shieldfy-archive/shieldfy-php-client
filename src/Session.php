@@ -15,6 +15,7 @@ class Session implements Dispatchable,Exceptionable
     use Exceptioner;
 
     protected $isNew = false;
+    protected $isSynced = false;
     protected $user;
     protected $request;
     protected $cache;
@@ -60,6 +61,11 @@ class Session implements Dispatchable,Exceptionable
         $this->history = $this->cache->get($this->user->getSessionId());
     }
 
+    public function markAsSynced()
+    {
+        $this->isSynced = true;
+    }
+
     /**
      * Save the current session
      */
@@ -71,6 +77,17 @@ class Session implements Dispatchable,Exceptionable
         }
 
         $this->history[time()] = $this->request->getHistoryInfo();
+
+        if($this->isSynced){
+            //if already synced no need to restore the info to avoid duplications
+            $this->history = [];
+        }
+
         $this->cache->set($this->user->getSessionId(),$this->history);
+    }
+
+    public function getHistory()
+    {
+        return $this->history;
     }
 }

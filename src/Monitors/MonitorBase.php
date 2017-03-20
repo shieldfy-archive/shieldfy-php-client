@@ -3,8 +3,12 @@ namespace Shieldfy\Monitors;
 use Shieldfy\Config;
 use Shieldfy\Cache\CacheInterface;
 
-abstract class MonitorBase
+use Shieldfy\Dispatcher\Dispatcher;
+use Shieldfy\Dispatcher\Dispatchable;
+
+abstract class MonitorBase implements Dispatchable
 {
+	use Dispatcher;
 	/**
 	 * @var Config $config
 	 * @var CacheInterface $cache
@@ -12,6 +16,7 @@ abstract class MonitorBase
 	 */
 	protected $config;
 	protected $cache;
+	protected $session;
 	protected $collectors;
 	protected $name = '';
 
@@ -28,10 +33,11 @@ abstract class MonitorBase
 	 * @param CacheInterface $cache
 	 * @param array $collectors
 	 */
-	public function __construct(Config $config,CacheInterface $cache,array $collectors)
+	public function __construct(Config $config,CacheInterface $cache,Session $session, array $collectors)
 	{
 		$this->config = $config;
 		$this->cache = $cache;
+		$this->session = $session;
 		$this->collectors = $collectors;
 	}
 
@@ -47,12 +53,13 @@ abstract class MonitorBase
 	 */
 	protected function handle($judgment)
 	{
-		
+		//file_put_contents(__dir__.'/log.txt',$this->name."\n".print_r($judgment,1));
 		if($judgment['score'] >= self::HIGH ){
 			//report & block
 			echo 'R & B <br />';
 			echo $this->name.'<br />';
 			print_r($judgment);
+		//	file_put_contents(__dir__.'/log.txt',$this->name."\n".print_r($judgment,1));
 			return;
 		}
 
@@ -61,6 +68,8 @@ abstract class MonitorBase
 			echo 'R <br />';
 			echo $this->name.'<br />';
 			print_r($judgment);
+		//	file_put_contents(__dir__.'/log.txt',$this->name."\n".print_r($judgment,1));
+			return;
 		}
 
 		if($judgment['score'] >= self::LOW){
@@ -68,6 +77,20 @@ abstract class MonitorBase
 			echo 'R <br />';
 			echo $this->name.'<br />';
 			print_r($judgment);
+			//file_put_contents('./log.txt',$this->name."\n".print_r($judgment,1));
+
+			$this->trigger('activity',[
+				'host' 		=> $this->collectors['request']->getHost(),
+				'user' 		=> $this->collectors['user']->getId(),
+				'monitor'	=> $this->name,
+				'judgment'	=> $judgment,
+				'info'		=> $this->collectors['request']->getProtectedInfo(),
+				'history'	=> $this->session->getHistory()
+			]);
+
+			$this->session->markAsSynced();
+
+			return;
 		}
 	}
 }

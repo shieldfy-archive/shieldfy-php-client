@@ -141,6 +141,13 @@ class RequestCollector implements Collectable
 
     }
 
+    public function getProtectedInfo()
+    {
+        $info = $this->getInfo();
+        //TODO: add filter to strip (cookie info , files ,   passwords  , creditcards .. etc)
+        return $info;
+    }
+
     public function getHistoryInfo()
     {
         return [
