@@ -78,19 +78,26 @@ abstract class MonitorBase implements Dispatchable
 			echo $this->name.'<br />';
 			print_r($judgment);
 			//file_put_contents('./log.txt',$this->name."\n".print_r($judgment,1));
-
+			//generate activityid
+			//
 			$this->trigger('activity',[
-				'host' 		=> $this->collectors['request']->getHost(),
-				'user' 		=> $this->collectors['user']->getId(),
-				'monitor'	=> $this->name,
-				'judgment'	=> $judgment,
-				'info'		=> $this->collectors['request']->getProtectedInfo(),
-				'history'	=> $this->session->getHistory()
+				'incidentId' 	=> $this->generateIncidentId($this->collectors['user']->getId()),
+				'host' 			=> $this->collectors['request']->getHost(),
+				'sessionId' 	=> $this->collectors['user']->getSessionId(),
+				'monitor'		=> $this->name,
+				'judgment'		=> $judgment,
+				'info'			=> $this->collectors['request']->getProtectedInfo(),
+				'history'		=> $this->session->getHistory()
 			]);
 
 			$this->session->markAsSynced();
 
 			return;
 		}
+	}
+
+	private function generateIncidentId($userId)
+	{
+		return $userId.time();
 	}
 }
