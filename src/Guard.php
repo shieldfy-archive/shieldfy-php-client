@@ -112,11 +112,10 @@ class Guard
             $install = (new Installer($requestCollector,$this->config,$this->version))->run();
         }
 
-        exit;
-
         //start new session
-        $session = new Session($userCollector, $this->config, $this->cache);
-
+        $session = new Session($userCollector, $requestCollector, $this->config, $this->cache);
+        echo 'hi';
+        exit;
 
 
         /* monitors */

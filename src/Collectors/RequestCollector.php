@@ -113,6 +113,11 @@ class RequestCollector implements Collectable
         return $data;
     }
 
+    public function getHost()
+    {
+        return $this->server['HTTP_HOST'];
+    }
+
     /**
      * get request info.
      * @TODO add function to strip sensetive data before report it (ex: passwords , tokens , creditcards ... )
