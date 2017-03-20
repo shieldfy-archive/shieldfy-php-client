@@ -68,12 +68,12 @@ class Installer implements Dispatchable, Exceptionable
         $data_path = $this->config['rootDir'].'/data';
         file_put_contents($data_path.'/installed', time());
 
-        if(isset($data['upload'])) file_put_contents($data_path.'/upload', json_encode($data['upload']));
-        if(isset($data['request'])) file_put_contents($data_path.'/request', json_encode($data['request']));
-        if(isset($data['api'])) file_put_contents($data_path.'/api', json_encode($data['api']));
-        if(isset($data['exceptions'])) file_put_contents($data_path.'/exceptions', json_encode($data['exceptions']));
-        if(isset($data['query'])) file_put_contents($data_path.'/query', json_encode($data['query']));
-        if(isset($data['view'])) file_put_contents($data_path.'/view', json_encode($data['view']));
+        if(isset($data['upload'])) file_put_contents($data_path.'/upload.json', $data['upload']);
+        if(isset($data['request'])) file_put_contents($data_path.'/request.json', $data['request']);
+        if(isset($data['api'])) file_put_contents($data_path.'/api.json', $data['api']);
+        if(isset($data['exceptions'])) file_put_contents($data_path.'/exceptions.json', $data['exceptions']);
+        if(isset($data['query'])) file_put_contents($data_path.'/query.json', $data['query']);
+        if(isset($data['view'])) file_put_contents($data_path.'/view.json', $data['view']);
     }
 
 }

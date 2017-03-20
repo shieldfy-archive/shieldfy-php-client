@@ -51,6 +51,7 @@ class Guard
      */
     protected $config;
     protected $cache;
+    protected $session;
 
     /**
      * Initialize Shieldfy guard.
@@ -113,21 +114,23 @@ class Guard
         }
 
         //start new session
-        $session = new Session($userCollector, $requestCollector, $this->config, $this->cache);
-        echo 'hi';
-        exit;
+        $this->session = new Session($userCollector, $requestCollector, $this->config, $this->cache);
+
+        // echo $userCollector->getSessionId();
+        // echo 'hi';
+        // exit;
 
 
         /* monitors */
-        $monitors = new MonitorsBag($this->config,
-                                    $this->cache,
-                                    [
-                                        'exceptions' => $exceptionsCollector,
-                                        'request'    => $requestCollector,
-                                        'user'       => $userCollector,
-                                        'code'       => $codeCollector
-                                    ]);
-        $monitors->run();
+        // $monitors = new MonitorsBag($this->config,
+        //                             $this->cache,
+        //                             [
+        //                                 'exceptions' => $exceptionsCollector,
+        //                                 'request'    => $requestCollector,
+        //                                 'user'       => $userCollector,
+        //                                 'code'       => $codeCollector
+        //                             ]);
+        // $monitors->run();
 
         $this->exposeHeaders();
 
@@ -143,6 +146,10 @@ class Guard
         return false;
     }
 
+    public function __destruct(){
+        //everything going good lets save this session for next run
+        $this->session->save();
+    }
 
     private function exposeHeaders()
     {

@@ -41,7 +41,7 @@ class RequestCollector implements Collectable
     /**
      * @var request score
      */
-    protected $score;
+    protected $score = 0;
 
     /**
      * constructor.
@@ -139,5 +139,13 @@ class RequestCollector implements Collectable
 
         return $info;
 
+    }
+
+    public function getHistoryInfo()
+    {
+        return [
+            'method' => $this->requestMethod,
+            'uri' => $this->server['REQUEST_URI']
+        ];
     }
 }

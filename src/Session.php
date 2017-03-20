@@ -14,10 +14,12 @@ class Session implements Dispatchable,Exceptionable
     use Dispatcher;
     use Exceptioner;
 
+    protected $isNew = false;
     protected $user;
     protected $request;
     protected $cache;
     protected $sessionId;
+    protected $history = [];
 
     public function __construct(UserCollector $user, RequestCollector $request, Config $config, CacheInterface $cache)
     {
@@ -35,6 +37,7 @@ class Session implements Dispatchable,Exceptionable
     public function loadNewUser()
     {
         echo 'loading new user';
+        $this->isNew = true;
         $response = $this->trigger('session',[
             'host'=>$this->request->getHost(),
             'user'=>$this->user->getInfo()
@@ -51,10 +54,23 @@ class Session implements Dispatchable,Exceptionable
     public function loadExistingUser()
     {
         echo 'loading excisting user';
+        $user = $this->cache->get($this->user->getId());
+        $this->user->setSessionId($user['sessionId']);
+        $this->user->setScore($user['score']);
+        $this->history = $this->cache->get($this->user->getSessionId());
     }
 
+    /**
+     * Save the current session
+     */
     public function save()
     {
+        if($this->isNew){
+            //save the user session
+            $this->cache->set($this->user->getId(), $this->user->getInfo());
+        }
 
+        $this->history[time()] = $this->request->getHistoryInfo();
+        $this->cache->set($this->user->getSessionId(),$this->history);
     }
 }

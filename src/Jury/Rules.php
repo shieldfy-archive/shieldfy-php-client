@@ -24,7 +24,6 @@ class Rules implements Exceptionable
         $this->config = $config;
 
         $bagFile = $config['rootDir'].'/data/'.$name.'.json';
-
         if(!file_exists($bagFile) || !is_readable($bagFile)){
             $this->throwException(new RulesNotFoundException);
         }
@@ -32,7 +31,6 @@ class Rules implements Exceptionable
         //parse json file
         $rules = file_get_contents($bagFile);
         $decodedRules =  json_decode($rules,1);
-
         if(!$decodedRules || json_last_error() !== JSON_ERROR_NONE)
         {
             $this->throwException(new RulesNotFoundException);
