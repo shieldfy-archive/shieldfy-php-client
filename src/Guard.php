@@ -115,8 +115,7 @@ class Guard
 
 
         $this->catchCallbacks($requestCollector,$this->config);
-        echo 'break';
-        exit;
+        
         //check the installation
         if(!$this->isInstalled())
         {

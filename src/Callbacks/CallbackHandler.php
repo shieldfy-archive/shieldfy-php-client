@@ -23,7 +23,7 @@ class CallbackHandler
     {
 
         if(!isset($this->request->server['HTTP_X_SHIELDFY_CALLBACK'])){
-            $this->respond()->json(['status'=>'error'],404,'Callback not found');
+            return; //no callback
         }
         $callback = $this->request->server['HTTP_X_SHIELDFY_CALLBACK'];
         if(!isset($this->callbacks[$callback])){
