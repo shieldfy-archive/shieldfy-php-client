@@ -4,6 +4,7 @@ namespace shieldfy;
 use Shieldfy\Config;
 use Shieldfy\Installer;
 use Shieldfy\Session;
+use Shieldfy\Callbacks\CallbackHandler;
 use Shieldfy\Cache\CacheManager;
 use Shieldfy\Monitors\MonitorsBag;
 use Shieldfy\Collectors\UserCollector;
@@ -90,10 +91,15 @@ class Guard
         }
         $this->cache = $cache;
 
+
+
         //start shieldfy guard
         $this->startGuard();
 
     }
+
+
+
 
     /**
       * start the actual guard
@@ -107,10 +113,14 @@ class Guard
         $userCollector = new UserCollector($requestCollector);
         $codeCollector = new CodeCollector;
 
+
+        $this->catchCallbacks($requestCollector,$this->config);
+        echo 'break';
+        exit;
         //check the installation
         if(!$this->isInstalled())
         {
-            $install = (new Installer($requestCollector,$this->config,$this->version))->run();
+            $install = (new Installer($requestCollector,$this->config))->run();
         }
 
         //start new session
@@ -138,6 +148,11 @@ class Guard
         echo '<br />starting the guard <br />';
     }
 
+    public function catchCallbacks(RequestCollector $request,Config $config)
+    {
+        (new CallbackHandler($request,$config))->catchCallback();
+    }
+
 
     public function isInstalled()
     {
@@ -149,7 +164,10 @@ class Guard
 
     public function __destruct(){
         //everything going good lets save this session for next run
-        $this->session->save();
+        if($this->session != null){
+            $this->session->save();
+        }
+
     }
 
     private function exposeHeaders()

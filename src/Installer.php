@@ -23,13 +23,11 @@ class Installer implements Dispatchable, Exceptionable
      */
     protected $config;
     protected $request;
-    protected $sdk_version;
 
-    public function __construct(RequestCollector $request,Config $config,$sdk_version)
+    public function __construct(RequestCollector $request,Config $config)
     {
         $this->config = $config;
         $this->request = $request;
-        $this->sdk_version = $sdk_version;
     }
 
     public function run()
@@ -38,7 +36,7 @@ class Installer implements Dispatchable, Exceptionable
             'host'=>$this->request->server['HTTP_HOST'],
             'https'=>$this->request->isSecure(),
             'lang' => 'php',
-            'sdk_version'=>$this->sdk_version,
+            'sdk_version'=>$this->config['version'],
             'server'=> isset($this->request->server['SERVER_SOFTWARE'])?$this->request->server['SERVER_SOFTWARE']:'NA',
             'php_version'=>PHP_VERSION,
             'sapi_type' =>@php_sapi_name(),
