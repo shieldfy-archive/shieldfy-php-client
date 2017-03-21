@@ -21,18 +21,38 @@ class CallbackHandler
 
     public function catchCallback()
     {
-        if(isset($this->request->server['HTTP_X_SHIELDFY_CALLBACK']))
-        {
-            //callback needs catch
-            $callback = $this->request->server['HTTP_X_SHIELDFY_CALLBACK'];
-            if(!isset($this->callbacks[$callback])){
-                //throw exception
-                $this->respond()->json(['status'=>'error'],404,'Callback not found');
-            }
 
-            $callbackClass = $this->callbacks[$callback];
-            $callback = new $callbackClass($this->config);
-            $callback->handle();
+        if(!isset($this->request->server['HTTP_X_SHIELDFY_CALLBACK'])){
+            $this->respond()->json(['status'=>'error'],404,'Callback not found');
         }
+        $callback = $this->request->server['HTTP_X_SHIELDFY_CALLBACK'];
+        if(!isset($this->callbacks[$callback])){
+            $this->respond()->json(['status'=>'error'],404,'Callback not found');
+        }
+
+        if(!$this->verify())
+        {
+            $this->respond()->json(['status'=>'error'],401,'Unauthorized callback');
+        }
+
+        $callbackClass = $this->callbacks[$callback];
+        $callback = new $callbackClass($this->config);
+        $callback->handle();
+
+    }
+
+    /**
+     * Verify call token
+     * @return boolean result
+     */
+    private function verify()
+    {
+        if(!isset($this->request->server['HTTP_X_SHIELDFY_CALLBACK_TOKEN'])) return false;
+        $token = $this->request->server['HTTP_X_SHIELDFY_CALLBACK_TOKEN'];
+        $localToken = hash_hmac('sha256',$this->config['app_key'],$this->config['app_secret']);
+        if($localToken === $token){
+            return true;
+        }
+        return false;
     }
 }
