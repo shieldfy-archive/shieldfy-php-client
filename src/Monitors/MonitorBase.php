@@ -1,14 +1,18 @@
 <?php
 namespace Shieldfy\Monitors;
 use Shieldfy\Config;
+use Shieldfy\Session;
 use Shieldfy\Cache\CacheInterface;
 
 use Shieldfy\Dispatcher\Dispatcher;
 use Shieldfy\Dispatcher\Dispatchable;
 
+use Shieldfy\Exceptions\Exceptioner;
+
 abstract class MonitorBase implements Dispatchable
 {
 	use Dispatcher;
+	use Exceptioner;
 	/**
 	 * @var Config $config
 	 * @var CacheInterface $cache
@@ -80,6 +84,7 @@ abstract class MonitorBase implements Dispatchable
 			//file_put_contents('./log.txt',$this->name."\n".print_r($judgment,1));
 			//generate activityid
 			//
+			/*
 			$this->trigger('activity',[
 				'incidentId' 	=> $this->generateIncidentId($this->collectors['user']->getId()),
 				'host' 			=> $this->collectors['request']->getHost(),
@@ -91,7 +96,7 @@ abstract class MonitorBase implements Dispatchable
 			]);
 
 			$this->session->markAsSynced();
-
+			*/
 			return;
 		}
 	}

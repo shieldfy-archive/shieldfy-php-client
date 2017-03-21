@@ -2,6 +2,7 @@
 namespace Shieldfy\Monitors;
 
 use Shieldfy\Config;
+use Shieldfy\Session;
 use Shieldfy\Cache\CacheInterface;
 
 class MonitorsBag
@@ -29,6 +30,7 @@ class MonitorsBag
 	 */
 	protected $config;
 	protected $cache;
+	protected $session;
 	protected $collectors;
 
 	/**
@@ -37,10 +39,11 @@ class MonitorsBag
 	 * @param CacheInterface $cache
 	 * @param array $collectors
 	 */
-	public function __construct(Config $config,CacheInterface $cache,array $collectors)
+	public function __construct(Config $config,CacheInterface $cache,Session $session,array $collectors)
 	{
 		$this->config = $config;
 		$this->cache = $cache;
+		$this->session = $session;
 		$this->collectors = $collectors;
 	}
 
@@ -50,7 +53,7 @@ class MonitorsBag
 		{
 			if(!in_array($monitorName, $this->config['disable']))
 			{
-				(new $monitorClass($this->config,$this->cache,$this->collectors))->run();
+				(new $monitorClass($this->config,$this->cache,$this->session,$this->collectors))->run();
 			}
 		}
 	}

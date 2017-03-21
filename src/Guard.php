@@ -115,7 +115,7 @@ class Guard
 
 
         $this->catchCallbacks($requestCollector,$this->config);
-        
+
         //check the installation
         if(!$this->isInstalled())
         {
@@ -163,7 +163,7 @@ class Guard
 
     public function __destruct(){
         //everything going good lets save this session for next run
-        if($this->session != null){
+        if($this->session !== null){
             $this->session->save();
         }
 

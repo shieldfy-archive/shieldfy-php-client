@@ -37,7 +37,6 @@ class Session implements Dispatchable,Exceptionable
 
     public function loadNewUser()
     {
-        echo 'loading new user';
         $this->isNew = true;
         $response = $this->trigger('session',[
             'host'=>$this->request->getHost(),
@@ -45,7 +44,6 @@ class Session implements Dispatchable,Exceptionable
         ]);
         if($response && $response->status == 'success')
         {
-            print_r($response);
             $this->sessionId = $response->sessionId;
             $this->user->setSessionId($response->sessionId);
             $this->user->setScore($response->score);
@@ -54,11 +52,15 @@ class Session implements Dispatchable,Exceptionable
 
     public function loadExistingUser()
     {
-        echo 'loading excisting user';
         $user = $this->cache->get($this->user->getId());
         $this->user->setSessionId($user['sessionId']);
         $this->user->setScore($user['score']);
         $this->history = $this->cache->get($this->user->getSessionId());
+    }
+
+    public function isNewVisit()
+    {
+        return $this->isNew;
     }
 
     public function markAsSynced()
