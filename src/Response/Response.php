@@ -5,6 +5,6 @@ trait Response
 {
     public function respond()
     {
-        return new Respond();
+        return new Respond($_SERVER['SERVER_PROTOCOL']);
     }
 }
