@@ -12,7 +12,7 @@ use Shieldfy\Exceptions\Exceptioner;
 class CacheManager implements Exceptionable
 {
     use Exceptioner;
-    
+
     /**
      * @const int SESSION_TIMEOUT
      */
@@ -52,7 +52,7 @@ class CacheManager implements Exceptionable
     public function setDriver($driverType, $config = [])
     {
         if (!isset($this->drivers[$driverType])) {
-            $this->throwException(new CacheDriverNotExistsException('Caching driver not found or supported.'));
+            $this->throwException(new CacheDriverNotExistsException('Caching driver not found or supported.',301));
             $driverType = 'null';
         }
         $driverClass = $this->drivers[$driverType];

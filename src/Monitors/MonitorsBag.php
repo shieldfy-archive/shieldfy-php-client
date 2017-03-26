@@ -13,7 +13,7 @@ class MonitorsBag
 	 */
 	private $monitors = [
 		'UserMonitor'		=>	\Shieldfy\Monitors\UserMonitor::class,
-	//	'UploadMonitor'		=>	\Shieldfy\Monitors\UploadMonitor::class,
+		'UploadMonitor'		=>	\Shieldfy\Monitors\UploadMonitor::class,
 	//	'CSRFMonitor'		=>	\Shieldfy\Monitors\CSRFMonitor::class,
 	//	'RequestMonitor'	=>	\Shieldfy\Monitors\RequestMonitor::class,
 	//	'APIMonitor'		=>	\Shieldfy\Monitors\APIMonitor::class,

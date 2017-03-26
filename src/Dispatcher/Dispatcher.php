@@ -22,7 +22,7 @@ trait Dispatcher
     public function trigger($event, $data = [])
     {
         if (!in_array($event, $this->events)) {
-            $this->throwException(new EventNotExistsException('Event '.$event.' not loaded'));
+            $this->throwException(new EventNotExistsException('Event '.$event.' not loaded',302));
             return false; //return to avoid extra execution if errors is off
         }
         $data = json_encode($data);

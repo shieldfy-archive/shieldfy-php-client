@@ -93,7 +93,7 @@ class ApiClient implements Exceptionable
 
         $res = $this->parseResult($result);
         if (!$res) {
-            $this->throwException(new ServerErrorException($this->errors['code'].':'.$this->errors['message']));
+            $this->throwException(new ServerErrorException($this->errors['message'],$this->errors['code']));
         }
 
         return $res;
@@ -111,7 +111,7 @@ class ApiClient implements Exceptionable
         $res = json_decode($result);
         if (!$res) {
             $this->errors = [
-                'code'   => '001',
+                'code'   => '101',
                 'message'=> 'Unexpected Server Response',
             ];
 

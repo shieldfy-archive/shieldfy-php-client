@@ -83,6 +83,7 @@ class ExceptionsCollector implements Collectable
         $line =  (isset($error['line']))?$error['line']:0;
 
         $this->handleExceptions(new ErrorException($message,0,$severity,$file,$line),false);
+
     }
 
 	/**
@@ -97,6 +98,16 @@ class ExceptionsCollector implements Collectable
 
         if(strpos($exception->getFile(), $this->config['rootDir']) !== false){
             $this->logInternalError($exception);
+            //if debug and no external error handler show the error
+            if(
+                $is_exception &&
+                $this->original_exception_handler === null &&
+                $exception->getCode() > 0 &&
+                $this->config['debug'] === true
+                )
+            {
+                throw $exception;
+            }
         }
 
         if($is_exception && $this->original_exception_handler !== null){
@@ -115,7 +126,7 @@ class ExceptionsCollector implements Collectable
         $filename = $path.'/'.date('Ymd').'.log';
         $error = $exception->getCode().'-'.$exception->getMessage().'-'.$exception->getFile().'-'.$exception->getLine()."\n";
         file_put_contents($filename, $error, FILE_APPEND | LOCK_EX);
-        return true;
+        return;
     }
 
     /**

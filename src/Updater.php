@@ -40,7 +40,7 @@ class Updater implements Dispatchable, Exceptionable
         ]);
 
         if(!$response){
-            $this->throwException(new InstallationException('Unknown error happened','000'));
+            $this->throwException(new InstallationException('Unknown error happened',200));
             return;
         }
 
