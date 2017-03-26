@@ -16,7 +16,6 @@ class UploadMonitor extends MonitorBase
 		//get the request info
 		$request = $this->collectors['request'];
 		$info = $request->getInfo('files');
-		//print_r($info);exit;
 
 		if(empty($info['files'])) return;
 

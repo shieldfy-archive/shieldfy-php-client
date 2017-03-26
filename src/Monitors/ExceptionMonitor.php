@@ -39,7 +39,7 @@ class ExceptionMonitor extends MonitorBase
 				$score += $result['score'];
 				$infection[] = [
 					'score' 	=> $result['score'],
-					'ruleIds' 	=> $result['ruleIds']
+					'ruleIds' 	=> $result['ids']
 				];
 			}
 		}

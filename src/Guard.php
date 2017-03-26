@@ -1,6 +1,7 @@
 <?php
 namespace shieldfy;
 
+use PDO;
 use Shieldfy\Config;
 use Shieldfy\Installer;
 use Shieldfy\Session;
@@ -11,6 +12,7 @@ use Shieldfy\Collectors\UserCollector;
 use Shieldfy\Collectors\RequestCollector;
 use Shieldfy\Collectors\ExceptionsCollector;
 use Shieldfy\Collectors\CodeCollector;
+use Shieldfy\Collectors\QueriesCollector;
 use Shieldfy\Exceptions\ExceptionHandler;
 
 class Guard
@@ -53,6 +55,7 @@ class Guard
     protected $config;
     protected $cache;
     protected $session;
+    protected $collectors;
 
     /**
      * Initialize Shieldfy guard.
@@ -91,8 +94,6 @@ class Guard
         }
         $this->cache = $cache;
 
-
-
         //start shieldfy guard
         $this->startGuard();
 
@@ -112,6 +113,19 @@ class Guard
         $requestCollector = new RequestCollector($_GET,$_POST,$_SERVER, $_COOKIE, $_FILES);
         $userCollector = new UserCollector($requestCollector);
         $codeCollector = new CodeCollector;
+        $queriesCollector = new QueriesCollector;
+
+        $this->collectors = [
+            'exceptions' => $exceptionsCollector,
+            'request'    => $requestCollector,
+            'user'       => $userCollector,
+            'code'       => $codeCollector,
+            'queries'    => $queriesCollector
+        ];
+        // if($this->attachedDB !== null && $this->attachedDB instanceof PDO)
+        // {
+        //     $queriesCollector->attachDB($this->attachedDB);
+        // }
 
 
         $this->catchCallbacks($requestCollector,$this->config);
@@ -128,21 +142,12 @@ class Guard
         //start new session
         $this->session = new Session($userCollector, $requestCollector, $this->config, $this->cache);
 
-        // echo $userCollector->getSessionId();
-        // echo 'hi';
-        // exit;
-
 
         /* monitors */
         $monitors = new MonitorsBag($this->config,
                                     $this->cache,
                                     $this->session,
-                                    [
-                                        'exceptions' => $exceptionsCollector,
-                                        'request'    => $requestCollector,
-                                        'user'       => $userCollector,
-                                        'code'       => $codeCollector
-                                    ]);
+                                    $this->collectors);
         $monitors->run();
 
         $this->exposeHeaders();
@@ -155,6 +160,11 @@ class Guard
         (new CallbackHandler($request,$config))->catchCallback();
     }
 
+
+    public function attachDB(PDO $pdo)
+    {
+        return $this->collectors['queries']->attachDB($pdo);
+    }
 
     public function isInstalled()
     {

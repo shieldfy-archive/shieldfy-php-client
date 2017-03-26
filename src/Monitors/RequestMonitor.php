@@ -20,33 +20,35 @@ class RequestMonitor extends MonitorBase
 		$info = $request->getInfo();
 		$this->issue('request');
 
-		$score = 0;
-		$judgment = [];
+		$judgment = [
+			'score'=>0,
+			'infection'=>[]
+		];
 
 		foreach($info['get'] as $name => $value){
-			$result = $this->sentence($value,'GET');
+			$result = $this->sentence($value);
 			if($result['score']){
-				$score += $result['score'];
+				$judgment['score'] += $result['score'];
 				$judgment['infection'][$name] = [
 					'score'=>$score,
-					'ruleIds'=>$result['ruleIds']
+					'ruleIds'=>$result['ids']
 				];
 			}
 		}
 
 		foreach($info['post'] as $name => $value){
-			$result = $this->sentence($value,'POST');
+			$result = $this->sentence($value);
 			if($result['score']){
-				$score += $result['score'];
+				$judgment['score'] += $result['score'];
 				$judgment['infection'][$name] = [
 					'score'=>$score,
-					'ruleIds'=>$result['ruleIds']
+					'ruleIds'=>$result['ids']
 				];
 			}
 		}
 
 		//update request sensetivity
-		$request->setScore($score);
+		$request->setScore($judgment['score']);
 
 		$this->handle($judgment);
 	}
