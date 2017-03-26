@@ -31,7 +31,7 @@ class Rule
 
         if($target !== '*' && $target !== $this->data['target']) return;
         if($tag !== '*' && $tag !== $this->data['tag']) return;
-
+        
         if($this->data['type'] == 'EQUAL') $result = $this->runEqual($value);
         if($this->data['type'] == 'CONTAIN') $result = $this->runContain($value);
         if($this->data['type'] == 'PREG') $result = $this->runPreg($value);

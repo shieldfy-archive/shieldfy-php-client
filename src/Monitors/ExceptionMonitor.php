@@ -5,6 +5,8 @@ use Shieldfy\Jury\Judge;
 class ExceptionMonitor extends MonitorBase
 {
 	use Judge;
+
+	protected $name = 'exceptions';
 	/**
 	 * run the monitor
 	 * Monitor for expolits that generates errors
@@ -43,10 +45,11 @@ class ExceptionMonitor extends MonitorBase
 				];
 			}
 		}
+		$code = $this->collectors['code']->collectFromFile($exception->getFile(),$exception->getLine());
 		$this->handle([
 			'score'=>$score,
 			'infection'=>$infection
-		]);
+		], $code );
 	}
 
 	protected function isInScope(Throwable $exception)

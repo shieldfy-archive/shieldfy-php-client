@@ -12,12 +12,16 @@ class Respond
         $this->protocol = $protocol;
     }
 
-    public function block($incidentId)
+    public function block($incidentId,$return = false)
     {
         header($this->protocol.' '.self::BLOCKSTATUS.' '.self::BLOCKMESSAGE);
         header('Content-Type: text/html; charset=utf-8');
         $blockHTML = file_get_contents(__dir__.'/block.html');
-        echo str_replace('{incidentId}', $incidentId, $blockHTML);
+        $response = str_replace('{incidentId}', $incidentId, $blockHTML);
+        if($return){
+            return $response;
+        }
+        echo $response;
         $this->halt();
     }
 

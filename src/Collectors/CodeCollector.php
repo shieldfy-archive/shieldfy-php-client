@@ -24,18 +24,30 @@ class CodeCollector implements Collectable
             'line' => $line,
             'content'=> $content
         ];
+        return $this->code;
     }
 
-    public function collectFromText($text = '',$line)
+    public function collectFromText($text = '',$value)
     {
+
         $content = explode("\n",$text);
-        $start = $line - 4;
-        $content = array_slice($content, $start < 0 ? 0 : $start, 7,true);
+
+        $code = [];
+        for ($i=0; $i < count($content); $i++) {
+            if(stripos($content[$i],$value) !== false){
+                $line = $i;
+                $start = $i - 4;
+                $code = array_slice($content, $start < 0 ? 0 : $start, 7,true);
+                break;
+            }
+        }
+
         $this->code = [
             'file' => 'none',
             'line' => $line,
-            'content' => $content
+            'content' => $code
         ];
+        return $this->code;
     }
 
     public function getInfo()

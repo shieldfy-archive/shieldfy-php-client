@@ -130,7 +130,7 @@ class RequestCollector implements Collectable
             'created'       => $this->created,
             'score'         => $this->score
         ];
-
+        $info['uri'] = $this->server['REQUEST_URI'];
         if($parameter == '' || $parameter == 'get') $info['get'] = $this->prepareRequestParameter('get',$this->get);
         if($parameter == '' || $parameter == 'post') $info['post'] = $this->prepareRequestParameter('post',$this->post);
         if($parameter == '' || $parameter == 'server') $info['server'] = $this->prepareRequestParameter('server',$this->server);
@@ -144,6 +144,11 @@ class RequestCollector implements Collectable
     public function getProtectedInfo()
     {
         $info = $this->getInfo();
+
+        unset($info['server']);
+        unset($info['cookies']);
+        unset($info['files']);
+
         //TODO: add filter to strip (cookie info , files ,   passwords  , creditcards .. etc)
         return $info;
     }

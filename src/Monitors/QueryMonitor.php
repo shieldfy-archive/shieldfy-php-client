@@ -6,6 +6,8 @@ class QueryMonitor extends MonitorBase
 
 	use Judge;
 
+	protected $name = 'query';
+
 	/**
 	 * run the monitor
 	 */
@@ -34,58 +36,7 @@ class QueryMonitor extends MonitorBase
 		if(empty($suspicious)) return;
 		$this->analyzeUnEscapedParameters($suspicious, $query,$bindings,$source);
 
-		/*
-		if($source === 'statement'){
-			$this->analyzeStatement($query,$params);
-			return;
-		}
-		$this->analyzeGeneral($query,$params);
-		*/
-		// echo '<hr />';
-		// print_r($source);
-		// echo '<br />';
-		// print_r($query);
-		// echo '<br />';
-		// print_r($params);
-		// echo '<hr />';
 	}
-
-	// protected function analyzeStatement($query,$bindings)
-	// {
-	// 	$request = $this->collectors['request'];
-	// 	$info = $request->getInfo();
-	// 	$params = array_merge($info['get'],$info['post']);
-	// 	$suspicious = [];
-	// 	foreach($params as $key => $value)
-	// 	{
-	// 		foreach($bindings as $bind)
-	// 		{
-	// 			if($bind == $value){
-	// 				$suspicious[$key] = $value;
-	// 			}
-	// 		}
-	// 	}
-	//
-	// 	if(empty($suspicious)) return;
-	// 	$this->analyzeUnEscapedParameters($suspicious, $query,$bindings);
-	//
-	// }
-	// protected function analyzeGeneral($query,$args)
-	// {
-	// 	$request = $this->collectors['request'];
-	// 	$info = $request->getInfo();
-	// 	$params = array_merge($info['get'],$info['post']);
-	// 	$suspicious = [];
-	// 	foreach($params as $key => $value)
-	// 	{
-	// 		if(stripos($query, $value) !== 0)
-	// 		{
-	// 			$suspicious[$key] = $value;
-	// 		}
-	// 	}
-	// 	if(empty($suspicious)) return;
-	// 	$this->analyzeUnEscapedParameters($suspicious, $query,$args);
-	// }
 
 	protected function analyzeUnEscapedParameters($suspicious, $query , $bindings,$source)
 	{
@@ -110,12 +61,11 @@ class QueryMonitor extends MonitorBase
 
 			}
 		}
-		$judgment['info'] = [
+		$code = [
 			'source'    => $source,
 			'query'		=> $query,
 			'bindings'	=> $bindings
 		];
-		print_r($judgment);
-		$this->handle($judgment);
+		$this->handle($judgment,$code);
 	}
 }

@@ -3,6 +3,7 @@ namespace Shieldfy\Monitors;
 
 class HeadersMonitor extends MonitorBase
 {
+	protected $name = 'headers';
 	/**
 	 * run the monitor
 	 */
