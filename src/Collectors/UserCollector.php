@@ -66,6 +66,17 @@ class UserCollector implements Collectable
         }
         $this->userIp = $userIp;
     }
+
+    /**
+     * get user ID.
+     *
+     * @return ID
+     */
+    public function getIp()
+    {
+        return $this->userIp;
+    }
+
     /**
      * Set user ID.
      */
@@ -73,6 +84,17 @@ class UserCollector implements Collectable
     {
         $this->userId = ip2long($this->userIp);
     }
+
+    /**
+     * get user ID.
+     *
+     * @return ID
+     */
+    public function getId()
+    {
+        return $this->userId;
+    }
+
     /**
      * Set User agent.
      *
@@ -84,15 +106,7 @@ class UserCollector implements Collectable
             $this->userAgent = $server['HTTP_USER_AGENT'];
         }
     }
-    /**
-     * get user ID.
-     *
-     * @return ID
-     */
-    public function getId()
-    {
-        return $this->userId;
-    }
+
     /**
      * Set user session id.
      *
