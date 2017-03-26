@@ -59,6 +59,7 @@ abstract class MonitorBase implements Dispatchable
 	 */
 	protected function handle($judgment)
 	{
+		if(!isset($judgment['score'])) return; //no judgment if no score
 		if($judgment['score'] < self::LOW) return; //safe
 
 		/**
@@ -70,12 +71,13 @@ abstract class MonitorBase implements Dispatchable
 			'incidentId' 	=> $incidentId,
 			'host' 			=> $this->collectors['request']->getHost(),
 			'sessionId' 	=> $this->collectors['user']->getSessionId(),
+			'ip'			=> $this->collectors['user']->getIp(), //just caution if initial session failed for any reason
 			'monitor'		=> $this->name,
 			'judgment'		=> $judgment,
 			'info'			=> $this->collectors['request']->getProtectedInfo(),
 			'history'		=> $this->session->getHistory()
 		]);
-		
+
 		/**
 		 * { incidentId: '32322611211490285296',
 		 *	  host: 'php.flash.app',

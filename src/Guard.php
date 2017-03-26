@@ -122,6 +122,9 @@ class Guard
             $install = (new Installer($requestCollector,$this->config))->run();
         }
 
+        //check if installation failed for any reason ans skip for current session
+        if(!$this->isInstalled()) return;
+
         //start new session
         $this->session = new Session($userCollector, $requestCollector, $this->config, $this->cache);
 
