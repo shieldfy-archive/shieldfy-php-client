@@ -48,6 +48,7 @@ class QueryMonitor extends MonitorBase
 
 		foreach($suspicious as $key => $value)
 		{
+			$value  = $this->normalize($value);
 			$result = $this->sentence($value);
 			$score = 0;
 			$infection = [];

@@ -7,7 +7,7 @@
         "shieldfy-php-client"
     ],
     "homepage": "https://github.com/shieldfy/shieldfy-php-client",
-    "license": "MIT",
+    "license": "SCL",
     "authors": [
         {
             "name": "Shieldfy Inc.",
@@ -16,7 +16,8 @@
         }
     ],
     "require": {
-        "php" : "~5.6|~7.0"
+        "php" : "~5.6|~7.0",
+        "shieldfy/normalizer":"1.*"
     },
     "require-dev": {
         "phpunit/phpunit" : "~4.0||~5.0",

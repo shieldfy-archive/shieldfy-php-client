@@ -31,9 +31,10 @@ class ViewMonitor extends MonitorBase
 		//run rules on request
 		if(empty($suspicious)) return $content;
 		$this->issue('view');
-		
+
 		foreach($suspicious as $key => $value)
 		{
+			$value  = $this->normalize($value);
 			$result = $this->sentence($value);
 			$score = 0;
 			$infection = [];

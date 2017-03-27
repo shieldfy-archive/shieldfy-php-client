@@ -26,6 +26,7 @@ class RequestMonitor extends MonitorBase
 		];
 
 		foreach($info['get'] as $name => $value){
+			$value  = $this->normalize($value);
 			$result = $this->sentence($value);
 			if($result['score']){
 				$judgment['score'] += $result['score'];

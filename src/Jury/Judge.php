@@ -1,7 +1,7 @@
 <?php
 namespace Shieldfy\Jury;
 use Shieldfy\Jury\Rules;
-
+use Shieldfy\Normalizer\Normalizer;
 trait Judge
 {
 
@@ -13,6 +13,13 @@ trait Judge
     public function issue($name)
     {
         $this->rules = (new Rules($this->config,$name))->build();
+    }
+
+    public function normalize($value)
+    {
+        //normalizer
+        $value = (new Normalizer($value))->runAll();
+        return $value;
     }
 
     /* the judge */
