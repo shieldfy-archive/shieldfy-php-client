@@ -51,6 +51,8 @@ class Guard
     /**
      * @var Config $config
      * @var CacheManager $cache
+     * @var Session $session
+     * @var array $collectors
      */
     protected $config;
     protected $cache;
@@ -61,7 +63,7 @@ class Guard
      * Initialize Shieldfy guard.
      *
      * @param array $config
-     *
+     * @param CacheInterface $cache
      * @return object
      */
     public static function init(array $config, $cache = null)
@@ -74,6 +76,9 @@ class Guard
 
     /**
      * Create a new Guard Instance
+     * @param array $config
+     * @param CacheInterface $cache
+     * return initialized guard
      */
     public function __construct(array $config, $cache = null)
     {
@@ -99,9 +104,6 @@ class Guard
 
     }
 
-
-
-
     /**
       * start the actual guard
       * @return void
@@ -122,11 +124,6 @@ class Guard
             'code'       => $codeCollector,
             'queries'    => $queriesCollector
         ];
-        // if($this->attachedDB !== null && $this->attachedDB instanceof PDO)
-        // {
-        //     $queriesCollector->attachDB($this->attachedDB);
-        // }
-
 
         $this->catchCallbacks($requestCollector,$this->config);
 
@@ -152,20 +149,45 @@ class Guard
 
         $this->exposeHeaders();
 
-        echo '<br />starting the guard <br />';
     }
 
+
+    /**
+     * Catch callbacks from Shieldfy API
+     * @param  RequestCollector $request
+     * @param  Config           $config
+     * @return void
+     */
     public function catchCallbacks(RequestCollector $request,Config $config)
     {
         (new CallbackHandler($request,$config))->catchCallback();
     }
 
-
+    /**
+     * Attach PDO Database to analyze
+     * @param  PDO    $pdo
+     * @return TraceablePDO
+     */
     public function attachDB(PDO $pdo)
     {
         return $this->collectors['queries']->attachDB($pdo);
     }
 
+    /**
+     * Attach external query handler (used by frameworks query event handlers)
+     * @param mixed $query
+     * @return void
+     */
+    public function attachQuery($query)
+    {
+        $query = $this->collectors['queries'];
+        $query->handler('event' , $query->sql, $query->bindings);
+    }
+
+    /**
+     * check if guard installed
+     * @return boolean
+     */
     public function isInstalled()
     {
         if (file_exists($this->config['rootDir'].'/data/installed')) {
@@ -174,14 +196,20 @@ class Guard
         return false;
     }
 
+    /**
+     * Save current session , request done
+     */
     public function __destruct(){
         //everything going good lets save this session for next run
         if($this->session !== null){
             $this->session->save();
         }
-
     }
 
+    /**
+     * Expose useful headers
+     * @return void
+     */
     private function exposeHeaders()
     {
         if (function_exists('header_remove')) {

@@ -22,6 +22,13 @@ class Session implements Dispatchable,Exceptionable
     protected $sessionId;
     protected $history = [];
 
+    /**
+     * Start new session
+     * @param UserCollector    $user
+     * @param RequestCollector $request
+     * @param Config           $config
+     * @param CacheInterface   $cache
+     */
     public function __construct(UserCollector $user, RequestCollector $request, Config $config, CacheInterface $cache)
     {
         $this->config = $config;
@@ -35,6 +42,9 @@ class Session implements Dispatchable,Exceptionable
         $this->loadExistingUser();
     }
 
+    /**
+     * Session not found , lets load new user
+     */
     public function loadNewUser()
     {
         $this->isNew = true;
@@ -50,6 +60,9 @@ class Session implements Dispatchable,Exceptionable
         }
     }
 
+    /**
+     * Session found , load existing user
+     */
     public function loadExistingUser()
     {
         $user = $this->cache->get($this->user->getId());
@@ -58,11 +71,18 @@ class Session implements Dispatchable,Exceptionable
         $this->history = $this->cache->get($this->user->getSessionId());
     }
 
+    /**
+     * Is new visit
+     * @return boolean
+     */
     public function isNewVisit()
     {
         return $this->isNew;
     }
 
+    /**
+     * Mark as synced to avoid duplication
+     */
     public function markAsSynced()
     {
         $this->isSynced = true;
@@ -88,6 +108,9 @@ class Session implements Dispatchable,Exceptionable
         $this->cache->set($this->user->getSessionId(),$this->history);
     }
 
+    /**
+     * Retrive session history
+     */
     public function getHistory()
     {
         return $this->history;

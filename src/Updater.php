@@ -22,11 +22,17 @@ class Updater implements Dispatchable, Exceptionable
      */
     protected $config;
 
+    /**
+     * @param Config $config
+     */
     public function __construct(Config $config)
     {
         $this->config = $config;
     }
 
+    /**
+     * Run update
+     */
     public function run()
     {
         $response = $this->trigger('update',[
@@ -54,6 +60,10 @@ class Updater implements Dispatchable, Exceptionable
         }
     }
 
+    /**
+     * Save grapped data
+     * @param  [type] $data
+     */
     private function save(array $data = [])
     {
         $data_path = $this->config['rootDir'].'/data';

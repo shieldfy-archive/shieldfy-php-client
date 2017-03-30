@@ -24,12 +24,19 @@ class Installer implements Dispatchable, Exceptionable
     protected $config;
     protected $request;
 
+    /**
+     * @param RequestCollector $request [description]
+     * @param Config           $config  [description]
+     */
     public function __construct(RequestCollector $request,Config $config)
     {
         $this->config = $config;
         $this->request = $request;
     }
 
+    /**
+     * Run installation
+     */
     public function run()
     {
         $response = $this->trigger('install',[
@@ -61,6 +68,10 @@ class Installer implements Dispatchable, Exceptionable
         }
     }
 
+    /**
+     * Save grapped data
+     * @param  array $data 
+     */
     private function save(array $data = [])
     {
         $data_path = $this->config['rootDir'].'/data';

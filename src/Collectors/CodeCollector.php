@@ -31,7 +31,7 @@ class CodeCollector implements Collectable
     {
 
         $content = explode("\n",$text);
-
+        $line = 0;
         $code = [];
         for ($i=0; $i < count($content); $i++) {
             if(stripos($content[$i],$value) !== false){

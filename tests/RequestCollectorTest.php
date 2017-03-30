@@ -19,6 +19,7 @@ class RequestCollectorTest extends TestCase
             'HTTP_ORIGIN'    => 'example.com',
             'HTTP_HOST'      => 'example.com',
             'HTTP_REFERER'   => 'https://facebook.com',
+            'SERVER_PORT'    => 80
         ];
         $this->get = [
             'x'=> 1,
@@ -45,8 +46,9 @@ class RequestCollectorTest extends TestCase
         $this->assertEquals([
                 'get'=>['get.x'=>1],
                 'created'=>$this->created,
-                'score'=>null,
+                'score'=>0,
                 'method'=>'POST',
+                'uri' => '/?x=1'
             ],$this->request->getInfo('get'));
 
         $this->assertEquals($this->post,$this->request->post);
@@ -62,11 +64,13 @@ class RequestCollectorTest extends TestCase
                     'post.contact.tel'=>'111 111 111'
                 ],
                 'created'=>$this->created,
-                'score'=>null,
-                'method'=>'POST'
+                'score'=>0,
+                'method'=>'POST',
+                'uri' => '/?x=1'
             ], $this->request->getInfo('post'));
 
         $this->assertEquals($this->server,$this->request->server);
+        $this->assertEquals(false,$this->request->isSecure());
     }
 
     public function testScore()
@@ -75,5 +79,13 @@ class RequestCollectorTest extends TestCase
         $this->assertEquals($this->request->getScore(),50);
         $info = $this->request->getInfo();
         $this->assertEquals($info['score'],50);
+    }
+
+    public function testHistory()
+    {
+        $this->assertEquals([
+            'method' => 'POST',
+            'uri'    => '/?x=1'
+        ], $this->request->getHistoryInfo());
     }
 }
