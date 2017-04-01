@@ -14,11 +14,14 @@ class CodeCollector implements Collectable
     {
         if ($filePath && file_exists($filePath)) {
             $content = file($filePath);
+            array_unshift($content,'x');
+            unset($content[0]);
             $start = $line - 4;
             $content = array_slice($content, $start < 0 ? 0 : $start, 7,true);
         } else {
             $content = array("Cannot open the file ($filePath) in which the vulnerability exists ");
         }
+
         $this->code = [
             'file' => $filePath,
             'line' => $line,
