@@ -47,6 +47,7 @@ class ExceptionMonitor extends MonitorBase
 			}
 		}
 		$code = $this->collectors['code']->collectFromFile($exception->getFile(),$exception->getLine());
+		//print_r($code);exit;
 		$this->handle([
 			'score'=>$score,
 			'infection'=>$infection
