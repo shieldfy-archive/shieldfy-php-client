@@ -47,17 +47,18 @@ class Updater implements Dispatchable, Exceptionable
 
         if(!$response){
             $this->throwException(new InstallationException('Unknown error happened',200));
-            return;
+            return false;
         }
 
         if($response->status == 'error'){
             $this->throwException(new InstallationException($response->message,$response->code));
-            return;
+            return false;
         }
 
         if($response->status == 'success') {
             $this->save((array)$response->data);
         }
+        return true;
     }
 
     /**
@@ -67,7 +68,8 @@ class Updater implements Dispatchable, Exceptionable
     private function save(array $data = [])
     {
         $data_path = $this->config['rootDir'].'/data';
-        file_put_contents($data_path.'/installed', time());
+        if(!file_exists($data_path.'/installed')) file_put_contents($data_path.'/installed', time());
+        file_put_contents($data_path.'/updated', time());
 
         if(isset($data['upload'])) file_put_contents($data_path.'/upload.json', $data['upload']);
         if(isset($data['request'])) file_put_contents($data_path.'/request.json', $data['request']);

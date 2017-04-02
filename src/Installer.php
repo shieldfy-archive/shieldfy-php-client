@@ -53,24 +53,26 @@ class Installer implements Dispatchable, Exceptionable
             'display_errors'=>@ini_get('display_errors'),
         ]);
 
+
         if(!$response){
             $this->throwException(new InstallationException('Unknown error happened',200));
-            return;
+            return false;
         }
 
         if($response->status == 'error'){
             $this->throwException(new InstallationException($response->message,$response->code));
-            return;
+            return false;
         }
 
         if($response->status == 'success') {
             $this->save((array)$response->data);
         }
+        return true;
     }
 
     /**
      * Save grapped data
-     * @param  array $data 
+     * @param  array $data
      */
     private function save(array $data = [])
     {
