@@ -23,6 +23,7 @@ class CodeCollector implements Collectable
         }
 
         $this->code = [
+            'vulnerability' => 1,
             'file' => $filePath,
             'line' => $line,
             'content'=> $content

@@ -16,6 +16,10 @@ class RequestMonitor extends MonitorBase
 	 */
 	public function run()
 	{
+		/*
+		*  HTTP POLLUTION
+		*  CRLF INJECTION
+		*/
 		$request = $this->collectors['request'];
 		$info = $request->getInfo();
 		$this->issue('request');
