@@ -8,6 +8,7 @@ class ApiMonitor extends MonitorBase
 	protected $request;
 
 	protected $score = 0;
+	protected $ruleIds = [];
 	protected $infection = [];
 
 	/**
@@ -16,6 +17,7 @@ class ApiMonitor extends MonitorBase
 	public function run()
 	{
 		$this->request = $this->collectors['request'];
+		$this->issue('api');
         $this->checkForJWTViolation();
 		$this->checkForOAuthViolation();
 		if($this->score){
@@ -31,17 +33,21 @@ class ApiMonitor extends MonitorBase
         //check for headers
         if(isset($this->request->server['HTTP_AUTHORIZATION']) && strpos($this->request->server['HTTP_AUTHORIZATION'],'Bearer') !== false){
 			//check if it jwt structure
+			$jwt_token = $this->request->server['HTTP_AUTHORIZATION'];
+
+            //check for none algorithm (alg == 'none')
+            $jwt_token = str_replace('Bearer','',$jwt_token);
+
 			$tokenParts = explode('.',$jwt_token);
 			if(count($tokenParts) < 2) return;
 
-            //check for none algorithm (alg == 'none')
-            $jwt_token = str_replace('Bearer','',$request->server['HTTP_AUTHORIZATION']);
+			//exit;
             $algorithm = @json_decode( base64_decode( $tokenParts[0] ),1 )['alg'];
 
 			$result = $this->sentence($algorithm,'JWT:ALG');
 			if($result['score']){
 				$this->score += $result['score'];
-				$this->infection['server.HTTP_AUTHORIZATION'] = $result;
+				$this->infection['server.HTTP_AUTHORIZATION'] = $result['ruleIds'];
 			}
         }
 
@@ -54,14 +60,14 @@ class ApiMonitor extends MonitorBase
 			$result = $this->sentence($this->request->get['response_type'],'OAUTH:RESPONSE_TYPE');
 			if($result['score']){
 				$this->score += $result['score'];
-				$this->infection['get.response_type'] = $result;
+				$this->infection['get.response_type'] = $result['ruleIds'];
 			}
 		}
 		if(isset($this->request->get['redirect_uri'])){
 			$result = $this->sentence($this->request->get['redirect_uri'],'OAUTH:REDIRECT_URI');
 			if($result['score']){
 				$this->score += $result['score'];
-				$this->infection['get.redirect_uri'] = $result;
+				$this->infection['get.redirect_uri'] = $result['ruleIds'];
 			}
 		}
 	}

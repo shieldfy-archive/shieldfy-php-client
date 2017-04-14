@@ -27,9 +27,7 @@ class CSRFMonitor extends MonitorBase
 			$this->handle([
 				'score' => 30,
 				'infection'  => [
-					'server.origin'=>[
-						'content'=>$origin
-					]
+					'server.HTTP_ORIGIN'=>$origin
 				]
 			]);
 		}

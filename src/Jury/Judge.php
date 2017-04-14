@@ -25,17 +25,22 @@ trait Judge
     /* the judge */
     public function sentence($value,$target = '*',$tag = '*')
     {
-        $result = [
-            'score'=>0,
-            'ids'=>[]
-        ];
+        // $result = [
+        //     'score'=>0,
+        //     'ruleIds'=>[]
+        // ];
+        $score = 0;
+        $ruleIds = [];
         foreach($this->rules as $rule){
             $res = $rule->run($value,$target,$tag);
             if($res['score'] > 0){
-                $result['score'] += $res['score'];
-                $result['ids'][] = $res['id'];
+                $score += $res['score'];
+                $ruleIds[] = $res['id'];
             }
         }
-        return $result;
+        return [
+            'score'=>$score,
+            'ruleIds'=>$ruleIds
+        ];
     }
 }
