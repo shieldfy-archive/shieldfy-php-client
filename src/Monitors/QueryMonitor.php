@@ -48,18 +48,14 @@ class QueryMonitor extends MonitorBase
 
 		foreach($suspicious as $key => $value)
 		{
-			$value  = $this->normalize($value);
+		//	$value  = $this->normalize($value);
 			$result = $this->sentence($value);
 			$score = 0;
 			$infection = [];
 
 			if($result['score']){
 				$judgment['score'] += $result['score'];
-				$judgment['infection'][$key] = [
-					'score'=>$result['score'],
-					'ruleIds'=>$result['ids']
-				];
-
+				$judgment['infection'][$key] = $result['ruleIds'];
 			}
 		}
 		$code = [

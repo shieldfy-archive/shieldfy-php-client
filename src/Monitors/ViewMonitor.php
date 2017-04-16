@@ -22,8 +22,10 @@ class ViewMonitor extends MonitorBase
 		$info = $request->getInfo();
 		$params = array_merge($info['get'],$info['post']);
 		$suspicious = [];
+
 		foreach($params as $key => $value){
-			if(stristr($content, $value) !== false){
+
+			if(stripos($content, $value) !== false){
 				$suspicious[$key] = $value;
 			}
 		}
@@ -31,27 +33,32 @@ class ViewMonitor extends MonitorBase
 		//run rules on request
 		if(empty($suspicious)) return $content;
 		$this->issue('view');
+		$judgment = [
+			'score'=>0,
+			'infection'=>[]
+		];
 
 		foreach($suspicious as $key => $value)
 		{
-			$value  = $this->normalize($value);
 			$result = $this->sentence($value);
 			$score = 0;
 			$infection = [];
 
+			$r[] = $result;
 			if($result['score']){
 				$judgment['score'] += $result['score'];
-				$judgment['infection'][$key] = [
-					'score'=>$result['score'],
-					'ruleIds'=>$result['ids']
-				];
+				$judgment['infection'][$key] = $result['ruleIds'];
 			}
 		}
 
 		$code = $this->collectors['code']->collectFromText($content,$value);
 
-		$judgmentResponse = $this->handle($judgment,$code);
+		$list = headers_list();
+		if(in_array('X-Shieldfy-Status: blocked',$list)){
+			return $this->forceDefaultBlock($list);
+		}
 
+		$judgmentResponse = $this->handle($judgment,$code);
 		if($judgmentResponse) return $judgmentResponse;
 		return $content;
 	}

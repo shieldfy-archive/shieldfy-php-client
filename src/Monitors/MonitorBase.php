@@ -59,6 +59,7 @@ abstract class MonitorBase implements Dispatchable
 	 */
 	protected function handle($judgment,$code = '')
 	{
+
 		if(!isset($judgment['score'])) return; //no judgment if no score
 		if($judgment['score'] < self::LOW) return; //safe
 
@@ -68,7 +69,7 @@ abstract class MonitorBase implements Dispatchable
 		 */
 		$incidentId = $this->generateIncidentId($this->collectors['user']->getId());
 
-		$this->trigger('activity',[
+		$res = $this->trigger('activity',[
 			'incidentId' 	=> $incidentId,
 			'host' 			=> $this->collectors['request']->getHost(),
 			'sessionId' 	=> $this->collectors['user']->getSessionId(),
@@ -80,23 +81,34 @@ abstract class MonitorBase implements Dispatchable
 			'history'		=> $this->session->getHistory()
 		]);
 
-
 		//mark session as synced
 		$this->session->markAsSynced();
 
 		if($judgment['score'] >= self::HIGH ){
 			if($this->config['action'] === 'block'){
+
 				//ready to save the session because it will not save automatically because of halt
 				$this->session->save();
-				
+
 				if($this->name == 'view'){
-					return $this->respond()->block($incidentId,true);
+					return $this->respond()->returnBlock($incidentId);
 				}
 				$this->respond()->block($incidentId);
 			}
 
 		}
 		return false;
+	}
+
+	public function forceDefaultBlock($list)
+	{
+		$incidentId = '###';
+		foreach($list as $header){
+			if(strpos($header, 'X-Shieldfy-Block-Id:') !== false){
+				$incidentId = trim(str_replace('X-Shieldfy-Block-Id:','',$header));
+			}
+		}
+		return $this->respond()->returnBlock($incidentId);
 	}
 
 	private function generateIncidentId($userId)

@@ -46,7 +46,7 @@ class UploadMonitor extends MonitorBase
 			list($score,$ruleIds) = array_values($this->analyzeFile($input,$file));
 			if($score){
 				$judgment['score'] += $score;
-				$judgment['infection'][$input] = compact('score','ruleIds');
+				$judgment['infection'][$input] = $ruleIds;
 			}
 		}
 

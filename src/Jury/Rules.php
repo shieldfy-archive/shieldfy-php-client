@@ -41,14 +41,13 @@ class Rules implements Exceptionable
 
     /**
      * Build rules
-     * @param  boolean $normalize [use normalizer before rule]
      * @return array   $rules
      */
-    public function build($normalize = false)
+    public function build()
     {
         $rules = [];
         foreach($this->rules as $id => $rule){
-            $rules[] = new Rule($id,$rule,$normalize);
+            $rules[] = new Rule($id,$rule);
         }
         return $rules;
     }

@@ -29,26 +29,20 @@ class RequestMonitor extends MonitorBase
 			'infection'=>[]
 		];
 
-		foreach($info['get'] as $name => $value){
-			$value  = $this->normalize($value);
+		foreach($info['get'] as $key => $value){
+		//	$value  = $this->normalize($value);
 			$result = $this->sentence($value);
 			if($result['score']){
 				$judgment['score'] += $result['score'];
-				$judgment['infection'][$name] = [
-					'score'=>$score,
-					'ruleIds'=>$result['ids']
-				];
+				$judgment['infection'][$key] = $result['ruleIds'];
 			}
 		}
 
-		foreach($info['post'] as $name => $value){
+		foreach($info['post'] as $key => $value){
 			$result = $this->sentence($value);
 			if($result['score']){
 				$judgment['score'] += $result['score'];
-				$judgment['infection'][$name] = [
-					'score'=>$score,
-					'ruleIds'=>$result['ids']
-				];
+				$judgment['infection'][$key] = $result['ruleIds'];
 			}
 		}
 

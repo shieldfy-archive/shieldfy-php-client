@@ -15,23 +15,38 @@ trait Judge
         $this->rules = (new Rules($this->config,$name))->build();
     }
 
-    public function normalize($value)
+    /**
+     * Normalize data
+     * @param  mixed $value
+     * @param  string $normalizedValue
+     * @return normalized value
+     */
+    public function normalize($value,$normalizedValue = '')
     {
+        //no need to normalize if it already normalized
+        if($normalizedValue != '') return $normalizedValue;
+
         //normalizer
         $value = (new Normalizer($value))->runAll();
         return $value;
     }
 
-    /* the judge */
+    /**
+     * The Judge Result
+     * @param  mixed $value
+     * @param  string $target
+     * @param  string $tag
+     * @return array $result
+     */
     public function sentence($value,$target = '*',$tag = '*')
     {
-        // $result = [
-        //     'score'=>0,
-        //     'ruleIds'=>[]
-        // ];
         $score = 0;
         $ruleIds = [];
+        $normalizedValue = '';
         foreach($this->rules as $rule){
+            if($rule->needNormalize()){
+                $value = $normalizedValue = $this->normalize($value,$normalizedValue);
+            }
             $res = $rule->run($value,$target,$tag);
             if($res['score'] > 0){
                 $score += $res['score'];

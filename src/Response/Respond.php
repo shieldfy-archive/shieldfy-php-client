@@ -12,17 +12,30 @@ class Respond
         $this->protocol = $protocol;
     }
 
-    public function block($incidentId,$return = false)
+    public function block($incidentId)
     {
         header($this->protocol.' '.self::BLOCKSTATUS.' '.self::BLOCKMESSAGE);
         header('Content-Type: text/html; charset=utf-8');
-        $blockHTML = file_get_contents(__dir__.'/block.html');
-        $response = str_replace('{incidentId}', $incidentId, $blockHTML);
-        if($return){
-            return $response;
-        }
-        echo $response;
+        header('X-Shieldfy-Status: blocked');
+        header('X-Shieldfy-Block-Id: '.$incidentId);
+        echo $this->prepareBlockResponse($incidentId);
         $this->halt();
+    }
+
+    public function returnBlock($incidentId)
+    {
+        header($this->protocol.' '.self::BLOCKSTATUS.' '.self::BLOCKMESSAGE);
+        header('Content-Type: text/html; charset=utf-8');
+        header('X-Shieldfy-Status: blocked');
+        header('X-Shieldfy-Status: '.$incidentId);
+        $response = $this->prepareBlockResponse($incidentId);;
+        return $response;
+    }
+
+    private function prepareBlockResponse($incidentId)
+    {
+        $blockHTML = file_get_contents(__dir__.'/block.html');
+        return str_replace('{incidentId}', $incidentId, $blockHTML);
     }
 
 

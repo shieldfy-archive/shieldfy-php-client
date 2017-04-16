@@ -35,19 +35,16 @@ class ExceptionMonitor extends MonitorBase
 
 		$score = 0;
 		$infection = [];
-		foreach($params as $param => $value){
-			$value  = $this->normalize($value);
+		foreach($params as $key => $value){
+		//	$value  = $this->normalize($value);
 			$result = $this->sentence($value,'REQUEST');
 			if($result['score']){
 				$score += $result['score'];
-				$infection[] = [
-					'score' 	=> $result['score'],
-					'ruleIds' 	=> $result['ids']
-				];
+				$infection[$key] =  $result['ruleIds'];
 			}
 		}
 		$code = $this->collectors['code']->collectFromFile($exception->getFile(),$exception->getLine());
-		
+
 		$this->handle([
 			'score'=>$score,
 			'infection'=>$infection

@@ -4,7 +4,7 @@ class Rule
 {
     protected $id;
     protected $data = [];
-    protected $normalize;
+    protected $normalize = false;
 
     /**
      * [Construct Rule Object]
@@ -12,11 +12,11 @@ class Rule
      * @param array  $data      [rule data]
      * @param boolean $normalize [use normalizer before rule]
      */
-    public function __construct($id, $data = [], $normalize = false)
+    public function __construct($id, $data = [])
     {
         $this->id = $id;
         $this->data = $data;
-        $this->normalize = $normalize;
+        if(isset($data['normalize']))  $this->normalize = $data['normalize'];
     }
 
     /**
@@ -24,14 +24,14 @@ class Rule
      * @param  mixed $value
      * @param  string $target target scope
      * @param  string $tag    target tag
-     * @return array|false
+     * @return mixed $result array|false
      */
     public function run($value,$target = '*',$tag = '*')
     {
 
         if($target !== '*' && $target !== $this->data['target']) return;
         if($tag !== '*' && $tag !== $this->data['tag']) return;
-        
+
         if($this->data['type'] == 'EQUAL') $result = $this->runEqual($value);
         if($this->data['type'] == 'CONTAIN') $result = $this->runContain($value);
         if($this->data['type'] == 'PREG') $result = $this->runPreg($value);
@@ -44,9 +44,9 @@ class Rule
     }
 
     /**
-     * [runEqual description]
-     * @param  [type] $value [description]
-     * @return [type]        [description]
+     * is value equal
+     * @param  mixed $value
+     * @return boolean $result
      */
     private function runEqual($value)
     {
@@ -66,9 +66,9 @@ class Rule
     }
 
     /**
-     * [runContain description]
-     * @param  [type] $value [description]
-     * @return [type]        [description]
+     * is value contain
+     * @param  mixed $value
+     * @return boolean $result
      */
     private function runContain($value)
     {
@@ -77,9 +77,9 @@ class Rule
     }
 
     /**
-     * [runPreg description]
-     * @param  [type] $value [description]
-     * @return [type]        [description]
+     * PregMatch
+     * @param  mixed $value
+     * @return boolean $result
      */
     private function runPreg($value)
     {
@@ -88,9 +88,9 @@ class Rule
     }
 
     /**
-     * [runRPreg description]
-     * @param  [type] $value [description]
-     * @return [type]        [description]
+     * Reverse PregMatch
+     * @param  mixed $value
+     * @return boolean $result
      */
     private function runRPreg($value)
     {
@@ -98,9 +98,14 @@ class Rule
         return false;
     }
 
+    public function needNormalize()
+    {
+        return $this->normalize;
+    }
+
     /**
-     * [getInfo description]
-     * @return [type] [description]
+     * get rule info
+     * @return array $info;
      */
     public function getInfo()
     {
