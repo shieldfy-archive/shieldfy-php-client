@@ -36,7 +36,6 @@ class ExceptionMonitor extends MonitorBase
 		$score = 0;
 		$infection = [];
 		foreach($params as $key => $value){
-		//	$value  = $this->normalize($value);
 			$result = $this->sentence($value,'REQUEST');
 			if($result['score']){
 				$score += $result['score'];
