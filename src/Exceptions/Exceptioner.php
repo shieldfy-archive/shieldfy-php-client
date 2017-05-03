@@ -6,7 +6,7 @@ trait Exceptioner
 	/* throw new exception */
 	public function throwException(Throwable $exception)
 	{
-		if($this->config['debug'] === true){
+		if($this->config && $this->config['debug'] === true){
 			throw $exception;
 		}
 	}

@@ -2,6 +2,7 @@
 namespace Shieldfy\Cache;
 
 use Shieldfy\Config;
+use Shieldfy\Cache\CacheInterface;
 use Shieldfy\Exceptions\CacheDriverNotExistsException;
 use Shieldfy\Exceptions\Exceptionable;
 use Shieldfy\Exceptions\Exceptioner;
@@ -32,24 +33,33 @@ class CacheManager implements Exceptionable
     /**
      * Constructor.
      *
-     * @param type $config
-     *
-     * @return type
+     * @param mixed $config
      */
-    public function __construct(Config $config)
+    public function __construct($config = false)
     {
         $this->config = $config;
+    }
+
+    /**
+     * Extending your own cache driver
+     * @param CacheInterface $driverClass 
+     * @param array $config 
+     * @return object
+     */
+    public function extendDriver(CacheInterface $driverClass, array $config = [])
+    {
+        return new $driverClass($config, self::SESSION_TIMEOUT);
     }
 
     /**
      * Sets the caching driver.
      *
      * @param string  $driver_type
-     * @param mixed[] $config
+     * @param array $config
      *
      * @return object $driver
      */
-    public function setDriver($driverType, $config = [])
+    public function setDriver($driverType,array $config = [])
     {
         if (!isset($this->drivers[$driverType])) {
             $this->throwException(new CacheDriverNotExistsException('Caching driver not found or supported.',301));
