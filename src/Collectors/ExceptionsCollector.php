@@ -1,7 +1,6 @@
 <?php
 namespace Shieldfy\Collectors;
 use ErrorException;
-use Throwable;
 use Closure;
 use Shieldfy\Config;
 
@@ -91,7 +90,7 @@ class ExceptionsCollector implements Collectable
 	 * @param  Throwable $exception
 	 * @param  Boolean $is_exception
 	 */
-	public function handleExceptions(Throwable $exception,$is_exception = true)
+	public function handleExceptions($exception,$is_exception = true)
 	{
 
         if($this->callback !== null)  call_user_func($this->callback , $exception);
@@ -120,7 +119,7 @@ class ExceptionsCollector implements Collectable
      * @param  Throwable $exception [description]
      * @return [type]               [description]
      */
-    protected function logInternalError(Throwable $exception)
+    protected function logInternalError($exception)
     {
         $path = realpath($this->config['rootDir'].'/../log');
         $filename = $path.'/'.date('Ymd').'.log';

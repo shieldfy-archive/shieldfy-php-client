@@ -1,6 +1,5 @@
 <?php
 namespace Shieldfy\Dispatcher;
-use Throwable;
 use Shieldfy\Dispatcher\ApiClient;
 
 trait Dispatcher
@@ -36,6 +35,6 @@ trait Dispatcher
     /*
     * hardly require throwException , all dispatchable must have exceptionable trait as well
     */
-    abstract public function throwException(Throwable $exception);
+    abstract public function throwException($exception);
 
 }

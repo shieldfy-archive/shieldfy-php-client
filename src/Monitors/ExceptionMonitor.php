@@ -1,6 +1,5 @@
 <?php
 namespace Shieldfy\Monitors;
-use Throwable;
 use Shieldfy\Jury\Judge;
 class ExceptionMonitor extends MonitorBase
 {
@@ -24,7 +23,7 @@ class ExceptionMonitor extends MonitorBase
 		});
 	}
 
-	public function analyze(Throwable $exception)
+	public function analyze($exception)
 	{
 		$this->issue('exceptions');
 		if(!$this->isInScope($exception)) return;
@@ -50,7 +49,7 @@ class ExceptionMonitor extends MonitorBase
 		], $code );
 	}
 
-	protected function isInScope(Throwable $exception)
+	protected function isInScope($exception)
 	{
 		$message = $exception->getMessage();
 		$res = $this->sentence($message,'EXCEPTION:MSG');
