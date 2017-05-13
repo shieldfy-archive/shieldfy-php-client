@@ -1,5 +1,6 @@
 <?php
 namespace Shieldfy\Callbacks;
+
 use Shieldfy\Callbacks\Callback;
 use Shieldfy\Response\Response;
 use Shieldfy\Updater;

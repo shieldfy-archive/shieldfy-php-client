@@ -1,5 +1,6 @@
 <?php
 namespace Shieldfy\Cache;
+
 class NullDriver implements CacheInterface
 {
     public function __construct($config)

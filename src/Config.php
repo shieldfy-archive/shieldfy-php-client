@@ -1,5 +1,6 @@
 <?php
 namespace Shieldfy;
+
 use ArrayAccess;
 
 class Config implements ArrayAccess

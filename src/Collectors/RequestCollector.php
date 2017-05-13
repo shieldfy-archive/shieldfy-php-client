@@ -95,7 +95,7 @@ class RequestCollector implements Collectable
         || $this->server['SERVER_PORT'] == 443;
     }
 
-    private function prepareRequestParameter($key ,$param)
+    private function prepareRequestParameter($key, $param)
     {
         return $this->prepareRequestParameterRecursive([
             $key=>$param
@@ -131,14 +131,23 @@ class RequestCollector implements Collectable
             'score'         => $this->score
         ];
         $info['uri'] = $this->server['REQUEST_URI'];
-        if($parameter == '' || $parameter == 'get') $info['get'] = $this->prepareRequestParameter('get',$this->get);
-        if($parameter == '' || $parameter == 'post') $info['post'] = $this->prepareRequestParameter('post',$this->post);
-        if($parameter == '' || $parameter == 'server') $info['server'] = $this->prepareRequestParameter('server',$this->server);
-        if($parameter == '' || $parameter == 'cookies') $info['cookies'] = $this->prepareRequestParameter('cookies',$this->cookies);
-        if($parameter == '' || $parameter == 'files') $info['files'] = $this->prepareRequestParameter('files',$this->files);
+        if ($parameter == '' || $parameter == 'get') {
+            $info['get'] = $this->prepareRequestParameter('get', $this->get);
+        }
+        if ($parameter == '' || $parameter == 'post') {
+            $info['post'] = $this->prepareRequestParameter('post', $this->post);
+        }
+        if ($parameter == '' || $parameter == 'server') {
+            $info['server'] = $this->prepareRequestParameter('server', $this->server);
+        }
+        if ($parameter == '' || $parameter == 'cookies') {
+            $info['cookies'] = $this->prepareRequestParameter('cookies', $this->cookies);
+        }
+        if ($parameter == '' || $parameter == 'files') {
+            $info['files'] = $this->prepareRequestParameter('files', $this->files);
+        }
 
         return $info;
-
     }
 
     public function getProtectedInfo()

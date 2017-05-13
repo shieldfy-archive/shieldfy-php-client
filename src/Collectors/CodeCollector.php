@@ -7,17 +7,16 @@ class CodeCollector implements Collectable
 
     public function __construct()
     {
-
     }
 
-    public function collectFromFile($filePath = '',$line = '')
+    public function collectFromFile($filePath = '', $line = '')
     {
         if ($filePath && file_exists($filePath)) {
             $content = file($filePath);
-            array_unshift($content,'x');
+            array_unshift($content, 'x');
             unset($content[0]);
             $start = $line - 4;
-            $content = array_slice($content, $start < 0 ? 0 : $start, 7,true);
+            $content = array_slice($content, $start < 0 ? 0 : $start, 7, true);
         } else {
             $content = array("Cannot open the file ($filePath) in which the vulnerability exists ");
         }
@@ -31,17 +30,16 @@ class CodeCollector implements Collectable
         return $this->code;
     }
 
-    public function collectFromText($text = '',$value)
+    public function collectFromText($text = '', $value)
     {
-
-        $content = explode("\n",$text);
+        $content = explode("\n", $text);
         $line = 0;
         $code = [];
         for ($i=0; $i < count($content); $i++) {
-            if(stripos($content[$i],$value) !== false){
+            if (stripos($content[$i], $value) !== false) {
                 $line = $i;
                 $start = $i - 4;
-                $code = array_slice($content, $start < 0 ? 0 : $start, 7,true);
+                $code = array_slice($content, $start < 0 ? 0 : $start, 7, true);
                 break;
             }
         }

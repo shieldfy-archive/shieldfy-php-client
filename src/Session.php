@@ -1,5 +1,6 @@
 <?php
 namespace Shieldfy;
+
 use Shieldfy\Config;
 use Shieldfy\Dispatcher\Dispatchable;
 use Shieldfy\Dispatcher\Dispatcher;
@@ -9,7 +10,7 @@ use Shieldfy\Collectors\UserCollector;
 use Shieldfy\Collectors\RequestCollector;
 use Shieldfy\Cache\CacheInterface;
 
-class Session implements Dispatchable,Exceptionable
+class Session implements Dispatchable, Exceptionable
 {
     use Dispatcher;
     use Exceptioner;
@@ -35,7 +36,7 @@ class Session implements Dispatchable,Exceptionable
         $this->user = $user;
         $this->request = $request;
         $this->cache = $cache;
-        if(!$cache->has($user->getId())){
+        if (!$cache->has($user->getId())) {
             $this->loadNewUser();
             return;
         }
@@ -48,12 +49,11 @@ class Session implements Dispatchable,Exceptionable
     public function loadNewUser()
     {
         $this->isNew = true;
-        $response = $this->trigger('session',[
+        $response = $this->trigger('session', [
             'host'=>$this->request->getHost(),
             'user'=>$this->user->getInfo()
         ]);
-        if($response && $response->status == 'success')
-        {
+        if ($response && $response->status == 'success') {
             $this->sessionId = $response->sessionId;
             $this->user->setSessionId($response->sessionId);
             $this->user->setScore($response->score);
@@ -93,19 +93,19 @@ class Session implements Dispatchable,Exceptionable
      */
     public function save()
     {
-        if($this->isNew){
+        if ($this->isNew) {
             //save the user session
             $this->cache->set($this->user->getId(), $this->user->getInfo());
         }
 
         $this->history[time()] = $this->request->getHistoryInfo();
 
-        if($this->isSynced){
+        if ($this->isSynced) {
             //if already synced no need to restore the info to avoid duplications
             $this->history = [];
         }
 
-        $this->cache->set($this->user->getSessionId(),$this->history);
+        $this->cache->set($this->user->getSessionId(), $this->history);
     }
 
     /**

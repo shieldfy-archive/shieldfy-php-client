@@ -40,10 +40,10 @@ class Guard
     protected $defaults = [
         'debug'          => false, //debug status [true,false]
         'action'         => 'block', //response action [block, silent]
-        'headers'  	     => [ //list of available headers to expose
-        	'X-XSS-Protection'       =>  '1; mode=block',
-        	'X-Content-Type-Options' =>  'nosniff',
-        	'X-Frame-Options'        =>  'SAMEORIGIN'
+        'headers'         => [ //list of available headers to expose
+            'X-XSS-Protection'       =>  '1; mode=block',
+            'X-Content-Type-Options' =>  'nosniff',
+            'X-Frame-Options'        =>  'SAMEORIGIN'
         ],
         'disable'       =>  [] //list of disabled monitors
     ];
@@ -69,7 +69,7 @@ class Guard
     public static function init(array $config, $cache = null)
     {
         if (!isset(self::$instance)) {
-            self::$instance = new self($config,$cache);
+            self::$instance = new self($config, $cache);
         }
         return self::$instance;
     }
@@ -83,7 +83,7 @@ class Guard
     public function __construct(array $config, $cache = null)
     {
         //set config container
-        $this->config = new Config($this->defaults, array_merge($config,[
+        $this->config = new Config($this->defaults, array_merge($config, [
             'apiEndpoint' => $this->apiEndpoint,
             'rootDir'     => __dir__,
             'version'     => $this->version
@@ -101,7 +101,6 @@ class Guard
 
         //start shieldfy guard
         $this->startGuard();
-
     }
 
     /**
@@ -110,9 +109,8 @@ class Guard
       */
     protected function startGuard()
     {
-
         $exceptionsCollector = new ExceptionsCollector($this->config);
-        $requestCollector = new RequestCollector($_GET,$_POST,$_SERVER, $_COOKIE, $_FILES);
+        $requestCollector = new RequestCollector($_GET, $_POST, $_SERVER, $_COOKIE, $_FILES);
         $userCollector = new UserCollector($requestCollector);
         $codeCollector = new CodeCollector;
         $queriesCollector = new QueriesCollector;
@@ -125,16 +123,17 @@ class Guard
             'queries'    => $queriesCollector
         ];
 
-        $this->catchCallbacks($requestCollector,$this->config);
+        $this->catchCallbacks($requestCollector, $this->config);
 
         //check the installation
-        if(!$this->isInstalled())
-        {
-            $install = (new Installer($requestCollector,$this->config))->run();
+        if (!$this->isInstalled()) {
+            $install = (new Installer($requestCollector, $this->config))->run();
         }
 
         //check if installation failed for any reason ans skip for current session
-        if(!$this->isInstalled()) return;
+        if (!$this->isInstalled()) {
+            return;
+        }
 
         //start new session
         $this->session = new Session($userCollector, $requestCollector, $this->config, $this->cache);
@@ -148,7 +147,6 @@ class Guard
         $monitors->run();
 
         $this->exposeHeaders();
-
     }
 
 
@@ -158,9 +156,9 @@ class Guard
      * @param  Config           $config
      * @return void
      */
-    public function catchCallbacks(RequestCollector $request,Config $config)
+    public function catchCallbacks(RequestCollector $request, Config $config)
     {
-        (new CallbackHandler($request,$config))->catchCallback();
+        (new CallbackHandler($request, $config))->catchCallback();
     }
 
     /**
@@ -181,7 +179,7 @@ class Guard
     public function attachQuery($query)
     {
         $query = $this->collectors['queries'];
-        $query->handler('event' , $query->sql, $query->bindings);
+        $query->handler('event', $query->sql, $query->bindings);
     }
 
     /**
@@ -199,9 +197,10 @@ class Guard
     /**
      * Save current session , request done
      */
-    public function __destruct(){
+    public function __destruct()
+    {
         //everything going good lets save this session for next run
-        if($this->session !== null){
+        if ($this->session !== null) {
             $this->session->save();
         }
     }
@@ -217,7 +216,9 @@ class Guard
         }
 
         foreach ($this->config['headers'] as $header => $value) {
-            if($value === false) continue;
+            if ($value === false) {
+                continue;
+            }
             header($header.' : '.$value);
         }
 
@@ -225,5 +226,4 @@ class Guard
         header('X-Web-Shield: ShieldfyWebShield');
         header('X-Shieldfy-Signature: '.$signature);
     }
-
 }

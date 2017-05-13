@@ -1,5 +1,6 @@
 <?php
 namespace Shieldfy\Cache;
+
 interface CacheInterface
 {
     public function __construct($config);

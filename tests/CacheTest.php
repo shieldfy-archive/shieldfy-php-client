@@ -1,5 +1,6 @@
 <?php
 namespace Shieldfy\Test;
+
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use Shieldfy\Config;

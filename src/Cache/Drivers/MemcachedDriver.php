@@ -1,6 +1,8 @@
 <?php
 namespace Shieldfy\Cache\Drivers;
+
 use Shieldfy\Cache\CacheInterface;
+
 class MemcachedDriver implements CacheInterface
 {
     private $adapter = null;

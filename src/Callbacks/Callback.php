@@ -1,6 +1,8 @@
 <?php
 namespace Shieldfy\Callbacks;
+
 use Shieldfy\Config;
+
 abstract class Callback
 {
     protected $config;
@@ -10,5 +12,5 @@ abstract class Callback
         $this->config = $config;
     }
 
-    abstract function handle();
+    abstract public function handle();
 }

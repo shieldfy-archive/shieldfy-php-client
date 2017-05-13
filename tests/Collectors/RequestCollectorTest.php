@@ -1,7 +1,9 @@
 <?php
 namespace Shieldfy\Test;
+
 use PHPUnit\Framework\TestCase;
 use Shieldfy\Collectors\RequestCollector;
+
 class RequestCollectorTest extends TestCase
 {
     protected $request;
@@ -37,21 +39,21 @@ class RequestCollectorTest extends TestCase
     public function testGetInfo()
     {
         $info = $this->request->getInfo();
-        $this->assertLessThanOrEqual($this->created,$info['created']);
+        $this->assertLessThanOrEqual($this->created, $info['created']);
 
-        $this->assertEquals($this->server['REQUEST_METHOD'],$info['method']);
-        $this->assertEquals($this->get,$this->request->get);
+        $this->assertEquals($this->server['REQUEST_METHOD'], $info['method']);
+        $this->assertEquals($this->get, $this->request->get);
 
-        $this->assertEquals(['get.x'=>1],$info['get']);
+        $this->assertEquals(['get.x'=>1], $info['get']);
         $this->assertEquals([
                 'get'=>['get.x'=>1],
                 'created'=>$this->created,
                 'score'=>0,
                 'method'=>'POST',
                 'uri' => '/?x=1'
-            ],$this->request->getInfo('get'));
+            ], $this->request->getInfo('get'));
 
-        $this->assertEquals($this->post,$this->request->post);
+        $this->assertEquals($this->post, $this->request->post);
         $this->assertEquals([
                 'post.name'=>'hello',
                 'post.contact.address'=>'some street',
@@ -69,16 +71,16 @@ class RequestCollectorTest extends TestCase
                 'uri' => '/?x=1'
             ], $this->request->getInfo('post'));
 
-        $this->assertEquals($this->server,$this->request->server);
-        $this->assertEquals(false,$this->request->isSecure());
+        $this->assertEquals($this->server, $this->request->server);
+        $this->assertEquals(false, $this->request->isSecure());
     }
 
     public function testScore()
     {
         $this->request->setScore(50);
-        $this->assertEquals($this->request->getScore(),50);
+        $this->assertEquals($this->request->getScore(), 50);
         $info = $this->request->getInfo();
-        $this->assertEquals($info['score'],50);
+        $this->assertEquals($info['score'], 50);
     }
 
     public function testHistory()

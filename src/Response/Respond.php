@@ -1,5 +1,6 @@
 <?php
 namespace Shieldfy\Response;
+
 class Respond
 {
     const BLOCKSTATUS = 403;
@@ -28,7 +29,8 @@ class Respond
         header('Content-Type: text/html; charset=utf-8');
         header('X-Shieldfy-Status: blocked');
         header('X-Shieldfy-Block-Id: '.$incidentId);
-        $response = $this->prepareBlockResponse($incidentId);;
+        $response = $this->prepareBlockResponse($incidentId);
+        ;
         return $response;
     }
 
@@ -39,12 +41,14 @@ class Respond
     }
 
 
-    public function json(array $data = [], $status = 200 , $msg = '', $return = false)
+    public function json(array $data = [], $status = 200, $msg = '', $return = false)
     {
         header('Content-Type: application/json; charset=utf-8');
         header($this->protocol.' '.$status.' '.$msg);
         $data = json_encode($data);
-        if($return) return $data;
+        if ($return) {
+            return $data;
+        }
         echo $data;
         $this->halt();
     }

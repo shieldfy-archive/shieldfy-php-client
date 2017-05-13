@@ -1,13 +1,12 @@
 <?php
 namespace Shieldfy\Test;
+
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use Shieldfy\Config;
 use Shieldfy\Collectors\ExceptionsCollector;
 use Exception;
 use ErrorException;
-
-
 
 class ExceptionsCollectorTest extends TestCase
 {
@@ -29,10 +28,10 @@ class ExceptionsCollectorTest extends TestCase
     public function testHandleErrors()
     {
         $exceptions = new ExceptionsCollector($this->config);
-        $exceptions->listen(function(){
+        $exceptions->listen(function () {
             $this->assertTrue(true);
         });
-        if(!class_exists(PHPUnit\Framework\Error\Error::class)){
+        if (!class_exists(PHPUnit\Framework\Error\Error::class)) {
             $this->assertTrue(true);
             return;
         }
@@ -43,7 +42,7 @@ class ExceptionsCollectorTest extends TestCase
     public function testHandleExceptions()
     {
         $exceptions = new ExceptionsCollector($this->config);
-        $exceptions->listen(function(){
+        $exceptions->listen(function () {
             $this->assertTrue(true);
         });
         $customException = new Exception('Hello');
@@ -53,13 +52,13 @@ class ExceptionsCollectorTest extends TestCase
     public function testInternalErrorLog()
     {
         $exceptions = new ExceptionsCollector($this->config);
-        $exceptions->listen(function(){});
-        if(!class_exists(PHPUnit\Framework\Error\Error::class)){
+        $exceptions->listen(function () {
+        });
+        if (!class_exists(PHPUnit\Framework\Error\Error::class)) {
             $this->assertTrue(true);
             return;
         }
         $this->expectException(Error::class);
-        $exceptions->handleErrors(1, 'h',$this->root->url().'/src/index.php', 2, []);
+        $exceptions->handleErrors(1, 'h', $this->root->url().'/src/index.php', 2, []);
     }
-
 }
