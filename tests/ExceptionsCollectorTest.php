@@ -15,7 +15,7 @@ use PHPUnit\Framework\Error\Notice;
 use PHPUnit\Framework\Error\Warning;
 
 
-class ExceptionsCollectorTEst extends TestCase
+class ExceptionsCollectorTest extends TestCase
 {
     protected $root;
     protected $config;
