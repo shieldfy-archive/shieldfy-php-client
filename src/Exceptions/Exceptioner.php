@@ -1,10 +1,9 @@
 <?php
 namespace Shieldfy\Exceptions;
-use Throwable;
 trait Exceptioner
 {
 	/* throw new exception */
-	public function throwException(Throwable $exception)
+	public function throwException($exception)
 	{
 		if($this->config && $this->config['debug'] === true){
 			throw $exception;
