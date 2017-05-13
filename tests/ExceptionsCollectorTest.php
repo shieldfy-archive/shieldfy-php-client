@@ -9,12 +9,6 @@ use ErrorException;
 
 
 
-use PHPUnit\Framework\Error\Error;
-use PHPUnit\Framework\Error\Deprecated;
-use PHPUnit\Framework\Error\Notice;
-use PHPUnit\Framework\Error\Warning;
-
-
 class ExceptionsCollectorTest extends TestCase
 {
     protected $root;
@@ -38,6 +32,10 @@ class ExceptionsCollectorTest extends TestCase
         $exceptions->listen(function(){
             $this->assertTrue(true);
         });
+        if(!class_exists(PHPUnit\Framework\Error\Error::class)){
+            $this->assertTrue(true);
+            return;
+        }
         $this->expectException(Error::class);
         $exceptions->handleErrors(1, 'h', 'h.php', 2, []);
     }
@@ -56,6 +54,10 @@ class ExceptionsCollectorTest extends TestCase
     {
         $exceptions = new ExceptionsCollector($this->config);
         $exceptions->listen(function(){});
+        if(!class_exists(PHPUnit\Framework\Error\Error::class)){
+            $this->assertTrue(true);
+            return;
+        }
         $this->expectException(Error::class);
         $exceptions->handleErrors(1, 'h',$this->root->url().'/src/index.php', 2, []);
     }
