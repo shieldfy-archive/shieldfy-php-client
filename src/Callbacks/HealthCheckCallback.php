@@ -1,7 +1,9 @@
 <?php
 namespace Shieldfy\Callbacks;
+
 use Shieldfy\Callbacks\Callback;
 use Shieldfy\Response\Response;
+
 class HealthCheckCallback extends Callback
 {
     use Response;

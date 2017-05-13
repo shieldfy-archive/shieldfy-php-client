@@ -1,5 +1,6 @@
 <?php
 namespace Shieldfy\Jury;
+
 class Rule
 {
     protected $id;
@@ -16,7 +17,9 @@ class Rule
     {
         $this->id = $id;
         $this->data = $data;
-        if(isset($data['normalize']))  $this->normalize = $data['normalize'];
+        if (isset($data['normalize'])) {
+            $this->normalize = $data['normalize'];
+        }
     }
 
     /**
@@ -26,18 +29,29 @@ class Rule
      * @param  string $tag    target tag
      * @return mixed $result array|false
      */
-    public function run($value,$target = '*',$tag = '*')
+    public function run($value, $target = '*', $tag = '*')
     {
+        if ($target !== '*' && $target !== $this->data['target']) {
+            return;
+        }
+        if ($tag !== '*' && $tag !== $this->data['tag']) {
+            return;
+        }
 
-        if($target !== '*' && $target !== $this->data['target']) return;
-        if($tag !== '*' && $tag !== $this->data['tag']) return;
+        if ($this->data['type'] == 'EQUAL') {
+            $result = $this->runEqual($value);
+        }
+        if ($this->data['type'] == 'CONTAIN') {
+            $result = $this->runContain($value);
+        }
+        if ($this->data['type'] == 'PREG') {
+            $result = $this->runPreg($value);
+        }
+        if ($this->data['type'] == 'RPREG') {
+            $result = $this->runRPreg($value);
+        }
 
-        if($this->data['type'] == 'EQUAL') $result = $this->runEqual($value);
-        if($this->data['type'] == 'CONTAIN') $result = $this->runContain($value);
-        if($this->data['type'] == 'PREG') $result = $this->runPreg($value);
-        if($this->data['type'] == 'RPREG') $result = $this->runRPreg($value);
-
-        if($result){
+        if ($result) {
             return $this->getInfo();
         }
         return false;
@@ -52,16 +66,20 @@ class Rule
     {
 
         //multiple equals
-        if(strpos($this->data['rule'], '|') !== false){
-            $rules = explode('|',$this->data['rule']);
-            foreach($rules as $rule){
-                if(trim($value) === $rule) return true;
+        if (strpos($this->data['rule'], '|') !== false) {
+            $rules = explode('|', $this->data['rule']);
+            foreach ($rules as $rule) {
+                if (trim($value) === $rule) {
+                    return true;
+                }
             }
             return false;
         }
 
         //single equal
-        if(trim($value) === $this->data['rule']) return true;
+        if (trim($value) === $this->data['rule']) {
+            return true;
+        }
         return false;
     }
 
@@ -72,7 +90,9 @@ class Rule
      */
     private function runContain($value)
     {
-        if(strpos($value, $this->data['rule']) !== false) return true;
+        if (strpos($value, $this->data['rule']) !== false) {
+            return true;
+        }
         return false;
     }
 
@@ -83,7 +103,9 @@ class Rule
      */
     private function runPreg($value)
     {
-        if(preg_match('/'.$this->data['rule'].'/isU',$value)) return true;
+        if (preg_match('/'.$this->data['rule'].'/isU', $value)) {
+            return true;
+        }
         return false;
     }
 
@@ -94,7 +116,9 @@ class Rule
      */
     private function runRPreg($value)
     {
-        if(preg_match('/'.$this->data['rule'].'/isU',$value) === false) return true;
+        if (preg_match('/'.$this->data['rule'].'/isU', $value) === false) {
+            return true;
+        }
         return false;
     }
 

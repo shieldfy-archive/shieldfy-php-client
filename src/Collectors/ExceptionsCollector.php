@@ -1,5 +1,6 @@
 <?php
 namespace Shieldfy\Collectors;
+
 use ErrorException;
 use Closure;
 use Shieldfy\Config;
@@ -22,9 +23,9 @@ class ExceptionsCollector implements Collectable
         $this->config = $config;
 
         // http://php.net/set_error_handler
-		$this->original_error_handler = set_error_handler(array($this,'handleErrors'),E_ALL);
-		// http://php.net/set_exception_handler
-		$this->original_exception_handler = set_exception_handler(array($this,'handleExceptions'));
+        $this->original_error_handler = set_error_handler(array($this,'handleErrors'), E_ALL);
+        // http://php.net/set_exception_handler
+        $this->original_exception_handler = set_exception_handler(array($this,'handleExceptions'));
 
         // http://php.net/register_shutdown_function
         register_shutdown_function(array($this,'handleFatalErrors'));
@@ -41,31 +42,31 @@ class ExceptionsCollector implements Collectable
 
 
     /**
-	 * Handle errors / warning / notice
-	 * @param  Integer  $severity
-	 * @param  String  $message
-	 * @param  string  $file
-	 * @param  integer $line
-	 * @param  array  $context
-	 */
-	public function handleErrors($severity = 0, $message = '', $file = '', $line = 0, $context = [])
-	{
-		//LIMITATION
-		//The following error types cannot be handled with a user defined function:
-		//E_ERROR, E_PARSE, E_CORE_ERROR, E_CORE_WARNING, E_COMPILE_ERROR, E_COMPILE_WARNING, and most of E_STRICT raised in the file where set_error_handler() is called.
-		//see: http://stackoverflow.com/questions/8527894/set-error-handler-doenst-work-for-fatal-error
+     * Handle errors / warning / notice
+     * @param  Integer  $severity
+     * @param  String  $message
+     * @param  string  $file
+     * @param  integer $line
+     * @param  array  $context
+     */
+    public function handleErrors($severity = 0, $message = '', $file = '', $line = 0, $context = [])
+    {
+        //LIMITATION
+        //The following error types cannot be handled with a user defined function:
+        //E_ERROR, E_PARSE, E_CORE_ERROR, E_CORE_WARNING, E_COMPILE_ERROR, E_COMPILE_WARNING, and most of E_STRICT raised in the file where set_error_handler() is called.
+        //see: http://stackoverflow.com/questions/8527894/set-error-handler-doenst-work-for-fatal-error
 
-		$this->handleExceptions(new ErrorException($message,0,$severity,$file,$line),false);
+        $this->handleExceptions(new ErrorException($message, 0, $severity, $file, $line), false);
 
-		if($this->original_error_handler !== null){
-			call_user_func( $this->original_error_handler,
-							$severity,
-                    		$message,
-                			$file,
-                    		$line,
-                    		$context );
-		}
-	}
+        if ($this->original_error_handler !== null) {
+            call_user_func($this->original_error_handler,
+                            $severity,
+                            $message,
+                            $file,
+                            $line,
+                            $context);
+        }
+    }
 
     /**
      * Handle fatal errors
@@ -81,38 +82,37 @@ class ExceptionsCollector implements Collectable
         $file =  (isset($error['file']))?$error['file']:'';
         $line =  (isset($error['line']))?$error['line']:0;
 
-        $this->handleExceptions(new ErrorException($message,0,$severity,$file,$line),false);
-
+        $this->handleExceptions(new ErrorException($message, 0, $severity, $file, $line), false);
     }
 
-	/**
-	 * Analyzing the exceptions looking for exploits
-	 * @param  Throwable $exception
-	 * @param  Boolean $is_exception
-	 */
-	public function handleExceptions($exception,$is_exception = true)
-	{
+    /**
+     * Analyzing the exceptions looking for exploits
+     * @param  Throwable $exception
+     * @param  Boolean $is_exception
+     */
+    public function handleExceptions($exception, $is_exception = true)
+    {
+        if ($this->callback !== null) {
+            call_user_func($this->callback, $exception);
+        }
 
-        if($this->callback !== null)  call_user_func($this->callback , $exception);
-
-        if(strpos($exception->getFile(), $this->config['rootDir']) !== false){
+        if (strpos($exception->getFile(), $this->config['rootDir']) !== false) {
             $this->logInternalError($exception);
             //if debug and no external error handler show the error
-            if(
+            if (
                 $is_exception &&
                 $this->original_exception_handler === null &&
                 $exception->getCode() > 0 &&
                 $this->config['debug'] === true
-                )
-            {
+                ) {
                 throw $exception;
             }
         }
 
-        if($is_exception && $this->original_exception_handler !== null){
-            call_user_func($this->original_exception_handler , $exception);
+        if ($is_exception && $this->original_exception_handler !== null) {
+            call_user_func($this->original_exception_handler, $exception);
         }
-	}
+    }
 
     /**
      * Log internal errors regarded shieldfy

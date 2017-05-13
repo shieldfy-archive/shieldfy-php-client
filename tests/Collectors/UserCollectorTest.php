@@ -1,8 +1,10 @@
 <?php
 namespace Shieldfy\Test;
+
 use PHPUnit\Framework\TestCase;
 use Shieldfy\Collectors\RequestCollector;
 use Shieldfy\Collectors\UserCollector;
+
 class UserCollectorTest extends TestCase
 {
     public function testUserInfoNoIp()

@@ -73,9 +73,9 @@ class ApiClient implements Exceptionable
     public function request($url, $body)
     {
         $hash = $this->calculateBodyHash($body);
-        $this->setupHeaders(strlen($body),$hash);
+        $this->setupHeaders(strlen($body), $hash);
 
-        $this->setOpt(CURLOPT_CUSTOMREQUEST,'POST');
+        $this->setOpt(CURLOPT_CUSTOMREQUEST, 'POST');
         $this->setOpt(CURLOPT_POSTFIELDS, $body);
 
         $this->setOpt(CURLOPT_URL, $this->baseUrl.$url);
@@ -93,7 +93,7 @@ class ApiClient implements Exceptionable
 
         $res = $this->parseResult($result);
         if (!$res) {
-            $this->throwException(new ServerErrorException($this->errors['message'],$this->errors['code']));
+            $this->throwException(new ServerErrorException($this->errors['message'], $this->errors['code']));
         }
 
         return $res;
@@ -193,7 +193,7 @@ class ApiClient implements Exceptionable
      *
      * @param string $hash
      */
-    private function setupHeaders($length,$hash)
+    private function setupHeaders($length, $hash)
     {
         $this->setOpt(CURLOPT_HTTPHEADER,
             [

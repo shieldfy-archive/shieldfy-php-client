@@ -1,5 +1,6 @@
 <?php
 namespace Shieldfy\Test;
+
 use PHPUnit\Framework\TestCase;
 use org\bovigo\vfs\vfsStream;
 use Shieldfy\Updater;
@@ -58,6 +59,5 @@ class UpdaterTest extends TestCase
         $this->assertEquals('["exceptions"]', $root->getChild('data/exceptions.json')->getContent());
         $this->assertEquals('["query"]', $root->getChild('data/query.json')->getContent());
         $this->assertEquals('["view"]', $root->getChild('data/view.json')->getContent());
-
     }
 }

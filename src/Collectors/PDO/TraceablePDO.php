@@ -26,12 +26,12 @@ class TraceablePDO extends PDO
         $this->pdo->setAttribute(PDO::ATTR_STATEMENT_CLASS, array('Shieldfy\Collectors\PDO\TraceablePDOStatement', array($this)));
     }
 
-	/**
-	 * Initiates a transaction
+    /**
+     * Initiates a transaction
          *
-	 * @link   http://php.net/manual/en/pdo.begintransaction.php
-	 * @return bool TRUE on success or FALSE on failure.
-	 */
+     * @link   http://php.net/manual/en/pdo.begintransaction.php
+     * @return bool TRUE on success or FALSE on failure.
+     */
     public function beginTransaction()
     {
         return $this->pdo->beginTransaction();
@@ -122,28 +122,28 @@ class TraceablePDO extends PDO
         return $this->pdo->lastInsertId($name);
     }
 
-	/**
-	 * Prepares a statement for execution and returns a statement object
+    /**
+     * Prepares a statement for execution and returns a statement object
    *
-	 * @link   http://php.net/manual/en/pdo.prepare.php
-	 * @param  string $statement This must be a valid SQL statement template for the target DB server.
-	 * @param  array  $driver_options [optional] This array holds one or more key=&gt;value pairs to
-	 * set attribute values for the PDOStatement object that this method returns.
-	 * @return TraceablePDOStatement|bool If the database server successfully prepares the statement,
+     * @link   http://php.net/manual/en/pdo.prepare.php
+     * @param  string $statement This must be a valid SQL statement template for the target DB server.
+     * @param  array  $driver_options [optional] This array holds one or more key=&gt;value pairs to
+     * set attribute values for the PDOStatement object that this method returns.
+     * @return TraceablePDOStatement|bool If the database server successfully prepares the statement,
    * PDO::prepare returns a PDOStatement object. If the database server cannot successfully prepare
    * the statement, PDO::prepare returns FALSE or emits PDOException (depending on error handling).
-	 */
+     */
     public function prepare($statement, $driver_options = array())
     {
         return $this->pdo->prepare($statement, $driver_options);
     }
 
-	/**
-	 * Executes an SQL statement, returning a result set as a PDOStatement object
+    /**
+     * Executes an SQL statement, returning a result set as a PDOStatement object
    *
-	 * @link   http://php.net/manual/en/pdo.query.php
-	 * @param  string $statement
-	 * @return TraceablePDOStatement|bool PDO::query returns a PDOStatement object, or FALSE on
+     * @link   http://php.net/manual/en/pdo.query.php
+     * @param  string $statement
+     * @return TraceablePDOStatement|bool PDO::query returns a PDOStatement object, or FALSE on
    * failure.
    */
     public function query($statement)
@@ -200,9 +200,8 @@ class TraceablePDO extends PDO
      */
     protected function profileCall($method, $sql, array $args)
     {
-
-        if($this->callback !== null){
-            call_user_func($this->callback,'pdo',$sql,$args);
+        if ($this->callback !== null) {
+            call_user_func($this->callback, 'pdo', $sql, $args);
         }
 
         $ex = null;
@@ -232,7 +231,9 @@ class TraceablePDO extends PDO
      */
     public function getAccumulatedStatementsDuration()
     {
-        return array_reduce($this->executedStatements, function ($v, $s) { return $v + $s->getDuration(); });
+        return array_reduce($this->executedStatements, function ($v, $s) {
+            return $v + $s->getDuration();
+        });
     }
 
     /**
@@ -242,7 +243,9 @@ class TraceablePDO extends PDO
      */
     public function getMemoryUsage()
     {
-        return array_reduce($this->executedStatements, function ($v, $s) { return $v + $s->getMemoryUsage(); });
+        return array_reduce($this->executedStatements, function ($v, $s) {
+            return $v + $s->getMemoryUsage();
+        });
     }
 
     /**
@@ -252,7 +255,10 @@ class TraceablePDO extends PDO
      */
     public function getPeakMemoryUsage()
     {
-        return array_reduce($this->executedStatements, function ($v, $s) { $m = $s->getEndMemory(); return $m > $v ? $m : $v; });
+        return array_reduce($this->executedStatements, function ($v, $s) {
+            $m = $s->getEndMemory();
+            return $m > $v ? $m : $v;
+        });
     }
 
     /**
@@ -272,7 +278,9 @@ class TraceablePDO extends PDO
      */
     public function getFailedExecutedStatements()
     {
-        return array_filter($this->executedStatements, function ($s) { return !$s->isSuccess(); });
+        return array_filter($this->executedStatements, function ($s) {
+            return !$s->isSuccess();
+        });
     }
 
     /**

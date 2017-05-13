@@ -1,5 +1,6 @@
 <?php
 namespace Shieldfy\Collectors;
+
 use Closure;
 use PDO;
 use Shieldfy\Config;
@@ -10,7 +11,6 @@ use Shieldfy\Collectors\PDO\TraceablePDO;
  */
 class QueriesCollector implements Collectable
 {
-
     protected $callback = null;
 
     /**
@@ -18,12 +18,11 @@ class QueriesCollector implements Collectable
      */
     public function __construct()
     {
-
     }
 
     public function attachDB(PDO $pdo)
     {
-        return new TraceablePDO($pdo,array($this,'handler'));
+        return new TraceablePDO($pdo, array($this,'handler'));
     }
 
     /**
@@ -39,10 +38,11 @@ class QueriesCollector implements Collectable
      * Handle query
      * @return [type] [description]
      */
-    public function handler($source , $query, $params)
+    public function handler($source, $query, $params)
     {
-    
-        if($this->callback !== null)  call_user_func($this->callback , $source , $query, $params);
+        if ($this->callback !== null) {
+            call_user_func($this->callback, $source, $query, $params);
+        }
     }
 
     public function getInfo()

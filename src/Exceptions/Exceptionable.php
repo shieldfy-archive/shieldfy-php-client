@@ -3,5 +3,5 @@ namespace Shieldfy\Exceptions;
 
 interface Exceptionable
 {
-	public function throwException($exception);
+    public function throwException($exception);
 }

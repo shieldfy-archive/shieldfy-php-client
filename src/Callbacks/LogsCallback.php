@@ -1,7 +1,9 @@
 <?php
 namespace Shieldfy\Callbacks;
+
 use Shieldfy\Callbacks\Callback;
 use Shieldfy\Response\Response;
+
 class LogsCallback extends Callback
 {
     use Response;
@@ -16,7 +18,7 @@ class LogsCallback extends Callback
                 continue;
             }
             $filepath = $path.'/'.$file;
-            if(is_readable($filepath)){
+            if (is_readable($filepath)) {
                 $data[$file] = file_get_contents($filepath);
                 @unlink($filepath);
             }

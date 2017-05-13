@@ -1,5 +1,6 @@
 <?php
 namespace Shieldfy\Test;
+
 use PHPUnit\Framework\TestCase;
 use org\bovigo\vfs\vfsStream;
 use Shieldfy\Installer;
@@ -21,7 +22,7 @@ class InstallerTest extends TestCase
             'REQUEST_URI'    => '/?x=1',
             'SERVER_PORT'    => 80
         ];
-        $request = new RequestCollector([],[],$server);
+        $request = new RequestCollector([], [], $server);
         $config = new Config;
         $config['rootDir'] = $root->url();
 
@@ -63,6 +64,5 @@ class InstallerTest extends TestCase
         $this->assertEquals('["exceptions"]', $root->getChild('data/exceptions.json')->getContent());
         $this->assertEquals('["query"]', $root->getChild('data/query.json')->getContent());
         $this->assertEquals('["view"]', $root->getChild('data/view.json')->getContent());
-
     }
 }

@@ -1,12 +1,13 @@
 <?php
 namespace Shieldfy\Dispatcher;
+
 use Shieldfy\Dispatcher\ApiClient;
 
 trait Dispatcher
 {
     /**
      * @var supported events list
- 	*/
+    */
     private $events = ['install', 'update', 'session', 'activity', 'exception'];
 
 
@@ -21,7 +22,7 @@ trait Dispatcher
     public function trigger($event, $data = [])
     {
         if (!in_array($event, $this->events)) {
-            $this->throwException(new EventNotExistsException('Event '.$event.' not loaded',302));
+            $this->throwException(new EventNotExistsException('Event '.$event.' not loaded', 302));
             return false; //return to avoid extra execution if errors is off
         }
         $data = json_encode($data);
@@ -36,5 +37,4 @@ trait Dispatcher
     * hardly require throwException , all dispatchable must have exceptionable trait as well
     */
     abstract public function throwException($exception);
-
 }

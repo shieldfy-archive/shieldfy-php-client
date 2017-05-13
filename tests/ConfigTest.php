@@ -1,5 +1,6 @@
 <?php
 namespace Shieldfy\Test;
+
 use PHPUnit\Framework\TestCase;
 
 use Shieldfy\Config;
