@@ -46,7 +46,7 @@ class CodeCollector implements Collectable
 
         $this->code = [
             'file' => 'none',
-            'line' => $line,
+            'line' => $line + 1, //to fix array 0 index 
             'content' => $code
         ];
         return $this->code;
