@@ -31,7 +31,7 @@ class CodeCollectorTest extends TestCase
         $collector = new CodeCollector;
         $result = $collector->collectFromText($sample, '6');
 
-        $this->assertEquals(5, $result['line']);
+        $this->assertEquals(6, $result['line']);
         $this->assertEquals(7, count($result['content']));
     }
 }
