@@ -178,8 +178,8 @@ class Guard
      */
     public function attachQuery($query)
     {
-        $query = $this->collectors['queries'];
-        $query->handler('event', $query->sql, $query->bindings);
+        $queryCollector = $this->collectors['queries'];
+        $queryCollector->handler('event', $query->sql, $query->bindings);
     }
 
     /**
