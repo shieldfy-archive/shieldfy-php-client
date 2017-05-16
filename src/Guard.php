@@ -183,6 +183,19 @@ class Guard
     }
 
     /**
+     * Attach filename for code collector
+     * uses in the dynamic template engines to retrive the template file instead of the compiled version
+     * @param string $fileName
+     * @return void
+     */
+    public function attachFileName($fileName)
+    {
+        $user_id = $this->collectors['user']->getId();
+        $this->cache->set($user_id.'_view_name',$view_name);
+    }
+    
+
+    /**
      * check if guard installed
      * @return boolean
      */

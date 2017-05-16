@@ -53,8 +53,13 @@ class ViewMonitor extends MonitorBase
             }
         }
 
-        $code = $this->collectors['code']->collectFromText($content, $value);
+        /* check for already defined files */
+        $user_id = $this->collectors['user']->getId();
+        $view_name = $this->cache->get( $user_id.'_view_name');
 
+        $code = $this->collectors['code']->collectFromText($content, $value);
+        $code['file'] = $view_name || 'none';
+        
         $list = headers_list();
         if (in_array('X-Shieldfy-Status: blocked', $list)) {
             return $this->forceDefaultBlock($list);
