@@ -27,7 +27,7 @@ class QueryMonitor extends MonitorBase
         $params = array_merge($info['get'], $info['post']);
         $suspicious = [];
         foreach ($params as $key => $value) {
-            if (stripos($query, $value) !== 0) {
+            if (stripos($query, $value) !== false) {
                 $suspicious[$key] = $value;
             }
         }
@@ -46,7 +46,6 @@ class QueryMonitor extends MonitorBase
         ];
 
         foreach ($suspicious as $key => $value) {
-            //	$value  = $this->normalize($value);
             $result = $this->sentence($value);
             $score = 0;
             $infection = [];
@@ -56,11 +55,11 @@ class QueryMonitor extends MonitorBase
                 $judgment['infection'][$key] = $result['ruleIds'];
             }
         }
-        $code = [
-            'source'    => $source,
-            'query'        => $query,
-            'bindings'    => $bindings
-        ];
+
+        //collect stack by raising exception
+        $e = new \Exception();
+        $code = $this->collectors['code']->collectFromStackTrace($e->getTraceAsString());
+
         $this->handle($judgment, $code);
     }
 }

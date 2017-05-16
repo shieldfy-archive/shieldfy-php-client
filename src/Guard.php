@@ -86,6 +86,7 @@ class Guard
         $this->config = new Config($this->defaults, array_merge($config, [
             'apiEndpoint' => $this->apiEndpoint,
             'rootDir'     => __dir__,
+            'vendorDir'   => str_replace('/shieldfy/shieldfy-php-client/src','',__dir__),
             'version'     => $this->version
         ]));
 
@@ -112,7 +113,10 @@ class Guard
         $exceptionsCollector = new ExceptionsCollector($this->config);
         $requestCollector = new RequestCollector($_GET, $_POST, $_SERVER, $_COOKIE, $_FILES);
         $userCollector = new UserCollector($requestCollector);
-        $codeCollector = new CodeCollector;
+        $codeCollector = new CodeCollector([
+            '[internal function]: Shieldfy',
+            $this->config['vendorDir']
+        ]);
         $queriesCollector = new QueriesCollector;
 
         $this->collectors = [

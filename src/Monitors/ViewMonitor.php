@@ -45,8 +45,7 @@ class ViewMonitor extends MonitorBase
             $result = $this->sentence($value);
             $score = 0;
             $infection = [];
-
-            $r[] = $result;
+            
             if ($result['score']) {
                 $judgment['score'] += $result['score'];
                 $judgment['infection'][$key] = $result['ruleIds'];
@@ -59,6 +58,7 @@ class ViewMonitor extends MonitorBase
 
         $code = $this->collectors['code']->collectFromText($content, $value);
         $code['file'] = $view_name || 'none';
+        $code['vulnerability'] = 1;
         
         $list = headers_list();
         if (in_array('X-Shieldfy-Status: blocked', $list)) {
