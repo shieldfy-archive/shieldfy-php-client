@@ -23,6 +23,13 @@ class LogsCallback extends Callback
                 @unlink($filepath);
             }
         }
+
+        //clean cache if any
+        $cache = $this->cache;
+        if(method_exists($cache,'clean')){
+            $cache->clean(14400); //extend age to 4 hours to make sure nothing go wrong
+        }
+
         $this->respond()->json($data);
     }
 }

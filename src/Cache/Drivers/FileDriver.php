@@ -38,4 +38,17 @@ class FileDriver implements CacheInterface
         $filename = $this->path.$key.'.json';
         return json_decode(file_get_contents($filename), 1);
     }
+
+    /* file cache specific function for cleaning old cache files */
+    public function clean($age = 3600)
+    {
+        $contents = scandir($this->path);
+        foreach($contents as $file)
+        {
+            $ext = pathinfo($file, PATHINFO_EXTENSION);
+            if($ext == 'json' &&  (filemtime($filename) + $age) < time() ){
+                 @unlink($this->path.$file);      
+            }
+        }
+    }
 }

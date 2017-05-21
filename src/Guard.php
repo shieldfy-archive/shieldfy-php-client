@@ -7,6 +7,7 @@ use Shieldfy\Installer;
 use Shieldfy\Session;
 use Shieldfy\Callbacks\CallbackHandler;
 use Shieldfy\Cache\CacheManager;
+use Shieldfy\Cache\CacheInterface;
 use Shieldfy\Monitors\MonitorsBag;
 use Shieldfy\Collectors\UserCollector;
 use Shieldfy\Collectors\RequestCollector;
@@ -127,7 +128,7 @@ class Guard
             'queries'    => $queriesCollector
         ];
 
-        $this->catchCallbacks($requestCollector, $this->config);
+        $this->catchCallbacks($requestCollector, $this->config, $this->cache);
 
         //check the installation
         if (!$this->isInstalled()) {
@@ -160,9 +161,9 @@ class Guard
      * @param  Config           $config
      * @return void
      */
-    public function catchCallbacks(RequestCollector $request, Config $config)
+    public function catchCallbacks(RequestCollector $request, Config $config, CacheInterface $cache)
     {
-        (new CallbackHandler($request, $config))->catchCallback();
+        (new CallbackHandler($request, $config, $cache))->catchCallback();
     }
 
     /**

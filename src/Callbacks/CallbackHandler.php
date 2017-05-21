@@ -3,22 +3,27 @@ namespace Shieldfy\Callbacks;
 
 use Shieldfy\Config;
 use Shieldfy\Collectors\RequestCollector;
+use Shieldfy\Cache\CacheInterface;
 use Shieldfy\Response\Response;
 
 class CallbackHandler
 {
     use Response;
     protected $request;
+    protected $config;
+    protected $cache;
+    
     protected $callbacks = [
         'health' => \Shieldfy\Callbacks\HealthCheckCallback::class,
         'update' => \Shieldfy\Callbacks\UpdateCallback::class,
         'logs'   => \Shieldfy\Callbacks\LogsCallback::class,
     ];
 
-    public function __construct(RequestCollector $request, Config $config)
+    public function __construct(RequestCollector $request, Config $config,  CacheInterface $cache)
     {
         $this->request = $request;
         $this->config  = $config;
+        $this->cache = $cache;
     }
 
     public function catchCallback()
