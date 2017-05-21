@@ -9,8 +9,7 @@ class LogsCallback extends Callback
     use Response;
     public function handle()
     {
-        $path = realpath($this->config['rootDir'].'/../log');
-        
+        $path = $this->config['logsDir'];
         $data = [];
         $contents = scandir($path);
         foreach ($contents as $file) {

@@ -46,7 +46,7 @@ class FileDriver implements CacheInterface
         foreach($contents as $file)
         {
             $ext = pathinfo($file, PATHINFO_EXTENSION);
-            if($ext == 'json' &&  (filemtime($filename) + $age) < time() ){
+            if($ext == 'json' &&  (filemtime($this->path.$file) + $age) < time() ){
                  @unlink($this->path.$file);      
             }
         }

@@ -55,6 +55,10 @@ class Respond
 
     public function halt()
     {
+        if (defined('PHPUNIT_SHIELDFY_TESTSUITE') === true)
+        { 
+           return;
+        }
         exit;
     }
 }

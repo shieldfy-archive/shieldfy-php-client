@@ -60,4 +60,23 @@ class CacheTest extends TestCase
         $this->assertTrue($cache->has('foo'));
         $this->assertFalse($cache->has('bar'));
     }
+
+    public function testClean()
+    {
+        $path = $this->root->url().'/tmp/';
+        $cache = (new CacheManager($this->config))->setDriver('file', [
+            'path'=> $path,
+        ]);
+        //create files
+        file_put_contents($path.'1.json', 'Some Contents');
+        file_put_contents($path.'2.json', 'Some Contents');
+        file_put_contents($path.'3.json', 'Some Contents');
+        sleep(3);
+        file_put_contents($path.'4.json', 'Some Contents');
+        $cache->clean(1); // clean 1 second old
+        $this->assertTrue(file_exists($path.'4.json'));
+        $this->assertFalse(file_exists($path.'1.json'));
+        $this->assertFalse(file_exists($path.'2.json'));
+        $this->assertFalse(file_exists($path.'3.json'));
+    }
 }

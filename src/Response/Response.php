@@ -7,6 +7,7 @@ trait Response
 {
     public function respond()
     {
-        return new Respond($_SERVER['SERVER_PROTOCOL']);
+        $protocol = (isset($_SERVER['SERVER_PROTOCOL'])) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.1';
+        return new Respond($protocol);
     }
 }

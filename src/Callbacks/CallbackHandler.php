@@ -41,7 +41,7 @@ class CallbackHandler
         }
 
         $callbackClass = $this->callbacks[$callback];
-        $callback = new $callbackClass($this->config);
+        $callback = new $callbackClass($this->config,$this->cache);
         $callback->handle();
     }
 

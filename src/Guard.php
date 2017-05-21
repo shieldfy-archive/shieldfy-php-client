@@ -83,11 +83,13 @@ class Guard
      */
     public function __construct(array $config, $cache = null)
     {
+        
         //set config container
         $this->config = new Config($this->defaults, array_merge($config, [
             'apiEndpoint' => $this->apiEndpoint,
-            'rootDir'     => __dir__,
-            'vendorDir'   => str_replace('/shieldfy/shieldfy-php-client/src','',__dir__),
+            'rootDir'     => __DIR__,
+            'logsDir'     => realpath(__DIR__.'/../log'),
+            'vendorDir'   => str_replace('/shieldfy/shieldfy-php-client/src','',__DIR__),
             'version'     => $this->version
         ]));
 
