@@ -79,10 +79,5 @@ class CallbackTest extends TestCase
         
         (new CallbackHandler($requestCollector, $this->config, $this->cache))->catchCallback();
     }
-
-    // public function testUpdateCallback()
-    // {
-
-    // }
-
+    
 }
