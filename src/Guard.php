@@ -26,7 +26,7 @@ class Guard
     /**
      * @var api endpoint
      */
-    public $apiEndpoint = 'http://api.flash.app';
+    public $apiEndpoint = 'https://api2.shieldfy.io';
 
     /**
      * @var version
