@@ -179,6 +179,18 @@ class Guard
     }
 
     /**
+     * Attach view name for template engines
+     *
+     * @param string $view_name
+     * @return void
+     */
+    public function attachViewInfo($view_name)
+    {
+       $user_id = $this->collectors['user']->getId();
+       $this->cache->set($user_id.'_view_name',$view_name);
+    }
+
+    /**
      * Attach external query handler (used by frameworks query event handlers)
      * @param mixed $query
      * @return void
