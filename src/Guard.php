@@ -83,7 +83,6 @@ class Guard
      */
     public function __construct(array $config, $cache = null)
     {
-        
         //set config container
         $this->config = new Config($this->defaults, array_merge($config, [
             'apiEndpoint' => $this->apiEndpoint,
@@ -251,7 +250,7 @@ class Guard
             if ($value === false) {
                 continue;
             }
-            header($header.' : '.$value);
+            header($header.': '.$value);
         }
 
         $signature = hash_hmac('sha256', $this->config['app_key'], $this->config['app_secret']);
