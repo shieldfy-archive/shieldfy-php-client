@@ -25,6 +25,7 @@ class InstallerTest extends TestCase
         $request = new RequestCollector([], [], $server);
         $config = new Config;
         $config['rootDir'] = $root->url();
+        $config['dataDir'] = $root->url().'/data';
 
         $exampleData = json_encode([
             'status'=> 'success',

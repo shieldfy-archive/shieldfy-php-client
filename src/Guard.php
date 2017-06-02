@@ -87,6 +87,7 @@ class Guard
         $this->config = new Config($this->defaults, array_merge($config, [
             'apiEndpoint' => $this->apiEndpoint,
             'rootDir'     => __DIR__,
+            'dataDir'     => __DIR__.'/data',
             'logsDir'     => realpath(__DIR__.'/../log'),
             'vendorDir'   => str_replace('/shieldfy/shieldfy-php-client/src','',__DIR__),
             'version'     => $this->version
@@ -96,10 +97,18 @@ class Guard
         if ($cache === null) {
             //create a new file cache
             $cache = new CacheManager($this->config);
+            $cache_path = $this->config['rootDir'].'/../tmp';
+            if(!is_writable($cache_path)){
+                if(!file_exists($this->config['rootDir'].'/../tmp2')){
+                    mkdir($this->config['rootDir'].'/../tmp2',0777);
+                }                
+                $cache_path = $this->config['rootDir'].'/../tmp2';
+            }
             $cache = $cache->setDriver('file', [
-                'path'=> realpath($this->config['rootDir'].'/../tmp').'/',
+                'path'=> realpath($cache_path).'/',
             ]);
         }
+
         $this->cache = $cache;
 
         //start shieldfy guard

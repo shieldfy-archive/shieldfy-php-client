@@ -76,19 +76,11 @@ class Installer implements Dispatchable, Exceptionable
      */
     private function save(array $data = [])
     {
-        $data_path = $this->config['rootDir'].'/data';
-        if(!file_exists($data_path)){
-            mkdir($data_path,0700);
+        if(!is_writable($this->config['dataDir'])){
+            mkdir($this->config['rootDir'].'/data2',0700);
+            $this->config['dataDir'] = $this->config['rootDir'].'/data2';
         }
-        
-        //create on the fly folder if not exists
-        $root = realpath($this->config['rootDir'].'/../');
-        if(!file_exists($root.'/tmp')){
-            mkdir($root.'/tmp',0777);
-        }
-        if(!file_exists($root.'/log')){
-            mkdir($root.'/log',0777);
-        }
+        $data_path = $this->config['dataDir'];
 
         file_put_contents($data_path.'/installed', time());
 
