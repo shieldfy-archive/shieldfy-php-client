@@ -39,7 +39,7 @@ class RequestCollectorTest extends TestCase
     public function testGetInfo()
     {
         $info = $this->request->getInfo();
-        $this->assertLessThanOrEqual($this->created, $info['created']);
+        $this->assertLessThanOrEqual($info['created'],$this->created);
 
         $this->assertEquals($this->server['REQUEST_METHOD'], $info['method']);
         $this->assertEquals($this->get, $this->request->get);
