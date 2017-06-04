@@ -62,7 +62,7 @@ class ViewMonitor extends MonitorBase
         $view_name = $this->cache->get( $user_id.'_view_name');
 
         $code = $this->collectors['code']->collectFromText($content, $value);
-        $code['file'] = $view_name || 'none';
+        $code['file'] = ($view_name)? $view_name : 'none';
         $code['vulnerability'] = 1;
         
         $list = headers_list();
