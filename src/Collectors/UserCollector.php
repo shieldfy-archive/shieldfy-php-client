@@ -92,7 +92,7 @@ class UserCollector implements Collectable
      */
     public function getId()
     {
-        return $this->userId;
+        return (int)$this->userId; //force integer
     }
 
     /**

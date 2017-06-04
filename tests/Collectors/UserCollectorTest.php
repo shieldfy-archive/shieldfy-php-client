@@ -13,13 +13,15 @@ class UserCollectorTest extends TestCase
         $user = new UserCollector($request);
         $info = $user->getInfo();
         $this->assertEquals('0.0.0.0', $info['ip']);
-        $this->assertEquals(ip2long('0.0.0.0'), $info['id']);
+        $id = (int)ip2long('0.0.0.0');
+        $this->assertEquals($id, $info['id']);
     }
     public function testUserGetID()
     {
         $request = new RequestCollector([], [], ['REQUEST_METHOD'=>'get']);
         $user = new UserCollector($request);
-        $this->assertEquals(ip2long('0.0.0.0'), $user->getId());
+        $id = (int)ip2long('0.0.0.0');
+        $this->assertEquals($id, $user->getId());
     }
     public function testUserInfoThroughProxy1()
     {

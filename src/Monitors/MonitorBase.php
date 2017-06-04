@@ -74,15 +74,15 @@ abstract class MonitorBase implements Dispatchable
         $incidentId = $this->generateIncidentId($this->collectors['user']->getId());
 
         $res = $this->trigger('activity', [
-            'incidentId'    => $incidentId,
-            'host'            => $this->collectors['request']->getHost(),
-            'sessionId'    => $this->collectors['user']->getSessionId(),
-            'ip'            => $this->collectors['user']->getIp(), //just caution if initial session failed for any reason
-            'monitor'        => $this->name,
-            'judgment'        => $judgment,
-            'info'            => $this->collectors['request']->getProtectedInfo(),
-            'code'            => $code,
-            'history'        => $this->session->getHistory()
+            'incidentId'        => $incidentId,
+            'host'              => $this->collectors['request']->getHost(),
+            'sessionId'         => $this->collectors['user']->getSessionId(),
+            'ip'                => $this->collectors['user']->getIp(), //just caution if initial session failed for any reason
+            'monitor'           => $this->name,
+            'judgment'          => $judgment,
+            'info'              => $this->collectors['request']->getProtectedInfo(),
+            'code'              => $code,
+            'history'           => $this->session->getHistory()
         ]);
 
         //mark session as synced

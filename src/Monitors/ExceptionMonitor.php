@@ -36,7 +36,7 @@ class ExceptionMonitor extends MonitorBase
         $info = $request->getInfo();
         $params = array_merge($info['get'], $info['post'], $info['cookies']);
 
-        $score = 0;
+        $score = $request->getScore();
         $infection = [];
         foreach ($params as $key => $value) {
             $result = $this->sentence($value, 'REQUEST');

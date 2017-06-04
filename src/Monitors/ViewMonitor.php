@@ -9,6 +9,10 @@ class ViewMonitor extends MonitorBase
 
     protected $name = 'view';
 
+    protected $vaguePhrases = [
+        '<script>','</script>'
+    ];
+
     /**
      * run the monitor
      */
@@ -26,6 +30,7 @@ class ViewMonitor extends MonitorBase
         $suspicious = [];
 
         foreach ($params as $key => $value) {
+            if(in_array($value,$vaguePhrases)) continue;
             if (stripos($content, $value) !== false) {
                 $suspicious[$key] = $value;
             }
@@ -37,7 +42,7 @@ class ViewMonitor extends MonitorBase
         }
         $this->issue('view');
         $judgment = [
-            'score'=>0,
+            'score'=>$request->getScore(),
             'infection'=>[]
         ];
 

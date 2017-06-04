@@ -12,15 +12,15 @@ class MonitorsBag
      * name => class extended from MonitorBase class
      */
     private $monitors = [
-        'UserMonitor'        =>    \Shieldfy\Monitors\UserMonitor::class,
-        'UploadMonitor'        =>    \Shieldfy\Monitors\UploadMonitor::class,
-        'CSRFMonitor'        =>    \Shieldfy\Monitors\CSRFMonitor::class,
-        'RequestMonitor'    =>    \Shieldfy\Monitors\RequestMonitor::class,
-        'APIMonitor'        =>    \Shieldfy\Monitors\APIMonitor::class,
-        'ExceptionMonitor'    =>    \Shieldfy\Monitors\ExceptionMonitor::class,
-        'QueryMonitor'        =>    \Shieldfy\Monitors\QueryMonitor::class,
-        'ViewMonitor'        =>    \Shieldfy\Monitors\ViewMonitor::class,
-        'HeadersMonitor'    =>    \Shieldfy\Monitors\HeadersMonitor::class
+        'UserMonitor'           =>    \Shieldfy\Monitors\UserMonitor::class,
+        'UploadMonitor'         =>    \Shieldfy\Monitors\UploadMonitor::class,
+        'CSRFMonitor'           =>    \Shieldfy\Monitors\CSRFMonitor::class,
+        'RequestMonitor'        =>    \Shieldfy\Monitors\RequestMonitor::class,
+        'APIMonitor'            =>    \Shieldfy\Monitors\APIMonitor::class,
+        'ExceptionMonitor'      =>    \Shieldfy\Monitors\ExceptionMonitor::class,
+        'QueryMonitor'          =>    \Shieldfy\Monitors\QueryMonitor::class,
+        'ViewMonitor'           =>    \Shieldfy\Monitors\ViewMonitor::class,
+        'HeadersMonitor'        =>    \Shieldfy\Monitors\HeadersMonitor::class
     ];
 
     /**

@@ -19,6 +19,7 @@ class APIMonitor extends MonitorBase
     public function run()
     {
         $this->request = $this->collectors['request'];
+        $this->score = $this->request->getScore();
         $this->issue('api');
         $this->checkForJWTViolation();
         $this->checkForOAuthViolation();

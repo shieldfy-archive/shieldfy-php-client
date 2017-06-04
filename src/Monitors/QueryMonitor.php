@@ -9,6 +9,8 @@ class QueryMonitor extends MonitorBase
 
     protected $name = 'query';
 
+    protected $score = 0;
+
     /**
      * run the monitor
      */
@@ -24,6 +26,7 @@ class QueryMonitor extends MonitorBase
     {
         $request = $this->collectors['request'];
         $info = $request->getInfo();
+        $this->score = $request->getScore();
         $params = array_merge($info['get'], $info['post']);
         $suspicious = [];
         foreach ($params as $key => $value) {
@@ -41,7 +44,7 @@ class QueryMonitor extends MonitorBase
     {
         $this->issue('query');
         $judgment = [
-            'score'=>0,
+            'score'=>$this->score,
             'infection'=>[]
         ];
 

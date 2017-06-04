@@ -22,16 +22,17 @@ class RequestMonitor extends MonitorBase
         *  CRLF INJECTION
         */
         $request = $this->collectors['request'];
+        $user = $this->collectors['user'];
+        
         $info = $request->getInfo();
         $this->issue('request');
 
         $judgment = [
-            'score'=>0,
+            'score'=>$user->getScore(),
             'infection'=>[]
         ];
 
         foreach ($info['get'] as $key => $value) {
-            //	$value  = $this->normalize($value);
             $result = $this->sentence($value);
             if ($result['score']) {
                 $judgment['score'] += $result['score'];
