@@ -35,17 +35,7 @@ Shieldfy\Guard::init([
 
 ## Configurations
 
-```php
-Shieldfy\Guard::init([
-        'app_key'=>'YourAppKey',
-        'app_secret'=>'YourAppSecret',
-        'debug'=>false, // Default is false.
-        'action'=>'block', // What to do when detecting threats. Default is block.
-        'disabledHeaders'=>[] // A list of headers you want to disable.
-])->catchCallbacks();
-```
-
-For more information about configurations and usage, refer to the official documentation [shieldfy.io/docs](https://shieldfy.io/docs)
+For more information about configurations and usage, refer to the official documentation [docs.shieldfy.io](https://docs.shieldfy.io)
 
 ## Contributing
 

@@ -1,9 +1,19 @@
 <?php
+namespace shieldfy;
 
-namespace Shieldfy;
-
-use Shieldfy\Analyze\Analyzer;
+use PDO;
+use Shieldfy\Config;
+use Shieldfy\Installer;
+use Shieldfy\Session;
 use Shieldfy\Callbacks\CallbackHandler;
+use Shieldfy\Cache\CacheManager;
+use Shieldfy\Cache\CacheInterface;
+use Shieldfy\Monitors\MonitorsBag;
+use Shieldfy\Collectors\UserCollector;
+use Shieldfy\Collectors\RequestCollector;
+use Shieldfy\Collectors\ExceptionsCollector;
+use Shieldfy\Collectors\CodeCollector;
+use Shieldfy\Collectors\QueriesCollector;
 use Shieldfy\Exceptions\ExceptionHandler;
 
 class Guard
@@ -16,12 +26,12 @@ class Guard
     /**
      * @var api endpoint
      */
-    public $apiEndpoint = 'http://api.shieldfy.io/v1';
+    public $apiEndpoint = 'https://api2.shieldfy.io';
 
     /**
      * @var version
      */
-    public $version = '1.0.0';
+    public $version = '2.1.0';
 
     /**
      * Default configurations items.
@@ -29,116 +39,231 @@ class Guard
      * @var array
      */
     protected $defaults = [
-        'debug'          => false,
-        'action'         => 'block',
-        'disabledHeaders'=> [],
+        'debug'          => false, //debug status [true,false]
+        'action'         => 'block', //response action [block, silent]
+        'headers'         => [ //list of available headers to expose
+            'X-XSS-Protection'       =>  '1; mode=block',
+            'X-Content-Type-Options' =>  'nosniff',
+            'X-Frame-Options'        =>  'SAMEORIGIN'
+        ],
+        'disable'       =>  [] //list of disabled monitors
     ];
 
+    /**
+     * @var Config $config
+     * @var CacheManager $cache
+     * @var Session $session
+     * @var array $collectors
+     */
     protected $config;
-    protected $event;
+    protected $cache;
+    protected $session;
+    protected $collectors;
 
     /**
-     * Initialize Shielfy guard.
+     * Initialize Shieldfy guard.
      *
      * @param array $config
-     *
+     * @param CacheInterface $cache
      * @return object
      */
     public static function init(array $config, $cache = null)
     {
         if (!isset(self::$instance)) {
-            self::$instance = new self($config);
+            self::$instance = new self($config, $cache);
         }
-
         return self::$instance;
     }
 
-    private function __construct(array $config, $cache = null)
+    /**
+     * Create a new Guard Instance
+     * @param array $config
+     * @param CacheInterface $cache
+     * return initialized guard
+     */
+    public function __construct(array $config, $cache = null)
     {
-
         //set config container
-        $config = new Config($this->defaults, $config);
-        //set base non override by user config
-        $config['apiEndpoint'] = $this->apiEndpoint;
-        $config['rootDir'] = __dir__;
-        $config['version'] = $this->version;
+        $this->config = new Config($this->defaults, array_merge($config, [
+            'apiEndpoint' => $this->apiEndpoint,
+            'rootDir'     => __DIR__,
+            'dataDir'     => __DIR__.'/data',
+            'logsDir'     => realpath(__DIR__.'/../log'),
+            'vendorDir'   => str_replace('/shieldfy/shieldfy-php-client/src','',__DIR__),
+            'version'     => $this->version
+        ]));
 
-        $this->config = $config;
-
-        // Defines Shieldfy's own exception handler
-        $exceptionHandler = new ExceptionHandler($config);
-        $exceptionHandler->setHandler();
-
-        if ($cache == null) {
+        //prepare the cache method if not supplied
+        if ($cache === null) {
             //create a new file cache
-            $cache = new Cache($exceptionHandler);
+            $cache = new CacheManager($this->config);
+            $cache_path = $this->config['rootDir'].'/../tmp';
+            if(!is_writable($cache_path)){
+                if(!file_exists($this->config['rootDir'].'/../tmp2')){
+                    mkdir($this->config['rootDir'].'/../tmp2',0777);
+                }                
+                $cache_path = $this->config['rootDir'].'/../tmp2';
+            }
             $cache = $cache->setDriver('file', [
-                'path'=> realpath($config['rootDir'].'/../tmp').'/',
+                'path'=> realpath($cache_path).'/',
             ]);
         }
 
-        //expose useful headers
-        $headers = new Headers($config);
-        $headers->expose();
+        $this->cache = $cache;
 
-        //capture the current request
-        $request = new Request($_GET, $_POST, $_SERVER, $_COOKIE, $_FILES);
-
-        //capture the current user
-        $user = new User($request);
-
-        /* init api & event for further needs */
-        $api = new ApiClient($config, $exceptionHandler);
-        $event = new Event($api, $exceptionHandler);
-        $this->event = $event;
-
-        //install if not installed
-        $install = new Install($config, $request, $event, $exceptionHandler);
-        $install->run();
-
-        $session = new Session($user, $request, $event, $cache);
-        $analyzer = new Analyzer($session, $cache, $config);
-        $analyzer->run();
-
-        $result = $analyzer->getResult();
-
-        if ($result['status'] != Analyzer::CLEAN) {
-            //dangerous spotted lets report it
-            $response = $event->trigger('activity', [
-                'sessionId' => $session->getId(),
-                'status'    => $result['status'],
-                'request'   => $request->getInfo(),
-                'user'      => $user->getInfo(),
-                'result'    => $result,
-                'history'   => $session->getHistory(),
-            ]);
-
-            $incidentId = '';
-            if ($response && $response->status == 'success') {
-                $incidentId = $response->incidentId;
-            }
-
-            if ($result['status'] == Analyzer::DANGEROUS && $config['action'] == 'block') {
-                (new Action())->block($incidentId);
-            }
-
-            $session->save(false);
-        } else {
-            $session->save();
-        }
-
-        // Close Shieldfy's exception handler
-        $exceptionHandler->closeHandler();
+        //start shieldfy guard
+        $this->startGuard();
     }
 
     /**
-     * A mirror to catchCallbacks in callback handler.
-     *
+      * start the actual guard
+      * @return void
+      */
+    protected function startGuard()
+    {
+        $exceptionsCollector = new ExceptionsCollector($this->config);
+        $requestCollector = new RequestCollector($_GET, $_POST, $_SERVER, $_COOKIE, $_FILES);
+        $userCollector = new UserCollector($requestCollector);
+        $codeCollector = new CodeCollector([
+            '[internal function]: Shieldfy',
+            $this->config['vendorDir']
+        ]);
+        $queriesCollector = new QueriesCollector;
+
+        $this->collectors = [
+            'exceptions' => $exceptionsCollector,
+            'request'    => $requestCollector,
+            'user'       => $userCollector,
+            'code'       => $codeCollector,
+            'queries'    => $queriesCollector
+        ];
+
+        $this->catchCallbacks($requestCollector, $this->config, $this->cache);
+
+        //check the installation
+        if (!$this->isInstalled()) {
+            $install = (new Installer($requestCollector, $this->config))->run();
+        }
+
+        //check if installation failed for any reason ans skip for current session
+        if (!$this->isInstalled()) {
+            return;
+        }
+
+        //start new session
+        $this->session = new Session($userCollector, $requestCollector, $this->config, $this->cache);
+
+
+        /* monitors */
+        $monitors = new MonitorsBag($this->config,
+                                    $this->cache,
+                                    $this->session,
+                                    $this->collectors);
+        $monitors->run();
+
+        $this->exposeHeaders();
+    }
+
+
+    /**
+     * Catch callbacks from Shieldfy API
+     * @param  RequestCollector $request
+     * @param  Config           $config
      * @return void
      */
-    public function catchCallbacks()
+    public function catchCallbacks(RequestCollector $request, Config $config, CacheInterface $cache)
     {
-        $handler = new CallbackHandler($this->config, $this->event);
-        $handler->catchCallbacks();
+        (new CallbackHandler($request, $config, $cache))->catchCallback();
+    }
+
+    /**
+     * Attach PDO Database to analyze
+     * @param  PDO    $pdo
+     * @return TraceablePDO
+     */
+    public function attachDB(PDO $pdo)
+    {
+        return $this->collectors['queries']->attachDB($pdo);
+    }
+
+    /**
+     * Attach view name for template engines
+     *
+     * @param string $view_name
+     * @return void
+     */
+    public function attachViewInfo($view_name)
+    {
+       $user_id = $this->collectors['user']->getId();
+       $this->cache->set($user_id.'_view_name',$view_name);
+    }
+
+    /**
+     * Attach external query handler (used by frameworks query event handlers)
+     * @param mixed $query
+     * @return void
+     */
+    public function attachQuery($query)
+    {
+        $queryCollector = $this->collectors['queries'];
+        $queryCollector->handler('event', $query->sql, $query->bindings);
+    }
+
+    /**
+     * Attach filename for code collector
+     * uses in the dynamic template engines to retrive the template file instead of the compiled version
+     * @param string $fileName
+     * @return void
+     */
+    public function attachFileName($fileName)
+    {
+        $user_id = $this->collectors['user']->getId();
+        $this->cache->set($user_id.'_view_name',$view_name);
+    }
+    
+
+    /**
+     * check if guard installed
+     * @return boolean
+     */
+    public function isInstalled()
+    {
+        if (file_exists($this->config['rootDir'].'/data/installed')) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Save current session , request done
+     */
+    public function __destruct()
+    {
+        //everything going good lets save this session for next run
+        if ($this->session !== null) {
+            $this->session->save();
+        }
+    }
+
+    /**
+     * Expose useful headers
+     * @return void
+     */
+    private function exposeHeaders()
+    {
+        if (function_exists('header_remove')) {
+            header_remove('x-powered-by');
+        }
+
+        foreach ($this->config['headers'] as $header => $value) {
+            if ($value === false) {
+                continue;
+            }
+            header($header.': '.$value);
+        }
+
+        $signature = hash_hmac('sha256', $this->config['app_key'], $this->config['app_secret']);
+        header('X-Web-Shield: ShieldfyWebShield');
+        header('X-Shieldfy-Signature: '.$signature);
     }
 }

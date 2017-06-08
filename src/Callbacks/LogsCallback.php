@@ -1,25 +1,34 @@
 <?php
-
 namespace Shieldfy\Callbacks;
 
-use Shieldfy\Config;
-use Shieldfy\Event;
+use Shieldfy\Callbacks\Callback;
+use Shieldfy\Response\Response;
 
-class LogsCallback implements CallbackInterface
+class LogsCallback extends Callback
 {
-    public static function handle(Config $config, Event $event)
+    use Response;
+    public function handle()
     {
-        //verify callback
-        $path = realpath($config['rootDir'].'/../log');
+        $path = $this->config['logsDir'];
         $data = [];
         $contents = scandir($path);
         foreach ($contents as $file) {
             if ($file == '.' || $file == '..' || $file == '.gitignore') {
                 continue;
             }
-            $data[$file] = file_get_contents($path.'/'.$file);
-            @unlink($path.'/'.$file);
+            $filepath = $path.'/'.$file;
+            if (is_readable($filepath)) {
+                $data[$file] = file_get_contents($filepath);
+                @unlink($filepath);
+            }
         }
-        echo json_encode(['status'=>'success', 'message'=>$data]);
+
+        //clean cache if any
+        $cache = $this->cache;
+        if(method_exists($cache,'clean')){
+            $cache->clean(14400); //extend age to 4 hours to make sure nothing go wrong
+        }
+
+        $this->respond()->json($data);
     }
 }

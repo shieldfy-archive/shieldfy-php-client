@@ -1,70 +1,64 @@
 <?php
-
 namespace Shieldfy\Callbacks;
 
 use Shieldfy\Config;
-use Shieldfy\Event;
+use Shieldfy\Collectors\RequestCollector;
+use Shieldfy\Cache\CacheInterface;
+use Shieldfy\Response\Response;
 
 class CallbackHandler
 {
-    private $hooks = [
-        'ping'  => PingCallback::class,
-        'update'=> UpdateCallback::class,
-        'logs'  => LogsCallback::class,
+    use Response;
+    protected $request;
+    protected $config;
+    protected $cache;
+    
+    protected $callbacks = [
+        'health' => \Shieldfy\Callbacks\HealthCheckCallback::class,
+        'update' => \Shieldfy\Callbacks\UpdateCallback::class,
+        'logs'   => \Shieldfy\Callbacks\LogsCallback::class,
     ];
 
-    protected $config;
-    protected $event;
-
-    public function __construct(Config $config, Event $event)
+    public function __construct(RequestCollector $request, Config $config,  CacheInterface $cache)
     {
-        $this->config = $config;
-        $this->event = $event;
+        $this->request = $request;
+        $this->config  = $config;
+        $this->cache = $cache;
     }
 
-    public function catchCallbacks()
+    public function catchCallback()
     {
-        /* hello i am catching the callbacks */
-        if (isset($_SERVER['HTTP_X_SHIELDFY_CALLBACK'])) {
-            //its callback lets verify it
-            $res = $this->verify();
-            if (!$res) {
-                $this->closeConnection(403, 'Unauthorize Action');
-            }
-            $hook = $_SERVER['HTTP_X_SHIELDFY_CALLBACK'];
-            if (!isset($this->hooks[$hook])) {
-                $this->closeConnection(403, 'Invalid Callback');
-            }
-            //verified lets process
-            $callback = $this->hooks[$hook];
-            $callback::handle($this->config, $this->event);
-
-            $this->closeConnection();
+        if (!isset($this->request->server['HTTP_X_SHIELDFY_CALLBACK'])) {
+            return; //no callback
         }
+        $callback = $this->request->server['HTTP_X_SHIELDFY_CALLBACK'];
+        if (!isset($this->callbacks[$callback])) {
+            $this->respond()->json(['status'=>'error'], 404, 'Callback not found');
+        }
+
+        if (!$this->verify()) {
+            $this->respond()->json(['status'=>'error'], 401, 'Unauthorized callback');
+        }
+
+        $callbackClass = $this->callbacks[$callback];
+        $callback = new $callbackClass($this->config,$this->cache);
+        $callback->handle();
     }
 
+    /**
+     * Verify call token
+     * @return boolean result
+     */
     private function verify()
     {
-        if (!isset($_SERVER['HTTP_X_SHIELDFY_CALLBACK_HASH'])) {
+        if (!isset($this->request->server['HTTP_X_SHIELDFY_CALLBACK_TOKEN'])) {
             return false;
         }
-        $hash = $_SERVER['HTTP_X_SHIELDFY_CALLBACK_HASH'];
-        $keys = Shieldfy::getAppKeys();
-        $localHash = hash_hmac('sha256', $keys['app_key'], $keys['app_secret']);
-        if ($hash == $localHash) {
+        $token = $this->request->server['HTTP_X_SHIELDFY_CALLBACK_TOKEN'];
+        $localToken = hash_hmac('sha256', $this->config['app_key'], $this->config['app_secret']);
+        if ($localToken === $token) {
             return true;
         }
-
         return false;
-    }
-
-    private function closeConnection($status = 200, $msg = '')
-    {
-        if ($status == 200 && $msg == '') {
-            exit;
-        }
-        @header($_SERVER['SERVER_PROTOCOL'].' '.$status.' '.$msg.' :: Shieldfy Web Shield ');
-        @die($msg.' :: Shieldfy Web Shield');
-        exit;
     }
 }

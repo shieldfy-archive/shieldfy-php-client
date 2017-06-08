@@ -1,5 +1,4 @@
 <?php
-
 namespace Shieldfy\Exceptions;
 
 use Exception;
