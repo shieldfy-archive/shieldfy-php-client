@@ -7,7 +7,7 @@ class CodeCollector implements Collectable
     protected $filesExceptionsList = [];
 
     public function __construct(array $fileExceptions = [])
-    { 
+    {
         $this->filesExceptionsList = $fileExceptions;
     }
 
@@ -39,25 +39,24 @@ class CodeCollector implements Collectable
 
     public function collectFromStackTrace($stackString = '')
     {
-        $trace = explode("\n",$stackString);
+        $trace = explode("\n", $stackString);
         $trace = array_reverse($trace);
         array_shift($trace); // remove {main}
         array_pop($trace); // remove call to the internal caller
         $shortedStack = '';
 
-        foreach($trace as $file)
-        {
-            foreach($this->filesExceptionsList as $fileException){
-                if(strpos($file,$fileException) !== false){
+        foreach ($trace as $file) {
+            foreach ($this->filesExceptionsList as $fileException) {
+                if (strpos($file, $fileException) !== false) {
                     continue 2;
-                }         
+                }
             }
             $shortedStack = $file;
         }
 
         //extract file & number
-        if(preg_match('/#[0-9]+\s*([^\s\(]+)\s*\(([0-9]+)\)/U',$shortedStack,$matches)){
-            $this->code = $this->collectFromFile($matches[1],$matches[2]);
+        if (preg_match('/#[0-9]+\s*([^\s\(]+)\s*\(([0-9]+)\)/U', $shortedStack, $matches)) {
+            $this->code = $this->collectFromFile($matches[1], $matches[2]);
         }
 
         return $this->code;
