@@ -214,7 +214,7 @@ class ApiClient implements Exceptionable
      */
     private function calculateBodyHash($body)
     {
-        $body = str_Replace('\\','',$body); //fix backslash double encoding in json
+        $body = str_Replace('\\', '', $body); //fix backslash double encoding in json
         return hash_hmac('sha256', $body, $this->keys['app_secret']);
     }
 

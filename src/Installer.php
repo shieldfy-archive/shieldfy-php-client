@@ -76,8 +76,8 @@ class Installer implements Dispatchable, Exceptionable
      */
     private function save(array $data = [])
     {
-        if(!is_writable($this->config['dataDir'])){
-            mkdir($this->config['rootDir'].'/data2',0700);
+        if (!is_writable($this->config['dataDir'])) {
+            mkdir($this->config['rootDir'].'/data2', 0700);
             $this->config['dataDir'] = $this->config['rootDir'].'/data2';
         }
         $data_path = $this->config['dataDir'];

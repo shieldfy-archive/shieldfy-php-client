@@ -43,11 +43,10 @@ class FileDriver implements CacheInterface
     public function clean($age = 3600)
     {
         $contents = scandir($this->path);
-        foreach($contents as $file)
-        {
+        foreach ($contents as $file) {
             $ext = pathinfo($file, PATHINFO_EXTENSION);
-            if($ext == 'json' &&  (filemtime($this->path.$file) + $age) < time() ){
-                 @unlink($this->path.$file);      
+            if ($ext == 'json' &&  (filemtime($this->path.$file) + $age) < time()) {
+                @unlink($this->path.$file);
             }
         }
     }

@@ -19,7 +19,7 @@ class CallbackHandler
         'logs'   => \Shieldfy\Callbacks\LogsCallback::class,
     ];
 
-    public function __construct(RequestCollector $request, Config $config,  CacheInterface $cache)
+    public function __construct(RequestCollector $request, Config $config, CacheInterface $cache)
     {
         $this->request = $request;
         $this->config  = $config;
@@ -41,7 +41,7 @@ class CallbackHandler
         }
 
         $callbackClass = $this->callbacks[$callback];
-        $callback = new $callbackClass($this->config,$this->cache);
+        $callback = new $callbackClass($this->config, $this->cache);
         $callback->handle();
     }
 
