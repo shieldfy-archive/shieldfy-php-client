@@ -89,7 +89,7 @@ class Guard
             'rootDir'     => __DIR__,
             'dataDir'     => __DIR__.'/data',
             'logsDir'     => realpath(__DIR__.'/../log'),
-            'vendorDir'   => str_replace('/shieldfy/shieldfy-php-client/src','',__DIR__),
+            'vendorDir'   => str_replace('/shieldfy/shieldfy-php-client/src', '', __DIR__),
             'version'     => $this->version
         ]));
 
@@ -98,10 +98,10 @@ class Guard
             //create a new file cache
             $cache = new CacheManager($this->config);
             $cache_path = $this->config['rootDir'].'/../tmp';
-            if(!is_writable($cache_path)){
-                if(!file_exists($this->config['rootDir'].'/../tmp2')){
-                    mkdir($this->config['rootDir'].'/../tmp2',0777);
-                }                
+            if (!is_writable($cache_path)) {
+                if (!file_exists($this->config['rootDir'].'/../tmp2')) {
+                    mkdir($this->config['rootDir'].'/../tmp2', 0777);
+                }
                 $cache_path = $this->config['rootDir'].'/../tmp2';
             }
             $cache = $cache->setDriver('file', [
@@ -194,8 +194,8 @@ class Guard
      */
     public function attachViewInfo($view_name)
     {
-       $user_id = $this->collectors['user']->getId();
-       $this->cache->set($user_id.'_view_name',$view_name);
+        $user_id = $this->collectors['user']->getId();
+        $this->cache->set($user_id.'_view_name', $view_name);
     }
 
     /**
@@ -218,7 +218,7 @@ class Guard
     public function attachFileName($fileName)
     {
         $user_id = $this->collectors['user']->getId();
-        $this->cache->set($user_id.'_view_name',$view_name);
+        $this->cache->set($user_id.'_view_name', $view_name);
     }
     
 

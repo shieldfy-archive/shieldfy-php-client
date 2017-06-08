@@ -30,7 +30,9 @@ class ViewMonitor extends MonitorBase
         $suspicious = [];
 
         foreach ($params as $key => $value) {
-            if(in_array($value,$vaguePhrases)) continue;
+            if (in_array($value, $vaguePhrases)) {
+                continue;
+            }
             if (stripos($content, $value) !== false) {
                 $suspicious[$key] = $value;
             }
@@ -59,7 +61,7 @@ class ViewMonitor extends MonitorBase
 
         /* check for already defined files */
         $user_id = $this->collectors['user']->getId();
-        $view_name = $this->cache->get( $user_id.'_view_name');
+        $view_name = $this->cache->get($user_id.'_view_name');
 
         $code = $this->collectors['code']->collectFromText($content, $value);
         $code['file'] = ($view_name)? $view_name : 'none';

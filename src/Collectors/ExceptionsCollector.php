@@ -121,7 +121,9 @@ class ExceptionsCollector implements Collectable
      */
     protected function logInternalError($exception)
     {
-        if(!is_writable($this->config['logsDir'])) return;
+        if (!is_writable($this->config['logsDir'])) {
+            return;
+        }
         $filename = $this->config['logsDir'].'/'.date('Ymd').'.log';
         $error = $exception->getCode().'-'.$exception->getMessage().'-'.$exception->getFile().'-'.$exception->getLine()."\n";
         file_put_contents($filename, $error, FILE_APPEND | LOCK_EX);

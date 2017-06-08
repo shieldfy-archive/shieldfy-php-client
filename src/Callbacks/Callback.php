@@ -9,7 +9,7 @@ abstract class Callback
     protected $config;
     protected $cache;
 
-    public function __construct(Config $config,CacheInterface $cache)
+    public function __construct(Config $config, CacheInterface $cache)
     {
         $this->config = $config;
         $this->cache  = $cache;
