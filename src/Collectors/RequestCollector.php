@@ -83,6 +83,7 @@ class RequestCollector implements Collectable
         return $this->score;
     }
 
+
     /**
      * check if request is done through ssl or not.
      *
@@ -166,7 +167,7 @@ class RequestCollector implements Collectable
     {
         return [
             'method' => $this->requestMethod,
-            'uri' => $this->server['REQUEST_URI']
+            'uri'    => $this->server['REQUEST_URI']
         ];
     }
 }

@@ -30,7 +30,7 @@ class ViewMonitor extends MonitorBase
         $suspicious = [];
 
         foreach ($params as $key => $value) {
-            if (in_array($value, $vaguePhrases)) {
+            if (in_array($value, $this->vaguePhrases)) {
                 continue;
             }
             if (stripos($content, $value) !== false) {

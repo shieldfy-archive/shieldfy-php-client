@@ -19,8 +19,7 @@ class MonitorsBag
         'APIMonitor'            =>    \Shieldfy\Monitors\APIMonitor::class,
         'ExceptionMonitor'      =>    \Shieldfy\Monitors\ExceptionMonitor::class,
         'QueryMonitor'          =>    \Shieldfy\Monitors\QueryMonitor::class,
-        'ViewMonitor'           =>    \Shieldfy\Monitors\ViewMonitor::class,
-        'HeadersMonitor'        =>    \Shieldfy\Monitors\HeadersMonitor::class
+        'ViewMonitor'           =>    \Shieldfy\Monitors\ViewMonitor::class
     ];
 
     /**
