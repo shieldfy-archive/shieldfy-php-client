@@ -44,11 +44,6 @@ class RequestCollector implements Collectable
     protected $score = 0;
 
     /**
-     * @var http error
-     */
-    protected $http_error = false;
-
-    /**
      * constructor.
      *
      * @param array|array $get
@@ -88,10 +83,6 @@ class RequestCollector implements Collectable
         return $this->score;
     }
 
-    public function setHttpError($errorCode)
-    {
-        $this->http_error = $errorCode;
-    }
 
     /**
      * check if request is done through ssl or not.
@@ -176,8 +167,7 @@ class RequestCollector implements Collectable
     {
         return [
             'method' => $this->requestMethod,
-            'uri'    => $this->server['REQUEST_URI'],
-            'http_error'  => $this->http_error
+            'uri'    => $this->server['REQUEST_URI']
         ];
     }
 }

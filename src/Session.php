@@ -22,6 +22,7 @@ class Session implements Dispatchable, Exceptionable
     protected $cache;
     protected $sessionId;
     protected $history = [];
+    protected $responseCode = 200;
 
     /**
      * Start new session
@@ -88,6 +89,11 @@ class Session implements Dispatchable, Exceptionable
         $this->isSynced = true;
     }
 
+    public function setHttpResponseCode($responseCode)
+    {
+        $this->responseCode = $responseCode;
+    }
+
     /**
      * Save the current session
      */
@@ -98,7 +104,9 @@ class Session implements Dispatchable, Exceptionable
             $this->cache->set($this->user->getId(), $this->user->getInfo());
         }
 
-        $this->history[time()] = $this->request->getHistoryInfo();
+        $history = $this->request->getHistoryInfo();
+        $history['responseCode'] = $this->responseCode;
+        $this->history[time()] = $history;
 
         if ($this->isSynced) {
             //if already synced no need to restore the info to avoid duplications
