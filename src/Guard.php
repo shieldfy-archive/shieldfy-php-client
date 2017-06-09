@@ -26,7 +26,7 @@ class Guard
     /**
      * @var api endpoint
      */
-    public $apiEndpoint = 'https://api2.shieldfy.io';
+    public $apiEndpoint = 'https://api.shieldfy.io';
 
     /**
      * @var version
