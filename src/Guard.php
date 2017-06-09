@@ -241,6 +241,7 @@ class Guard
     {
         //everything going good lets save this session for next run
         if ($this->session !== null) {
+            $this->session->setHttpResponseCode(http_response_code());
             $this->session->save();
         }
     }
