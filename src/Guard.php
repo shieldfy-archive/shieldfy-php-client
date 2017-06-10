@@ -126,6 +126,7 @@ class Guard
         $userCollector = new UserCollector($requestCollector);
         $codeCollector = new CodeCollector([
             '[internal function]: Shieldfy',
+            'shieldfy.php',
             $this->config['vendorDir']
         ]);
         $queriesCollector = new QueriesCollector;
