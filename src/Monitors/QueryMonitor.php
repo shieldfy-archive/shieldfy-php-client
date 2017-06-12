@@ -63,8 +63,8 @@ class QueryMonitor extends MonitorBase
         //collect stack by raising exception
         $e = new \Exception();
         $code = $this->collectors['code']->collectFromStackTrace($e->getTraceAsString());
-        if($judgment['score'] > $this->requestScore){
+        if ($judgment['score'] > $this->requestScore) {
             $this->handle($judgment, $code);
-        }        
+        }
     }
 }

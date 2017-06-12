@@ -73,7 +73,7 @@ class ViewMonitor extends MonitorBase
             return $this->forceDefaultBlock($list);
         }
         
-        if($judgment['score'] > $requestScore){
+        if ($judgment['score'] > $requestScore) {
             $judgmentResponse = $this->handle($judgment, $code);
             if ($judgmentResponse) {
                 return $judgmentResponse;

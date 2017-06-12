@@ -46,13 +46,12 @@ class ExceptionMonitor extends MonitorBase
             }
         }
         $code = $this->collectors['code']->collectFromFile($exception->getFile(), $exception->getLine());
-        if($score > $requestScore){
+        if ($score > $requestScore) {
             $this->handle([
                 'score'=>$score,
                 'infection'=>$infection
             ], $code);
         }
-        
     }
 
     protected function isInScope($exception)
