@@ -72,8 +72,8 @@ abstract class MonitorBase implements Dispatchable
          * incidentId , host , sessionId , monitor , judgment , info , history
          */
         $incidentId = $this->generateIncidentId($this->collectors['user']->getId());
-
-        $res = $this->trigger('activity', [
+        
+        $activityDetails = [
             'incidentId'        => $incidentId,
             'host'              => $this->collectors['request']->getHost(),
             'sessionId'         => $this->collectors['user']->getSessionId(),
@@ -83,23 +83,25 @@ abstract class MonitorBase implements Dispatchable
             'info'              => $this->collectors['request']->getProtectedInfo(),
             'code'              => $code,
             'history'           => $this->session->getHistory()
-        ]);
+        ];
 
-        //mark session as synced
-        $this->session->markAsSynced();
+        if ($judgment['score'] >= self::HIGH && $this->config['action'] === 'block') {
+            $this->trigger('activity', $activityDetails);
 
-        if ($judgment['score'] >= self::HIGH) {
-            if ($this->config['action'] === 'block') {
+            //mark session as synced
+            $this->session->markAsSynced();
+            //ready to save the session because it will not save automatically because of halt
+            $this->session->save();
 
-                //ready to save the session because it will not save automatically because of halt
-                $this->session->save();
-
-                if ($this->name == 'view') {
-                    return $this->respond()->returnBlock($incidentId);
-                }
-                $this->respond()->block($incidentId);
+            if ($this->name == 'view') {
+                return $this->respond()->returnBlock($incidentId);
             }
+            $this->respond()->block($incidentId);
+            return;
         }
+
+        $this->session->triggerBeforeSave($activityDetails);
+
         return false;
     }
 

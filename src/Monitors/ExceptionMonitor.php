@@ -36,7 +36,7 @@ class ExceptionMonitor extends MonitorBase
         $info = $request->getInfo();
         $params = array_merge($info['get'], $info['post'], $info['cookies']);
 
-        $score = $request->getScore();
+        $score = $requestScore = $request->getScore();
         $infection = [];
         foreach ($params as $key => $value) {
             $result = $this->sentence($value, 'REQUEST');
@@ -46,11 +46,12 @@ class ExceptionMonitor extends MonitorBase
             }
         }
         $code = $this->collectors['code']->collectFromFile($exception->getFile(), $exception->getLine());
-
-        $this->handle([
-            'score'=>$score,
-            'infection'=>$infection
-        ], $code);
+        if ($score > $requestScore) {
+            $this->handle([
+                'score'=>$score,
+                'infection'=>$infection
+            ], $code);
+        }
     }
 
     protected function isInScope($exception)

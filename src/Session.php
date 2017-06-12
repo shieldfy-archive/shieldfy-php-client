@@ -17,6 +17,8 @@ class Session implements Dispatchable, Exceptionable
 
     protected $isNew = false;
     protected $isSynced = false;
+    protected $needTrigger = false;
+    protected $triggerData = [];
     protected $user;
     protected $request;
     protected $cache;
@@ -89,6 +91,24 @@ class Session implements Dispatchable, Exceptionable
         $this->isSynced = true;
     }
 
+    /**
+     * Trigger threat before save
+     *
+     * @param array $activityDetails
+     * @return void
+     */
+    public function triggerBeforeSave(array $activityDetails = [])
+    {
+        $this->needTrigger = true;
+        $this->triggerData = $activityDetails;
+    }
+
+    /**
+     * Set Http Response To Save As History
+     *
+     * @param Integer $responseCode
+     * @return void
+     */
     public function setHttpResponseCode($responseCode)
     {
         $this->responseCode = $responseCode;
@@ -106,6 +126,13 @@ class Session implements Dispatchable, Exceptionable
 
         $history = $this->request->getHistoryInfo();
         $history['responseCode'] = $this->responseCode;
+
+        if ($this->needTrigger && !$this->isSynced) {
+            $activityDetails = $this->triggerData;
+            $history['score'] = $activityDetails['judgment']['score'];
+            $this->trigger('activity', $activityDetails);
+        }
+
         $this->history[time()] = $history;
 
         if ($this->isSynced) {
