@@ -86,7 +86,6 @@ abstract class MonitorBase implements Dispatchable
         ];
 
         if ($judgment['score'] >= self::HIGH && $this->config['action'] === 'block') {
-
             $this->trigger('activity', $activityDetails);
 
             //mark session as synced
