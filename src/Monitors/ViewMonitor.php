@@ -43,8 +43,9 @@ class ViewMonitor extends MonitorBase
             return $content;
         }
         $this->issue('view');
+        $requestScore = $request->getScore();
         $judgment = [
-            'score'=>$request->getScore(),
+            'score'=>$requestScore,
             'infection'=>[]
         ];
 
@@ -71,11 +72,14 @@ class ViewMonitor extends MonitorBase
         if (in_array('X-Shieldfy-Status: blocked', $list)) {
             return $this->forceDefaultBlock($list);
         }
-
-        $judgmentResponse = $this->handle($judgment, $code);
-        if ($judgmentResponse) {
-            return $judgmentResponse;
+        
+        if($judgment['score'] > $requestScore){
+            $judgmentResponse = $this->handle($judgment, $code);
+            if ($judgmentResponse) {
+                return $judgmentResponse;
+            }
         }
+        
         return $content;
     }
 }

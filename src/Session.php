@@ -127,7 +127,8 @@ class Session implements Dispatchable, Exceptionable
         $history = $this->request->getHistoryInfo();
         $history['responseCode'] = $this->responseCode;
 
-        if($this->needTrigger){
+        if($this->needTrigger && !$this->isSynced){
+            $activityDetails = $this->triggerData;
             $history['score'] = $activityDetails['judgment']['score'];
             $this->trigger('activity', $activityDetails);
         }
