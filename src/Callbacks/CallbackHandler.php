@@ -12,7 +12,7 @@ class CallbackHandler
     protected $request;
     protected $config;
     protected $cache;
-    
+
     protected $callbacks = [
         'health' => \Shieldfy\Callbacks\HealthCheckCallback::class,
         'update' => \Shieldfy\Callbacks\UpdateCallback::class,

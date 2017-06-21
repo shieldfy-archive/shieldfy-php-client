@@ -216,8 +216,6 @@ class TraceablePDO extends PDO
             $ex = new PDOException($error[2], $error[0]);
         }
 
-
-
         if ($this->pdo->getAttribute(PDO::ATTR_ERRMODE) === PDO::ERRMODE_EXCEPTION && $ex !== null) {
             throw $ex;
         }
