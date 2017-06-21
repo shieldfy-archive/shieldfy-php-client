@@ -42,7 +42,6 @@ class ApiClient implements Exceptionable
     {
         $this->config = $config;
 
-
         if (!extension_loaded('curl')) {
             //critical error package cannot load without
             throw new FailedExtentionLoadingException('cURL library is not loaded');

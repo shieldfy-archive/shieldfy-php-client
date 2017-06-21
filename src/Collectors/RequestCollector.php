@@ -83,7 +83,6 @@ class RequestCollector implements Collectable
         return $this->score;
     }
 
-
     /**
      * check if request is done through ssl or not.
      *

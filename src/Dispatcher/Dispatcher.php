@@ -10,7 +10,6 @@ trait Dispatcher
     */
     private $events = ['install', 'update', 'session', 'activity', 'exception'];
 
-
     /**
      * trigger the event.
      *
