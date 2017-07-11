@@ -103,4 +103,9 @@ class Installer implements Dispatchable, Exceptionable
             file_put_contents($data_path.'/view.json', $data['view']);
         }
     }
+
+    public static function chmod()
+    {
+        return chmod("tmp/", 0777);
+    }
 }
