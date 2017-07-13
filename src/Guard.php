@@ -99,10 +99,7 @@ class Guard
             $cache = new CacheManager($this->config);
             $cache_path = $this->config['rootDir'].'/../tmp';
             if (!is_writable($cache_path)) {
-                if (!file_exists($this->config['rootDir'].'/../tmp2')) {
-                    mkdir($this->config['rootDir'].'/../tmp2', 0777);
-                }
-                $cache_path = $this->config['rootDir'].'/../tmp2';
+                throw new \ErrorException("Permission denied, \"tmp/\" directory must be writable");
             }
             $cache = $cache->setDriver('file', [
                 'path'=> realpath($cache_path).'/',
@@ -221,7 +218,7 @@ class Guard
         $user_id = $this->collectors['user']->getId();
         $this->cache->set($user_id.'_view_name', $view_name);
     }
-    
+
 
     /**
      * check if guard installed
