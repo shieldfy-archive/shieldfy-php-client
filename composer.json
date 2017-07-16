@@ -17,7 +17,6 @@
     ],
     "require": {
         "php" : "~5.6|~7.0",
-        "ext-curl": "*",
         "shieldfy/normalizer":"1.*"
     },
     "require-dev": {
