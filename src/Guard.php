@@ -81,7 +81,7 @@ class Guard
      * @param CacheInterface $cache
      * return initialized guard
      */
-    public function __construct(array $config, $cache = null)
+    public function __construct(array $config, CacheInterface $cache = null)
     {
         //set config container
         $this->config = new Config($this->defaults, array_merge($config, [
@@ -97,9 +97,10 @@ class Guard
         if ($cache === null) {
             //create a new file cache
             $cache = new CacheManager($this->config);
+
             $cache_path = $this->config['rootDir'].'/../tmp';
             if (!is_writable($cache_path)) {
-                throw new \ErrorException("Permission denied, \"tmp/\" directory must be writable");
+                throw new \ErrorException("Permission denied, \"tmp/\" directory must be writable.");
             }
             $cache = $cache->setDriver('file', [
                 'path'=> realpath($cache_path).'/',
