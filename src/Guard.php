@@ -152,7 +152,6 @@ class Guard
         //start new session
         $this->session = new Session($userCollector, $requestCollector, $this->config, $this->cache);
 
-
         /* monitors */
         $monitors = new MonitorsBag($this->config,
                                     $this->cache,
@@ -162,7 +161,6 @@ class Guard
 
         $this->exposeHeaders();
     }
-
 
     /**
      * Catch callbacks from Shieldfy API
@@ -219,7 +217,6 @@ class Guard
         $user_id = $this->collectors['user']->getId();
         $this->cache->set($user_id.'_view_name', $view_name);
     }
-
 
     /**
      * check if guard installed

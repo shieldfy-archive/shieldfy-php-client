@@ -40,7 +40,6 @@ class ExceptionsCollector implements Collectable
         $this->callback = $callback;
     }
 
-
     /**
      * Handle errors / warning / notice
      * @param  Integer  $severity

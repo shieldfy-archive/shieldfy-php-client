@@ -72,7 +72,7 @@ abstract class MonitorBase implements Dispatchable
          * incidentId , host , sessionId , monitor , judgment , info , history
          */
         $incidentId = $this->generateIncidentId($this->collectors['user']->getId());
-        
+
         $activityDetails = [
             'incidentId'        => $incidentId,
             'host'              => $this->collectors['request']->getHost(),

@@ -40,7 +40,6 @@ class Respond
         return str_replace('{incidentId}', $incidentId, $blockHTML);
     }
 
-
     public function json(array $data = [], $status = 200, $msg = '', $return = false)
     {
         header('Content-Type: application/json; charset=utf-8');

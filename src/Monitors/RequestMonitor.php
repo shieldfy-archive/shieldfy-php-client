@@ -23,7 +23,7 @@ class RequestMonitor extends MonitorBase
         */
         $request = $this->collectors['request'];
         $user = $this->collectors['user'];
-        
+
         $info = $request->getInfo();
         $this->issue('request');
 
