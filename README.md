@@ -30,7 +30,7 @@ composer require shieldfy/shieldfy-php-client
 Shieldfy\Guard::init([
         'app_key'=>'YourAppKey',
         'app_secret'=>'YourAppSecret'
-])->catchCallbacks();
+]);
 ```
 
 ## Configurations
