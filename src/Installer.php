@@ -104,8 +104,14 @@ class Installer implements Dispatchable, Exceptionable
         }
     }
 
+    /**
+    * Change mode for writable directories within the installation phase
+    *
+    * @return void
+    */
     public static function chmod()
     {
-        return chmod("tmp/", 0777);
+        chmod("tmp/", 0777);
+        chmod("log/", 0777);
     }
 }
