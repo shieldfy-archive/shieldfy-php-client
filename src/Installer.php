@@ -112,5 +112,6 @@ class Installer implements Dispatchable, Exceptionable
     {
         chmod("tmp/", 0777);
         chmod("log/", 0777);
+        chmod("src/data/", 0777);
     }
 }
