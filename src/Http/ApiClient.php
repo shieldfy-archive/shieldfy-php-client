@@ -1,6 +1,6 @@
 <?php
 
-namespace Shieldfy\Dispatcher;
+namespace Shieldfy\Http;
 
 use Shieldfy\Config;
 
@@ -14,9 +14,9 @@ class ApiClient implements Exceptionable
     use Exceptioner;
 
     /**
-     * Const TIMEOUT Connectio Timeout.
+     * private $timeout,  Connection Timeout.
      */
-    const TIMEOUT = 30;
+    private $timeout = 30;
 
     /**
      * @var Config
@@ -27,7 +27,7 @@ class ApiClient implements Exceptionable
      * curl private vars.
      */
     private $curl = null;
-    private $useragent = 'shieldfy-php/2.1';
+    private $useragent = 'shieldfy-php/3.0';
     private $baseUrl = '';
     private $keys = [];
     private $errors = [];
@@ -38,7 +38,7 @@ class ApiClient implements Exceptionable
      * @param Config           $config
      * @return void
      */
-    public function __construct(Config $config)
+    public function __construct($endpoint, Config $config)
     {
         $this->config = $config;
 
@@ -53,10 +53,10 @@ class ApiClient implements Exceptionable
             'app_key'   => $this->config['app_key'],
             'app_secret'=> $this->config['app_secret'],
         ]);
-        $this->setBaseUrl($this->config['apiEndpoint']);
+        $this->setBaseUrl($endpoint);
 
         $this->setUserAgent();
-        $this->setTimeout(self::TIMEOUT);
+        $this->setTimeout($this->timeout);
         $this->setDefaultOptions();
         $this->setCertificate();
     }
@@ -71,9 +71,9 @@ class ApiClient implements Exceptionable
      */
     public function request($url, $body)
     {
+        //var_dump($this->curl);
         $hash = $this->calculateBodyHash($body);
         $this->setupHeaders(strlen($body), $hash);
-
         $this->setOpt(CURLOPT_CUSTOMREQUEST, 'POST');
         $this->setOpt(CURLOPT_POSTFIELDS, $body);
 
@@ -88,7 +88,6 @@ class ApiClient implements Exceptionable
 
             return false;
         }
-        $this->close();
 
         $res = $this->parseResult($result);
         if (!$res) {
@@ -119,7 +118,7 @@ class ApiClient implements Exceptionable
 
         if ($res->status == 'error') {
             $this->errors = [
-                'code'   => $res->code,
+                'code'   => $res->errorCode,
                 'message'=> $res->message,
             ];
 
@@ -184,7 +183,7 @@ class ApiClient implements Exceptionable
     {
         $this->setOpt(CURLOPT_SSL_VERIFYPEER, true);
         $this->setOpt(CURLOPT_SSL_VERIFYHOST, 2);
-        $this->setOpt(CURLOPT_CAINFO, $this->config['rootDir'].'/certificate/cacert.pem');
+        $this->setOpt(CURLOPT_CAINFO, __DIR__.'/certificate/cacert.pem');
     }
 
     /**
@@ -196,8 +195,8 @@ class ApiClient implements Exceptionable
     {
         $this->setOpt(CURLOPT_HTTPHEADER,
             [
-                'X-Shieldfy-Api-Key: '.$this->keys['app_key'],
-                'X-Shieldfy-Api-Hash: '.$hash,
+                'Authentication: '.$this->keys['app_key'],
+                'Authorization:Bearer '.$hash,
                 'Content-Type: application/json',
                 'Content-Length: ' . $length
             ]
@@ -213,7 +212,6 @@ class ApiClient implements Exceptionable
      */
     private function calculateBodyHash($body)
     {
-        $body = str_Replace('\\', '', $body); //fix backslash double encoding in json
         return hash_hmac('sha256', $body, $this->keys['app_secret']);
     }
 

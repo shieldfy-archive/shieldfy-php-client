@@ -88,6 +88,6 @@ class RequestCollectorTest extends TestCase
         $this->assertEquals([
             'method' => 'POST',
             'uri'    => '/?x=1'
-        ], $this->request->getHistoryInfo());
+        ], $this->request->getShortInfo());
     }
 }

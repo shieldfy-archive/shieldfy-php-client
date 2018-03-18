@@ -4,7 +4,7 @@ namespace Shieldfy\Test;
 
 use PHPUnit\Framework\TestCase;
 
-use Shieldfy\Dispatcher\ApiClient;
+use Shieldfy\Http\ApiClient;
 use Shieldfy\Config;
 
 class ApiClientTest extends TestCase
@@ -17,8 +17,7 @@ class ApiClientTest extends TestCase
         $this->config = new Config();
         $this->config['app_key'] = 'testKey';
         $this->config['app_secret'] = 'testSecret';
-        $this->config['apiEndpoint'] = 'https://shieldfy.io';
-        $this->api = new ApiClient($this->config);
+        $this->api = new ApiClient('https://shieldfy.io',$this->config);
     }
 
     public function testAuthenticationHeaders()

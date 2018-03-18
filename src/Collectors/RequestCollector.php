@@ -59,7 +59,7 @@ class RequestCollector implements Collectable
         $this->server = $server;
         $this->cookies = $cookies;
         $this->files = $files;
-        $this->requestMethod = $server['REQUEST_METHOD'];
+        $this->requestMethod = (isset($server['REQUEST_METHOD']))?$server['REQUEST_METHOD']:'get';
         $this->created = time();
     }
 
@@ -115,7 +115,7 @@ class RequestCollector implements Collectable
 
     public function getHost()
     {
-        return $this->server['HTTP_HOST'];
+        return (isset($this->server['HTTP_HOST']))? $this->server['HTTP_HOST'] : 'N/A' ;
     }
 
     /**
@@ -162,11 +162,11 @@ class RequestCollector implements Collectable
         return $info;
     }
 
-    public function getHistoryInfo()
+    public function getShortInfo()
     {
         return [
             'method' => $this->requestMethod,
-            'uri'    => $this->server['REQUEST_URI']
+            'uri'    => (isset($this->server['REQUEST_URI']))? $this->server['REQUEST_URI'] : ''
         ];
     }
 }

@@ -28,7 +28,7 @@ class UserCollector implements Collectable
     /**
      * User Score.
      */
-    private $score;
+    private $score = 0;
 
     /**
      * Constructor.

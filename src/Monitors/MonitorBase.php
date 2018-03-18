@@ -1,51 +1,38 @@
 <?php
+
 namespace Shieldfy\Monitors;
 
+use Closure;
 use Shieldfy\Config;
 use Shieldfy\Session;
-use Shieldfy\Cache\CacheInterface;
-
-use Shieldfy\Dispatcher\Dispatcher;
-use Shieldfy\Dispatcher\Dispatchable;
-
-use Shieldfy\Exceptions\Exceptioner;
+use Shieldfy\Events;
+use Shieldfy\Http\Dispatcher;
 use Shieldfy\Response\Response;
 
-abstract class MonitorBase implements Dispatchable
+abstract class MonitorBase
 {
-    use Dispatcher;
-    use Exceptioner;
+
     use Response;
     /**
      * @var Config $config
-     * @var CacheInterface $cache
-     * @var Array $collectors
      */
     protected $config;
-    protected $cache;
-    protected $session;
     protected $collectors;
-    protected $name = '';
-
-    /**
-     * Threholds
-     */
-    const LOW    = 20;
-    const MEDIUM = 50;
-    const HIGH   = 70;
+    protected $session;
+    protected $dispatcher;
+    protected $events;
 
     /**
      * Constructor
      * @param Config $config
-     * @param CacheInterface $cache
-     * @param array $collectors
      */
-    public function __construct(Config $config, CacheInterface $cache, Session $session, array $collectors)
+    public function __construct(Config $config, Session $session, Dispatcher $dispatcher, Array $collectors,Events $events)
     {
         $this->config = $config;
-        $this->cache = $cache;
         $this->session = $session;
+        $this->dispatcher = $dispatcher;
         $this->collectors = $collectors;
+        $this->events = $events;
     }
 
     /**
@@ -58,66 +45,62 @@ abstract class MonitorBase implements Dispatchable
      * @param  array $judgment judgment informatoin
      * @return void
      */
-    protected function handle($judgment, $code = '')
-    {
-        if (!isset($judgment['score'])) {
-            return;
-        } //no judgment if no score
-        if ($judgment['score'] < self::LOW) {
-            return;
-        } //safe
 
-        /**
-         * report activity
-         * incidentId , host , sessionId , monitor , judgment , info , history
-         */
+    protected function sendToJail($severity = 'low', $charge  = [], $code = [])
+    {
+
+        //based on severity and config , lets judge it
         $incidentId = $this->generateIncidentId($this->collectors['user']->getId());
 
-        $activityDetails = [
+        if($this->dispatcher->hasData() && $severity  != 'high'){
+            //merge
+            $data = $this->dispatcher->getData();
+            if($data['charge']['key'] == $charge['key'])
+            {
+                //same
+                $charge['score'] += $data['charge']['score'];
+                $charge['rulesIds'] = array_merge($data['charge']['rulesIds'], $charge['rulesIds']);
+                //recalculate the severity
+                $severity = $this->parseScore($charge['score']);
+            }
+        }
+
+        $this->dispatcher->setData([
             'incidentId'        => $incidentId,
             'host'              => $this->collectors['request']->getHost(),
-            'sessionId'         => $this->collectors['user']->getSessionId(),
-            'ip'                => $this->collectors['user']->getIp(), //just caution if initial session failed for any reason
+            'sessionId'         => $this->session->getId(),
+            'user'              => $this->collectors['user']->getInfo(),
             'monitor'           => $this->name,
-            'judgment'          => $judgment,
-            'info'              => $this->collectors['request']->getProtectedInfo(),
+            'severity'          => $severity,
+            'charge'            => $charge,
+            'request'           => $this->collectors['request']->getProtectedInfo(),
             'code'              => $code,
-            'history'           => $this->session->getHistory()
-        ];
+            'response'          => ($severity == 'high' && $this->config['action'] == 'block') ? 'block' : 'pass'
+        ]);
 
-        if ($judgment['score'] >= self::HIGH && $this->config['action'] === 'block') {
-            $this->trigger('activity', $activityDetails);
-
-            //mark session as synced
-            $this->session->markAsSynced();
-            //ready to save the session because it will not save automatically because of halt
-            $this->session->save();
-
-            if ($this->name == 'view') {
+        if($severity == 'high' && $this->config['action'] == 'block')
+        {
+            if($this->name == 'view') {
+                /* view is special case because it uses ob_start so we need to flush data here */
+                $this->dispatcher->flush();
                 return $this->respond()->returnBlock($incidentId);
             }
             $this->respond()->block($incidentId);
-            return;
         }
-
-        $this->session->triggerBeforeSave($activityDetails);
-
-        return false;
+        return;
     }
 
-    public function forceDefaultBlock($list)
+    protected function parseScore($score = 0)
     {
-        $incidentId = '###';
-        foreach ($list as $header) {
-            if (strpos($header, 'X-Shieldfy-Block-Id:') !== false) {
-                $incidentId = trim(str_replace('X-Shieldfy-Block-Id:', '', $header));
-            }
-        }
-        return $this->respond()->returnBlock($incidentId);
+        if($score >= 70) return 'high';
+        if($score >= 40) return 'med';
+        return 'low';
     }
+
 
     private function generateIncidentId($userId)
     {
-        return $userId.time();
+        return md5($userId.uniqid().mt_rand());
     }
+
 }

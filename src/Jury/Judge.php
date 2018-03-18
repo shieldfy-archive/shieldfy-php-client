@@ -47,10 +47,14 @@ trait Judge
         $ruleIds = [];
         $normalizedValue = '';
         foreach ($this->rules as $rule) {
+
             if ($rule->needNormalize()) {
-                $value = $normalizedValue = $this->normalize($value, $normalizedValue);
+                $normalizedValue = $this->normalize($value, $normalizedValue);
+                $res = $rule->run($normalizedValue, $target, $tag);
+            }else{
+                $res = $rule->run($value, $target, $tag);
             }
-            $res = $rule->run($value, $target, $tag);
+
             if ($res['score'] > 0) {
                 $score += $res['score'];
                 $ruleIds[] = $res['id'];
@@ -58,7 +62,7 @@ trait Judge
         }
         return [
             'score'=>$score,
-            'ruleIds'=>$ruleIds
+            'rulesIds'=>$ruleIds
         ];
     }
 }

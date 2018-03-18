@@ -8,6 +8,7 @@ class ViewMonitor extends MonitorBase
     use Judge;
 
     protected $name = 'view';
+    protected $template = null;
 
     protected $vaguePhrases = [
         '<script>','</script>'
@@ -18,68 +19,74 @@ class ViewMonitor extends MonitorBase
      */
     public function run()
     {
-        ob_start(array($this,'analyzeView'));
-    }
+        $this->events->listen('view.render',function($path,$data){
+            if($this->template != null) return;
+            $this->template = [
+                'file' => $path,
+                'data' => $data
+            ];
+        });
 
-    public function analyzeView($content)
-    {
-        //match with the view if found
         $request = $this->collectors['request'];
         $info = $request->getInfo();
         $params = array_merge($info['get'], $info['post']);
-        $suspicious = [];
 
+        $this->issue('view');
+
+        $infected = [];
         foreach ($params as $key => $value) {
-            if (in_array($value, $this->vaguePhrases)) {
+
+            $result = $this->sentence($value);
+            if($result['score']){
+                $result['value'] = $value;
+                $result['key'] = $key;
+                $infected[] = $result;
+            }
+
+        }
+        if(count($infected) > 0){
+            //it's time to listen
+            $this->runAnalyzers($infected);
+        }
+    }
+
+    public function runAnalyzers(Array $infected = [])
+    {
+        $this->infected = $infected;
+        ob_start(array($this,'deepAnalyze'));
+    }
+
+    public function deepAnalyze($content)
+    {
+        $foundGuilty = false;
+        $charge = [];
+        foreach($this->infected as $infected):
+            if (in_array($infected['value'], $this->vaguePhrases)) {
                 continue;
             }
-            if (stripos($content, $value) !== false) {
-                $suspicious[$key] = $value;
+            if (stripos($content, $infected['value']) !== false) {
+                $foundGuilty = true;
+                $charge = $infected;
+                break;
             }
-        }
+        endforeach;
 
-        //run rules on request
-        if (empty($suspicious)) {
-            return $content;
-        }
-        $this->issue('view');
-        $requestScore = $request->getScore();
-        $judgment = [
-            'score'=>$requestScore,
-            'infection'=>[]
-        ];
+        if($foundGuilty){
+            $code = $this->collectors['code']->collectFromText($content, $charge['value']);
+            if($this->template){
+                $code['file'] = $this->template['file'];
+                $code['line'] = 'N/A';
+             }
 
-        foreach ($suspicious as $key => $value) {
-            $result = $this->sentence($value);
-            $score = 0;
-            $infection = [];
+            $severity = $this->parseScore($charge['score']);
 
-            if ($result['score']) {
-                $judgment['score'] += $result['score'];
-                $judgment['infection'][$key] = $result['ruleIds'];
-            }
-        }
-
-        /* check for already defined files */
-        $user_id = $this->collectors['user']->getId();
-        $view_name = $this->cache->get($user_id.'_view_name');
-
-        $code = $this->collectors['code']->collectFromText($content, $value);
-        $code['file'] = ($view_name)? $view_name : 'none';
-        $code['vulnerability'] = 1;
-
-        $list = headers_list();
-        if (in_array('X-Shieldfy-Status: blocked', $list)) {
-            return $this->forceDefaultBlock($list);
-        }
-
-        if ($judgment['score'] > $requestScore) {
-            $judgmentResponse = $this->handle($judgment, $code);
-            if ($judgmentResponse) {
-                return $judgmentResponse;
+            $result = $this->sendToJail( $severity, $charge, $code );
+            if($severity == 'high'){
+                return $result;
             }
         }
 
         return $content;
     }
+
 }

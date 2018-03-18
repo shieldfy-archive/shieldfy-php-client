@@ -103,8 +103,8 @@ class TraceablePDOStatement extends PDOStatement
             $boundParameters = array_merge($boundParameters, $input_parameters);
         }
 
-        if ($this->pdo->callback !== null) {
-            call_user_func($this->pdo->callback, 'statement', $this->queryString, $boundParameters);
+        if ($this->pdo->events !== null) {
+            $this->pdo->events->trigger('db.query',[$sql,$args]);
         }
 
         $ex = null;

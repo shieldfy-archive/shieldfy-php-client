@@ -3,8 +3,8 @@ namespace Shieldfy\Response;
 
 class Respond
 {
-    const BLOCKSTATUS = 403;
-    const BLOCKMESSAGE = 'Dangerous Request Blocked :: Shieldfy Web Shield';
+    private $blockStatus = 403;
+    private $blockMessage = 'Dangerous Request Blocked :: Shieldfy Web Shield';
 
     protected $protocol;
 
@@ -15,7 +15,7 @@ class Respond
 
     public function block($incidentId)
     {
-        header($this->protocol.' '.self::BLOCKSTATUS.' '.self::BLOCKMESSAGE);
+        header($this->protocol.' '.$this->blockStatus.' '.$this->blockMessage);
         header('Content-Type: text/html; charset=utf-8');
         header('X-Shieldfy-Status: blocked');
         header('X-Shieldfy-Block-Id: '.$incidentId);
@@ -25,12 +25,11 @@ class Respond
 
     public function returnBlock($incidentId)
     {
-        header($this->protocol.' '.self::BLOCKSTATUS.' '.self::BLOCKMESSAGE);
+        header($this->protocol.' '.$this->blockStatus.' '.$this->blockMessage);
         header('Content-Type: text/html; charset=utf-8');
         header('X-Shieldfy-Status: blocked');
         header('X-Shieldfy-Block-Id: '.$incidentId);
         $response = $this->prepareBlockResponse($incidentId);
-        ;
         return $response;
     }
 
