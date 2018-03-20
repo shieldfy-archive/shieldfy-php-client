@@ -34,7 +34,7 @@ class Guard
      * @var Session
      * @var Events
      */
-    public $endpoint = 'https://api.shieldfy.io/v1';
+    public $endpoint = 'https://api.shieldfy.com/v1';
     public $version = '3.0.0';
     public $config = null;
     public $dispatcher = null;

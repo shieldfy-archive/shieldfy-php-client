@@ -74,8 +74,8 @@ class ViewMonitor extends MonitorBase
         if($foundGuilty){
             $code = $this->collectors['code']->collectFromText($content, $charge['value']);
             if($this->template){
-                $code['file'] = $this->template['file'];
-                $code['line'] = 'N/A';
+                $code['code']['file'] = $this->template['file'];
+                $code['code']['line'] = '-1';
              }
 
             $severity = $this->parseScore($charge['score']);

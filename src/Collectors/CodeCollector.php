@@ -35,7 +35,9 @@ class CodeCollector implements Collectable
 
         foreach($this->stack as $trace):
             if(!isset($trace['file'])) continue;
-
+			//dirty fix START
+			if(strstr($trace['file'],'shieldfy-php-client')) continue;
+			//dirty fix ENDS
             if(strpos($trace['file'], $this->config['paths']['vendors']) === false){
                 //this is probably our guy ( the last file called outside vendor file)
                 return [
@@ -55,11 +57,6 @@ class CodeCollector implements Collectable
 
 	public function collectFromFile($filePath = '', $line = '')
     {
-        // if(strstr($filePath, 'eval'))
-        // {
-        //     $filePath = preg_replace("/(.*)\([0-9]+\)\s*:\s*eval\(\)\'d\s*code/", '$1', $filePath);
-        // }
-        //echo $filePath;exit;
         if ($filePath && file_exists($filePath)) {
             $content = file($filePath);
             array_unshift($content, 'x');
@@ -97,7 +94,10 @@ class CodeCollector implements Collectable
             'line' => $line + 1, //to fix array 0 index
             'content' => $code
         ];
-        return $this->code;
+        return [
+            'stack' => [],
+            'code'  => $this->code
+        ];;
     }
 
     public function getInfo()

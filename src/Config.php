@@ -52,22 +52,32 @@ class Config implements ArrayAccess
         if(getenv('SHIELDFY_DEBUG')) $defaults['debug'] = getenv('SHIELDFY_DEBUG');
         if(getenv('SHIELDFY_ACTION')) $defaults['action'] = getenv('SHIELDFY_ACTION');
 
-        $vendorsDir = explode(DIRECTORY_SEPARATOR,__DIR__);
-        $vendorsDir = (array_slice(explode(DIRECTORY_SEPARATOR,__DIR__),0,count($vendorsDir) - 3));
-        $vendorsDir = implode(DIRECTORY_SEPARATOR,$vendorsDir);        
-
         $defaults['paths'] = [
             'base'      => $this->getBaseDirectory(),
             'root'      =>  realpath(__DIR__.DIRECTORY_SEPARATOR.'..'),
             'src'       =>  __DIR__,
             'data'      =>  __DIR__.DIRECTORY_SEPARATOR.'Data',
             'logs'      =>  realpath(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.'logs',
-            'vendors'   =>  $vendorsDir
+            'vendors'   =>  $this->getVendorsDir()
         ];
 
         return $defaults;
     }
 
+
+    public function getVendorsDir()
+    {
+        $vendorsDir = explode(DIRECTORY_SEPARATOR,__DIR__);
+        $vendorsDir = (array_slice(explode(DIRECTORY_SEPARATOR,__DIR__),0,count($vendorsDir) - 3));
+        $vendorsDir = implode(DIRECTORY_SEPARATOR,$vendorsDir);
+
+        if(!file_exists($vendorsDir.DIRECTORY_SEPARATOR.'autoload.php'))
+        {
+            $reflector = new \ReflectionClass('Composer\Autoload\ClassLoader');
+            $vendorsDir = realpath(dirname($reflector->getFileName()).DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR);
+        }
+        return $vendorsDir;
+    }
 
     /**
      * retrive base directory
@@ -138,7 +148,7 @@ class Config implements ArrayAccess
     }
 
     /**
-     * Remove config item.$
+     * Remove config item.
      *
      * @param type $key
      *

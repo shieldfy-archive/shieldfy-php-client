@@ -20,7 +20,7 @@ class ShieldfyMiddleware
     public function handle($request, Closure $next)
     {
         $shieldfy = Guard::init([
-                'endpoint'  => 'http://api.shieldfy.loc/v1',
+                'endpoint'  => 'http://api.shieldfy.com/v1',
                 'app_key'        => config('shieldfy.keys.app_key', env('SHIELDFY_APP_KEY')),
                 'app_secret'     => config('shieldfy.keys.app_secret', env('SHIELDFY_APP_SECRET')),
                 'debug'          => config('shieldfy.debug'),
