@@ -13,12 +13,8 @@ class UserMonitor extends MonitorBase
         $user = $this->collectors['user'];
 
         $score = $user->getScore();
-        if($score){
-            $this->sendToJail($this->parseScore($score), $charge  = []);    
+        if ($score) {
+            $this->sendToJail($this->parseScore($score), $charge  = []);
         }
-        
     }
-
-
-    
 }

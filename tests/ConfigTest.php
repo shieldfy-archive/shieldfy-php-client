@@ -10,9 +10,9 @@ class ConfigTest extends TestCase
     public function testLoadDefaults()
     {
         $config = new Config([]);
-        $this->assertEquals('',$config['api_key']);
-        $this->assertEquals('',$config['api_secret']);
-        $this->assertEquals(false,$config['debug']);
+        $this->assertEquals('', $config['api_key']);
+        $this->assertEquals('', $config['api_secret']);
+        $this->assertEquals(false, $config['debug']);
     }
 
     

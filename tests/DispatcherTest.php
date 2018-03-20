@@ -26,26 +26,25 @@ class DispatcherTest extends TestCase
                     ->getMock();
 
         $this->api->method('request')
-                ->will($this->returnCallback(function($event,$data){
+                ->will($this->returnCallback(function ($event, $data) {
                     return [$event,$data];
                 }));
     }
 
     public function testTriggerEvent()
     {
-        $dispatcher = new Dispatcher($this->config,$this->api);
-        $res = $dispatcher->trigger('session/start',['user'=>'someuser']);
-        $this->assertEquals(['/session/start','{"user":"someuser"}'],$res);
+        $dispatcher = new Dispatcher($this->config, $this->api);
+        $res = $dispatcher->trigger('session/start', ['user'=>'someuser']);
+        $this->assertEquals(['/session/start','{"user":"someuser"}'], $res);
     }
 
     public function testFlush()
     {
-        $dispatcher = new Dispatcher($this->config,$this->api);
+        $dispatcher = new Dispatcher($this->config, $this->api);
         $dispatcher->setData(['user'=>'anotheruser']);
-        $this->assertEquals(1,$dispatcher->hasData());
-        $this->assertEquals(['user'=>'anotheruser'],$dispatcher->getData());
+        $this->assertEquals(1, $dispatcher->hasData());
+        $this->assertEquals(['user'=>'anotheruser'], $dispatcher->getData());
         $res = $dispatcher->flush();
-        $this->assertEquals(['/session/threat','{"user":"anotheruser"}'],$res);
+        $this->assertEquals(['/session/threat','{"user":"anotheruser"}'], $res);
     }
-
 }

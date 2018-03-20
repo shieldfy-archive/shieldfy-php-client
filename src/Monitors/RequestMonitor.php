@@ -15,12 +15,10 @@ class RequestMonitor extends MonitorBase
      */
     public function run()
     {
-
         $request = $this->collectors['request'];
         $user = $this->collectors['user'];
 
         $result = $this->checkForCSRF($request);
-
     }
 
     private function checkForCSRF(RequestCollector $request)
@@ -35,13 +33,11 @@ class RequestMonitor extends MonitorBase
             return false;
         }
 
-        if(strpos($request->server['HTTP_ORIGIN'], 'http') !== 0)
-        {
+        if (strpos($request->server['HTTP_ORIGIN'], 'http') !== 0) {
             $request->server['HTTP_ORIGIN'] = 'http://'.$request->server['HTTP_ORIGIN'];
         }
 
-        if(strpos($request->server['HTTP_HOST'], 'http') !== 0)
-        {
+        if (strpos($request->server['HTTP_HOST'], 'http') !== 0) {
             $request->server['HTTP_HOST'] = 'http://'.$request->server['HTTP_HOST'];
         }
 

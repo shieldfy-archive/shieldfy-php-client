@@ -1,14 +1,16 @@
 <?php
 namespace Shieldfy\Collectors;
+
 use Shieldfy\Config;
+
 class CodeCollector implements Collectable
 {
-	/**
-	 * @var code Code block
-	 * @var stack Stack trace
-	 */
-	private $code = [];
-	private $stack = [];
+    /**
+     * @var code Code block
+     * @var stack Stack trace
+     */
+    private $code = [];
+    private $stack = [];
 
     protected $config;
 
@@ -17,34 +19,38 @@ class CodeCollector implements Collectable
         $this->config = $config;
     }
 
-	/**
-	 * Push stack trace
-	 * @param Array|array $stack
-	 * @return void
-	 */
-	public function pushStack(Array $stack = array())
-	{
-		$this->stack = $stack;
+    /**
+     * Push stack trace
+     * @param Array|array $stack
+     * @return void
+     */
+    public function pushStack(array $stack = array())
+    {
+        $this->stack = $stack;
         //exit;
-		return $this;
-	}
+        return $this;
+    }
 
-	public function collectFromStack()
-	{
+    public function collectFromStack()
+    {
         $stack = array_reverse($this->stack);
 
-        foreach($this->stack as $trace):
-            if(!isset($trace['file'])) continue;
-			//dirty fix START
-			if(strstr($trace['file'],'shieldfy-php-client')) continue;
-			//dirty fix ENDS
-            if(strpos($trace['file'], $this->config['paths']['vendors']) === false){
-                //this is probably our guy ( the last file called outside vendor file)
-                return [
-                    'stack' => $stack,
-                    'code'  => $this->collectFromFile($trace['file'],$trace['line'])
-                ];
+        foreach ($this->stack as $trace):
+            if (!isset($trace['file'])) {
+                continue;
             }
+        //dirty fix START
+        if (strstr($trace['file'], 'shieldfy-php-client')) {
+            continue;
+        }
+        //dirty fix ENDS
+        if (strpos($trace['file'], $this->config['paths']['vendors']) === false) {
+            //this is probably our guy ( the last file called outside vendor file)
+            return [
+                    'stack' => $stack,
+                    'code'  => $this->collectFromFile($trace['file'], $trace['line'])
+                ];
+        }
 
         endforeach;
 
@@ -53,9 +59,9 @@ class CodeCollector implements Collectable
             'stack' => $stack,
             'code'  => []
         ];
-	}
+    }
 
-	public function collectFromFile($filePath = '', $line = '')
+    public function collectFromFile($filePath = '', $line = '')
     {
         if ($filePath && file_exists($filePath)) {
             $content = file($filePath);
@@ -97,14 +103,15 @@ class CodeCollector implements Collectable
         return [
             'stack' => [],
             'code'  => $this->code
-        ];;
+        ];
+        ;
     }
 
     public function getInfo()
     {
         return [
-        	'code' => $this->code,
-        	'stack' => $this->stack
+            'code' => $this->code,
+            'stack' => $this->stack
         ];
     }
 }

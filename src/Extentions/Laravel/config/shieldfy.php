@@ -14,7 +14,7 @@ return [
     */
 
     /*
-    
+
     */
    'endpoint' => 'https://api.shieldfy.io/v1',
     /*

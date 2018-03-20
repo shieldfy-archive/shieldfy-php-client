@@ -202,7 +202,7 @@ class TraceablePDO extends PDO
     protected function profileCall($method, $sql, array $args)
     {
         if ($this->events !== null) {
-            $this->events->trigger('db.query',[$sql,$args]);
+            $this->events->trigger('db.query', [$sql,$args]);
         }
 
         $ex = null;

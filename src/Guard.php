@@ -16,8 +16,6 @@ use Shieldfy\Collectors\RequestCollector;
 use Shieldfy\Collectors\ExceptionsCollector;
 use Shieldfy\Collectors\PDO\TraceablePDO;
 
-
-
 class Guard
 {
     /**
@@ -70,7 +68,7 @@ class Guard
         $this->config = new Config($userConfig);
 
         //overwrite the endpoint
-        if(isset($this->config['endpoint'])){
+        if (isset($this->config['endpoint'])) {
             $this->endpoint = $this->config['endpoint'];
         }
 
@@ -98,7 +96,6 @@ class Guard
 
         //start shieldfy guard
         $this->startGuard();
-
     }
 
     /**
@@ -121,9 +118,8 @@ class Guard
         $this->exposeHeaders();
 
         //starting monitors
-        $monitors = new MonitorsBag($this->config, $this->session, $this->dispatcher , $this->collectors, $this->events);
+        $monitors = new MonitorsBag($this->config, $this->session, $this->dispatcher, $this->collectors, $this->events);
         $monitors->run();
-
     }
 
 
@@ -133,8 +129,7 @@ class Guard
      */
     private function startCollecting()
     {
-
-        $exceptionsCollector = new ExceptionsCollector($this->config,$this->dispatcher);
+        $exceptionsCollector = new ExceptionsCollector($this->config, $this->dispatcher);
         $requestCollector = new RequestCollector($_GET, $_POST, $_SERVER, $_COOKIE, $_FILES);
         $userCollector = new UserCollector($requestCollector);
         $codeCollector = new CodeCollector($this->config);
@@ -155,7 +150,6 @@ class Guard
      */
     public function catchCallbacks(RequestCollector $request, Config $config)
     {
-
         (new CallbackHandler($request, $config))->catchCallback();
     }
 
@@ -165,7 +159,6 @@ class Guard
      */
     public function isInstalled()
     {
-
         if (file_exists($this->config['paths']['data'].'/installed')) {
             return true;
         }
@@ -198,7 +191,7 @@ class Guard
         } else {
             header('x-powered-by: unknown');
         }
-        if($this->config['headers']){
+        if ($this->config['headers']) {
             foreach ($this->config['headers'] as $header => $value) {
                 if ($value === false) {
                     continue;
@@ -213,7 +206,10 @@ class Guard
     }
 
     /* singelton protection */
-    protected function __clone(){}
-    protected function __wakeup(){}
-
+    protected function __clone()
+    {
+    }
+    protected function __wakeup()
+    {
+    }
 }

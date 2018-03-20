@@ -1,5 +1,6 @@
 <?php
 namespace Shieldfy;
+
 use Shieldfy\Config;
 use Shieldfy\Exceptions\Exceptionable;
 use Shieldfy\Exceptions\Exceptioner;
@@ -10,8 +11,7 @@ use Shieldfy\Collectors\RequestCollector;
 use Composer\Script\Event;
 use Composer\Installer\PackageEvent;
 
-
-class Installer implements  Exceptionable
+class Installer implements Exceptionable
 {
     use Exceptioner;
     /**
@@ -27,7 +27,7 @@ class Installer implements  Exceptionable
      * @param RequestCollector $request
      * @param Config           $config
      */
-    public function __construct(RequestCollector $request,Dispatcher $dispatcher, Config $config)
+    public function __construct(RequestCollector $request, Dispatcher $dispatcher, Config $config)
     {
         $this->request = $request;
         $this->dispatcher = $dispatcher;
@@ -75,7 +75,7 @@ class Installer implements  Exceptionable
         //if not writable , try to chmod it
         if (!is_writable($this->config['paths']['data'])) {
             @chmod($this->config['paths']['data'], 0755);
-            if(!is_writable($this->config['paths']['data'])){
+            if (!is_writable($this->config['paths']['data'])) {
                 $this->throwException(new InstallationException('Data folder :'.$this->config['paths']['data'].' Is not writable', 200));
             }
         }
@@ -83,18 +83,18 @@ class Installer implements  Exceptionable
         $data_path = $this->config['paths']['data'];
         file_put_contents($data_path.'/installed', time());
 
-        foreach($data['rules'] as $ruleName => $ruleContent):
+        foreach ($data['rules'] as $ruleName => $ruleContent):
             $content = base64_decode($ruleContent);
-            if($this->isJson($content)){
-                file_put_contents($data_path.'/'.$ruleName.'.json',$content);
-            }
+        if ($this->isJson($content)) {
+            file_put_contents($data_path.'/'.$ruleName.'.json', $content);
+        }
         endforeach;
-
     }
 
 
 
-    private function isJson($string) {
+    private function isJson($string)
+    {
         json_decode($string);
         return (json_last_error() == JSON_ERROR_NONE);
     }

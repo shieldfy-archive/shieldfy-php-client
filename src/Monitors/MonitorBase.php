@@ -11,7 +11,6 @@ use Shieldfy\Response\Response;
 
 abstract class MonitorBase
 {
-
     use Response;
     /**
      * @var Config $config
@@ -26,7 +25,7 @@ abstract class MonitorBase
      * Constructor
      * @param Config $config
      */
-    public function __construct(Config $config, Session $session, Dispatcher $dispatcher, Array $collectors,Events $events)
+    public function __construct(Config $config, Session $session, Dispatcher $dispatcher, array $collectors, Events $events)
     {
         $this->config = $config;
         $this->session = $session;
@@ -52,11 +51,10 @@ abstract class MonitorBase
         //based on severity and config , lets judge it
         $incidentId = $this->generateIncidentId($this->collectors['user']->getId());
 
-        if($this->dispatcher->hasData() && $severity  != 'high'){
+        if ($this->dispatcher->hasData() && $severity  != 'high') {
             //merge
             $data = $this->dispatcher->getData();
-            if($data['charge']['key'] == $charge['key'])
-            {
+            if ($data['charge']['key'] == $charge['key']) {
                 //same
                 $charge['score'] += $data['charge']['score'];
                 $charge['rulesIds'] = array_merge($data['charge']['rulesIds'], $charge['rulesIds']);
@@ -78,9 +76,8 @@ abstract class MonitorBase
             'response'          => ($severity == 'high' && $this->config['action'] == 'block') ? 'block' : 'pass'
         ]);
 
-        if($severity == 'high' && $this->config['action'] == 'block')
-        {
-            if($this->name == 'view') {
+        if ($severity == 'high' && $this->config['action'] == 'block') {
+            if ($this->name == 'view') {
                 /* view is special case because it uses ob_start so we need to flush data here */
                 $this->dispatcher->flush();
                 return $this->respond()->returnBlock($incidentId);
@@ -92,8 +89,12 @@ abstract class MonitorBase
 
     protected function parseScore($score = 0)
     {
-        if($score >= 70) return 'high';
-        if($score >= 40) return 'med';
+        if ($score >= 70) {
+            return 'high';
+        }
+        if ($score >= 40) {
+            return 'med';
+        }
         return 'low';
     }
 
@@ -102,5 +103,4 @@ abstract class MonitorBase
     {
         return md5($userId.uniqid().mt_rand());
     }
-
 }

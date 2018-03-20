@@ -10,7 +10,7 @@ class ShieldfyServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
-     * 
+     *
      * @param \Illuminate\Routing\Router $router
      *
      * @return void
@@ -45,6 +45,6 @@ class ShieldfyServiceProvider extends ServiceProvider
     public function register()
     {
         // Merge config
-        $this->mergeConfigFrom( __DIR__.'/config/shieldfy.php', 'shieldfy');
+        $this->mergeConfigFrom(__DIR__.'/config/shieldfy.php', 'shieldfy');
     }
 }

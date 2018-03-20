@@ -11,7 +11,6 @@ use Shieldfy\Exceptions\InstallationException;
 use Shieldfy\Dispatcher\Dispatchable;
 use Shieldfy\Dispatcher\Dispatcher;
 
-
 class UpdateCallback extends Callback implements Dispatchable, Exceptionable
 {
     use Response;
@@ -40,17 +39,17 @@ class UpdateCallback extends Callback implements Dispatchable, Exceptionable
 
         if (!$response) {
             return [
-            	'status' 	=> 'error',
-            	'code'   	=> '000',
-            	'message' 	=> 'Unknown error happened'
+                'status' 	=> 'error',
+                'code'   	=> '000',
+                'message' 	=> 'Unknown error happened'
             ];
         }
 
         if ($response->status == 'error') {
             return [
-            	'status' 	=> 'error',
-            	'code'   	=> $response->code,
-            	'message' 	=> $response->message
+                'status' 	=> 'error',
+                'code'   	=> $response->code,
+                'message' 	=> $response->message
             ];
         }
 
@@ -59,7 +58,7 @@ class UpdateCallback extends Callback implements Dispatchable, Exceptionable
         }
         
         return [
-        	'status' => 'success'
+            'status' => 'success'
         ];
     }
 
@@ -69,7 +68,6 @@ class UpdateCallback extends Callback implements Dispatchable, Exceptionable
      */
     private function save(array $data = [])
     {
-
         $data_path = $this->config['paths']['data'];
         
         $data_path = $this->config['rootDir'].'/data';
@@ -78,12 +76,11 @@ class UpdateCallback extends Callback implements Dispatchable, Exceptionable
         }
         file_put_contents($data_path.'/updated', time());
 
-        foreach($data['rules'] as $ruleName => $ruleContent):
+        foreach ($data['rules'] as $ruleName => $ruleContent):
             $content = base64_decode($ruleContent);
-            if($this->isJson($content)){
-                file_put_contents($data_path.'/'.$ruleName.'.json',$content);
-            }            
+        if ($this->isJson($content)) {
+            file_put_contents($data_path.'/'.$ruleName.'.json', $content);
+        }
         endforeach;
-
     }
 }
