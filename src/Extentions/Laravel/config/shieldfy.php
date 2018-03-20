@@ -16,7 +16,7 @@ return [
     /*
 
     */
-   'endpoint' => 'https://api.shieldfy.io/v1',
+   'endpoint' => 'https://api.shieldfy.com/v1',
     /*
      |--------------------------------------------------------------------------
      | Main App Credentials
