@@ -24,7 +24,6 @@ class ExceptionsMonitor extends MonitorBase
 
     public function deepAnalyze($exception)
     {
-
         $this->issue('exceptions');
         if (!$this->isInScope($exception)) {
             //echo 'NON';
@@ -48,15 +47,16 @@ class ExceptionsMonitor extends MonitorBase
         }
 
 
-        if($charge['score'] == 0) return;
+        if ($charge['score'] == 0) {
+            return;
+        }
 
         $code = $this->collectors['code']->collectFromFile($exception->getFile(), $exception->getLine());
         
-        $this->sendToJail( $this->parseScore($charge['score']), $charge, [
+        $this->sendToJail($this->parseScore($charge['score']), $charge, [
             'stack' => $exception->getTrace(),
             'code' => $code
         ]);
-
     }
 
 
@@ -74,5 +74,4 @@ class ExceptionsMonitor extends MonitorBase
         }
         return false;
     }
-
 }

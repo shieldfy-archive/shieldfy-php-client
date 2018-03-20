@@ -51,11 +51,10 @@ class UploadMonitor extends MonitorBase
                 'key'=> $input
             ];
             break;
-
         }
         
 
-        $this->sendToJail($this->parseScore($charge['score']), $charge );    
+        $this->sendToJail($this->parseScore($charge['score']), $charge);
     }
 
     public function analyzeFile($input = '', $file = [])

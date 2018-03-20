@@ -20,7 +20,7 @@ class ExceptionsCollector implements Collectable
     /**
      * Constructor
      */
-    public function __construct(Config $config,Dispatcher $dispatcher)
+    public function __construct(Config $config, Dispatcher $dispatcher)
     {
         $this->config = $config;
         $this->dispatcher = $dispatcher;
@@ -93,13 +93,11 @@ class ExceptionsCollector implements Collectable
      */
     public function handleExceptions($exception, $is_exception = true)
     {
-
         if ($this->callback !== null) {
             call_user_func($this->callback, $exception);
         }
 
         if (strpos($exception->getFile(), $this->config['rootDir']) !== false) {
-
             $this->logInternalError($exception);
             //if debug and no external error handler show the error
             if (
@@ -134,12 +132,16 @@ class ExceptionsCollector implements Collectable
 
         // No need to delay the request any more lets finish it
         // close session writing to be availabe for next request
-        if(function_exists('session_write_close')) session_write_close();
+        if (function_exists('session_write_close')) {
+            session_write_close();
+        }
         //finish the request and send the respond to the browser
-        if(function_exists('fastcgi_finish_request')) fastcgi_finish_request();
+        if (function_exists('fastcgi_finish_request')) {
+            fastcgi_finish_request();
+        }
 
         // tel the API
-        $response = $this->dispatcher->trigger('exception',[
+        $response = $this->dispatcher->trigger('exception', [
             'code' => $exception->getCode(),
             'file' => $exception->getFile(),
             'line' => $exception->getLine(),
@@ -149,7 +151,9 @@ class ExceptionsCollector implements Collectable
 
         if ($response && $response->status == 'success') {
             //unlink the old file
-            if(file_exists($logFile)) unlink($logFile);
+            if (file_exists($logFile)) {
+                unlink($logFile);
+            }
             return;
         }
 

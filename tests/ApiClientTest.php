@@ -17,7 +17,7 @@ class ApiClientTest extends TestCase
         $this->config = new Config();
         $this->config['app_key'] = 'testKey';
         $this->config['app_secret'] = 'testSecret';
-        $this->api = new ApiClient('https://shieldfy.io',$this->config);
+        $this->api = new ApiClient('https://shieldfy.io', $this->config);
     }
 
     public function testAuthenticationHeaders()

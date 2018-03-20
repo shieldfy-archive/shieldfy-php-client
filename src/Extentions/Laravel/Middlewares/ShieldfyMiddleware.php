@@ -30,14 +30,14 @@ class ShieldfyMiddleware
         ]);
 
         View::composer('*', function ($view) use ($shieldfy) {
-            $shieldfy->events->trigger('view.render',[
+            $shieldfy->events->trigger('view.render', [
                 $view->getPath(),
                 $view->getData()
             ]);
         });
 
-        DB::listen(function($query) use($shieldfy){
-            $shieldfy->events->trigger('db.query',[$query->sql,$query->bindings]);
+        DB::listen(function ($query) use ($shieldfy) {
+            $shieldfy->events->trigger('db.query', [$query->sql,$query->bindings]);
         });
 
         return $next($request);

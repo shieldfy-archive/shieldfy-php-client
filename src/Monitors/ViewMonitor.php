@@ -19,8 +19,10 @@ class ViewMonitor extends MonitorBase
      */
     public function run()
     {
-        $this->events->listen('view.render',function($path,$data){
-            if($this->template != null) return;
+        $this->events->listen('view.render', function ($path, $data) {
+            if ($this->template != null) {
+                return;
+            }
             $this->template = [
                 'file' => $path,
                 'data' => $data
@@ -35,22 +37,20 @@ class ViewMonitor extends MonitorBase
 
         $infected = [];
         foreach ($params as $key => $value) {
-
             $result = $this->sentence($value);
-            if($result['score']){
+            if ($result['score']) {
                 $result['value'] = $value;
                 $result['key'] = $key;
                 $infected[] = $result;
             }
-
         }
-        if(count($infected) > 0){
+        if (count($infected) > 0) {
             //it's time to listen
             $this->runAnalyzers($infected);
         }
     }
 
-    public function runAnalyzers(Array $infected = [])
+    public function runAnalyzers(array $infected = [])
     {
         $this->infected = $infected;
         ob_start(array($this,'deepAnalyze'));
@@ -60,33 +60,32 @@ class ViewMonitor extends MonitorBase
     {
         $foundGuilty = false;
         $charge = [];
-        foreach($this->infected as $infected):
+        foreach ($this->infected as $infected):
             if (in_array($infected['value'], $this->vaguePhrases)) {
                 continue;
             }
-            if (stripos($content, $infected['value']) !== false) {
-                $foundGuilty = true;
-                $charge = $infected;
-                break;
-            }
+        if (stripos($content, $infected['value']) !== false) {
+            $foundGuilty = true;
+            $charge = $infected;
+            break;
+        }
         endforeach;
 
-        if($foundGuilty){
+        if ($foundGuilty) {
             $code = $this->collectors['code']->collectFromText($content, $charge['value']);
-            if($this->template){
+            if ($this->template) {
                 $code['code']['file'] = $this->template['file'];
                 $code['code']['line'] = '-1';
-             }
+            }
 
             $severity = $this->parseScore($charge['score']);
 
-            $result = $this->sendToJail( $severity, $charge, $code );
-            if($severity == 'high'){
+            $result = $this->sendToJail($severity, $charge, $code);
+            if ($severity == 'high') {
                 return $result;
             }
         }
 
         return $content;
     }
-
 }

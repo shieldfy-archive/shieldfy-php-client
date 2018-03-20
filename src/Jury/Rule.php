@@ -96,7 +96,7 @@ class Rule
         if (strpos($this->data['rule'], '|') !== false) {
             $rules = explode('|', $this->data['rule']);
             foreach ($rules as $rule) {
-                if (strpos($value,$rule) !== false) {
+                if (strpos($value, $rule) !== false) {
                     return true;
                 }
             }
@@ -117,7 +117,6 @@ class Rule
      */
     private function runPreg($value)
     {
-
         if (preg_match('/'.$this->data['rule'].'/isU', $value)) {
             return true;
         }

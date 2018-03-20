@@ -1,29 +1,30 @@
 <?php
 namespace Shieldfy\Monitors;
+
 use Shieldfy\Jury\Judge;
 
 class DBMonitor extends MonitorBase
 {
-	use Judge;
+    use Judge;
 
     protected $name = "db";
-	protected $infected = [];
+    protected $infected = [];
 
     /**
      * run the monitor
      */
     public function run()
     {
-        $this->events->listen('db.query',function($query,$bindings = []){
-			call_user_func([
-	            $this,
-	            'analyze'
-	        ],$query,$bindings);
-		});
+        $this->events->listen('db.query', function ($query, $bindings = []) {
+            call_user_func([
+                $this,
+                'analyze'
+            ], $query, $bindings);
+        });
     }
 
 
-    public function analyze($query,$bindings = [])
+    public function analyze($query, $bindings = [])
     {
 
         //get the parameters (all)
@@ -34,14 +35,14 @@ class DBMonitor extends MonitorBase
 
         $foundGuilty = false;
         $charge = [];
-		$this->issue('db');
+        $this->issue('db');
         foreach ($params as $key => $value) {
             if (stripos($query, $value) !== false || in_array($value, $bindings)) {
 
                 //found parameter
                 //check infection
-				$charge = $this->sentence($value);
-                if($charge && $charge['score']){
+                $charge = $this->sentence($value);
+                if ($charge && $charge['score']) {
                     $foundGuilty = true;
                     $charge['value'] = $value;
                     $charge['key'] = $key;
@@ -50,14 +51,10 @@ class DBMonitor extends MonitorBase
             }
         }
 
-        if($foundGuilty){
-
+        if ($foundGuilty) {
             $stack = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
             $code = $this->collectors['code']->pushStack($stack)->collectFromStack($stack);
-            $this->sendToJail( $this->parseScore($charge['score']), $charge, $code );
-
+            $this->sendToJail($this->parseScore($charge['score']), $charge, $code);
         }
-
     }
-
 }

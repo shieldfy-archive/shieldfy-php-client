@@ -33,16 +33,15 @@ class ExceptionsCollectorTest extends TestCase
                     ->getMock();
 
         $this->api->method('request')
-                ->will($this->returnCallback(function($event,$data){
+                ->will($this->returnCallback(function ($event, $data) {
                     return [$event,$data];
                 }));
-        $this->dispatcher = new Dispatcher($this->config,$this->api);
-
+        $this->dispatcher = new Dispatcher($this->config, $this->api);
     }
 
     public function testHandleErrors()
     {
-        $exceptions = new ExceptionsCollector($this->config,$this->dispatcher);
+        $exceptions = new ExceptionsCollector($this->config, $this->dispatcher);
         $exceptions->listen(function () {
             $this->assertTrue(true);
         });
@@ -56,7 +55,7 @@ class ExceptionsCollectorTest extends TestCase
 
     public function testHandleExceptions()
     {
-        $exceptions = new ExceptionsCollector($this->config,$this->dispatcher);
+        $exceptions = new ExceptionsCollector($this->config, $this->dispatcher);
         $exceptions->listen(function () {
             $this->assertTrue(true);
         });
@@ -67,7 +66,7 @@ class ExceptionsCollectorTest extends TestCase
 
     public function testInternalErrorLog()
     {
-        $exceptions = new ExceptionsCollector($this->config,$this->dispatcher);
+        $exceptions = new ExceptionsCollector($this->config, $this->dispatcher);
         $exceptions->listen(function () {
         });
         if (!class_exists(PHPUnit\Framework\Error\Error::class)) {

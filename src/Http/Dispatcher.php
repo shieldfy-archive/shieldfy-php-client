@@ -30,7 +30,7 @@ class Dispatcher implements Exceptionable
 
     public $config;
 
-    public function __construct(Config $config , ApiClient $apiClient)
+    public function __construct(Config $config, ApiClient $apiClient)
     {
         $this->config = $config;
         $this->apiClient = $apiClient;
@@ -53,8 +53,10 @@ class Dispatcher implements Exceptionable
 
     public function flush()
     {
-        if(count($this->data) === 0) return;
-        return $this->trigger('session/threat',$this->data);
+        if (count($this->data) === 0) {
+            return;
+        }
+        return $this->trigger('session/threat', $this->data);
     }
 
     /**
@@ -74,5 +76,4 @@ class Dispatcher implements Exceptionable
         $data = json_encode($data);
         return $this->apiClient->request('/'.$event, $data);
     }
-
 }

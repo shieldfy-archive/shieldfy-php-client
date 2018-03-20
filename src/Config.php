@@ -24,7 +24,7 @@ class Config implements ArrayAccess
      */
     public function __construct(array $userConfig = [])
     {
-        $this->items = array_replace_recursive( $this->getDefaults() , $userConfig);
+        $this->items = array_replace_recursive($this->getDefaults(), $userConfig);
     }
 
     /**
@@ -47,10 +47,18 @@ class Config implements ArrayAccess
         ];
 
         //overwrite env if exists
-        if(getenv('SHIELDFY_APP_KEY')) $defaults['app_key'] = getenv('SHIELDFY_APP_KEY');
-        if(getenv('SHIELDFY_APP_SECRET')) $defaults['app_secret'] = getenv('SHIELDFY_APP_SECRET');
-        if(getenv('SHIELDFY_DEBUG')) $defaults['debug'] = getenv('SHIELDFY_DEBUG');
-        if(getenv('SHIELDFY_ACTION')) $defaults['action'] = getenv('SHIELDFY_ACTION');
+        if (getenv('SHIELDFY_APP_KEY')) {
+            $defaults['app_key'] = getenv('SHIELDFY_APP_KEY');
+        }
+        if (getenv('SHIELDFY_APP_SECRET')) {
+            $defaults['app_secret'] = getenv('SHIELDFY_APP_SECRET');
+        }
+        if (getenv('SHIELDFY_DEBUG')) {
+            $defaults['debug'] = getenv('SHIELDFY_DEBUG');
+        }
+        if (getenv('SHIELDFY_ACTION')) {
+            $defaults['action'] = getenv('SHIELDFY_ACTION');
+        }
 
         $defaults['paths'] = [
             'base'      => $this->getBaseDirectory(),
@@ -67,12 +75,11 @@ class Config implements ArrayAccess
 
     public function getVendorsDir()
     {
-        $vendorsDir = explode(DIRECTORY_SEPARATOR,__DIR__);
-        $vendorsDir = (array_slice(explode(DIRECTORY_SEPARATOR,__DIR__),0,count($vendorsDir) - 3));
-        $vendorsDir = implode(DIRECTORY_SEPARATOR,$vendorsDir);
+        $vendorsDir = explode(DIRECTORY_SEPARATOR, __DIR__);
+        $vendorsDir = (array_slice(explode(DIRECTORY_SEPARATOR, __DIR__), 0, count($vendorsDir) - 3));
+        $vendorsDir = implode(DIRECTORY_SEPARATOR, $vendorsDir);
 
-        if(!file_exists($vendorsDir.DIRECTORY_SEPARATOR.'autoload.php'))
-        {
+        if (!file_exists($vendorsDir.DIRECTORY_SEPARATOR.'autoload.php')) {
             $reflector = new \ReflectionClass('Composer\Autoload\ClassLoader');
             $vendorsDir = realpath(dirname($reflector->getFileName()).DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR);
         }
@@ -89,33 +96,31 @@ class Config implements ArrayAccess
         //
         //search stack for find original folder from composer folder
         $stack = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-        foreach($stack as $frame)
-        {
-            if($frame['function'] == 'getLoader'){
+        foreach ($stack as $frame) {
+            if ($frame['function'] == 'getLoader') {
                 $baseDirectory1 =  realpath(dirname($frame['file']).DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR);
                 break;
             }
         }
 
-        if(isset($baseDirectory1) && file_exists($baseDirectory1.DIRECTORY_SEPARATOR.'composer.json')){
+        if (isset($baseDirectory1) && file_exists($baseDirectory1.DIRECTORY_SEPARATOR.'composer.json')) {
             return $baseDirectory1;
         }
 
         // -- second method --
         $firstFrame = $stack[count($stack) - 1];
         $baseDirectory2 = dirname($firstFrame['file']);
-        if(file_exists($baseDirectory2.DIRECTORY_SEPARATOR.'composer.json')){
+        if (file_exists($baseDirectory2.DIRECTORY_SEPARATOR.'composer.json')) {
             return $baseDirectory2;
         }
 
         // -- third method --
         $baseDirectory3 =  realpath($baseDirectory2.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR);
-        if(file_exists($baseDirectory3.DIRECTORY_SEPARATOR.'composer.json')){
+        if (file_exists($baseDirectory3.DIRECTORY_SEPARATOR.'composer.json')) {
             return $baseDirectory3;
         }
 
         return false;
-
     }
 
     /**

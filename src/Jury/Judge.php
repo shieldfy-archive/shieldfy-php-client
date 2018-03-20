@@ -47,11 +47,10 @@ trait Judge
         $ruleIds = [];
         $normalizedValue = '';
         foreach ($this->rules as $rule) {
-
             if ($rule->needNormalize()) {
                 $normalizedValue = $this->normalize($value, $normalizedValue);
                 $res = $rule->run($normalizedValue, $target, $tag);
-            }else{
+            } else {
                 $res = $rule->run($value, $target, $tag);
             }
 
