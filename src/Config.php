@@ -33,7 +33,6 @@ class Config implements ArrayAccess
     public function getDefaults()
     {
         $defaults = [
-            "endpoint"          => "https://api.shieldfy.io/v1",
             "app_key"           => "",
             "app_secret"        => "",
             "debug"             => false,
