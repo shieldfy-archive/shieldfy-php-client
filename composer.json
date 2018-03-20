@@ -7,7 +7,6 @@
         "shieldfy-php-client"
     ],
     "homepage": "https://github.com/shieldfy/shieldfy-php-client",
-    "license": "SCL",
     "authors": [
         {
             "name": "Shieldfy Inc.",
