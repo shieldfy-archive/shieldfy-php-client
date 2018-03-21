@@ -72,6 +72,7 @@ class Guard
             $this->endpoint = $this->config['endpoint'];
         }
 
+
         //set Dispatcher
         $apiClient = new ApiClient($this->endpoint, $this->config);
         $this->dispatcher = new Dispatcher($this->config, $apiClient);
@@ -108,7 +109,8 @@ class Guard
         $this->session = new Session(
                                 $this->collectors['user'],
                                 $this->collectors['request'],
-                                $this->dispatcher
+                                $this->dispatcher,
+                                $this->events
                         );
 
 

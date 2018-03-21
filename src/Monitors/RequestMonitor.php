@@ -19,12 +19,52 @@ class RequestMonitor extends MonitorBase
         $user = $this->collectors['user'];
 
         $result = $this->checkForCSRF($request);
+
+        $this->events->listen('request.finish', function () {
+            call_user_func([
+                $this,
+                'log'
+            ]);
+        });
+    }
+
+
+    public function log()
+    {
+
+        if($this->dispatcher->hasData()){
+            return; //already there is a threat in the pipeline
+        }
+
+        $request = $this->collectors['request'];
+        $info = $request->getInfo();
+
+        $params = array_merge($info['get'], $info['post']);
+
+        $foundGuilty = false;
+        $charge = [];
+        $this->issue('request');
+        foreach ($params as $key => $value) {
+            //found parameter
+            //check infection
+            $charge = $this->sentence($value);
+            if ($charge && $charge['score']) {
+                $foundGuilty = true;
+                $charge['value'] = $value;
+                $charge['key'] = $key;
+                $severity = $this->parseScore($charge['score']);
+                if($severity == 'high') $severity = 'med';
+                $this->sendToJail($severity, $charge);
+            }
+        }
+
+
     }
 
     private function checkForCSRF(RequestCollector $request)
     {
         $request = $this->collectors['request'];
-        
+
         if ($request->requestMethod !== 'POST') {
             return false;
         }

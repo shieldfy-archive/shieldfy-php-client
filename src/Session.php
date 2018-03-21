@@ -7,6 +7,7 @@ use Shieldfy\Exceptions\Exceptioner;
 use Shieldfy\Collectors\UserCollector;
 use Shieldfy\Collectors\RequestCollector;
 use Shieldfy\Http\Dispatcher;
+use Shieldfy\Events;
 
 class Session implements Exceptionable
 {
@@ -15,6 +16,7 @@ class Session implements Exceptionable
     protected $user;
     protected $request;
     protected $dispatcher;
+    protected $events;
     protected $sessionId;
 
     /**
@@ -25,11 +27,13 @@ class Session implements Exceptionable
      */
     public function __construct(UserCollector $user,
                                 RequestCollector $request,
-                                Dispatcher $dispatcher)
+                                Dispatcher $dispatcher,
+                                Events $events)
     {
         $this->user = $user;
         $this->request = $request;
         $this->dispatcher = $dispatcher;
+        $this->events = $events;
 
         //check for session handler
         if (session_status() == PHP_SESSION_NONE) {
@@ -105,6 +109,8 @@ class Session implements Exceptionable
         if (function_exists('fastcgi_finish_request')) {
             fastcgi_finish_request();
         }
+
+        $this->events->trigger('request.finish');
 
         // send the step to the API sever
         if ($this->dispatcher->hasData()) {

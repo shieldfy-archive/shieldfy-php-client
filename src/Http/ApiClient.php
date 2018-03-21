@@ -88,7 +88,7 @@ class ApiClient implements Exceptionable
 
             return false;
         }
-
+        
         $res = $this->parseResult($result);
         if (!$res) {
             $this->throwException(new ServerErrorException($this->errors['message'], $this->errors['code']));

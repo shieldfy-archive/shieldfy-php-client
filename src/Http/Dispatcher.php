@@ -24,7 +24,7 @@ class Dispatcher implements Exceptionable
         'exception'
     ];
 
-    private $data = [];
+    private $data = null;
 
     public $apiClient = null;
 
@@ -43,7 +43,7 @@ class Dispatcher implements Exceptionable
 
     public function hasData()
     {
-        return count($this->data);
+        return ($this->data) ? true : false;
     }
 
     public function getData()

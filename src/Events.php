@@ -12,7 +12,6 @@ class Events
 
     public function trigger($eventName, $data = [])
     {
-        //dd($this->pipe[$eventName]);
         if (!isset($this->pipe[$eventName])) {
             return false;
         }
