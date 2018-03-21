@@ -34,7 +34,6 @@ class Session implements Exceptionable
         //check for session handler
         if (session_status() == PHP_SESSION_NONE) {
             session_name('_swaf_request_id');
-            // /session_id('abcdefghj');
             session_start([
                 'cookie_httponly' => true
             ]);
