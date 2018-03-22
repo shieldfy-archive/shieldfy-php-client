@@ -1,5 +1,5 @@
 <?php
-namespace Shieldfy\Extentions\CodeIgniter;
+namespace Shieldfy\Extensions\CodeIgniter;
 
 class DBProxy
 {

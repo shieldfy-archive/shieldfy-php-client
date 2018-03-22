@@ -1,10 +1,10 @@
 <?php
 
-namespace Shieldfy\Extentions\Laravel;
+namespace Shieldfy\Extensions\Laravel;
 
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
-use Shieldfy\Extentions\Laravel\Middlewares\ShieldfyMiddleware;
+use Shieldfy\Extensions\Laravel\Middlewares\ShieldfyMiddleware;
 
 class ShieldfyServiceProvider extends ServiceProvider
 {

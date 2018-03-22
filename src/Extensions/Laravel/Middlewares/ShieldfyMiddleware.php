@@ -1,6 +1,6 @@
 <?php
 
-namespace Shieldfy\Extentions\Laravel\Middlewares;
+namespace Shieldfy\Extensions\Laravel\Middlewares;
 
 use Closure;
 use DB;
