@@ -25,7 +25,7 @@ class ExceptionsCollector implements Collectable
         $this->config = $config;
         $this->dispatcher = $dispatcher;
         // http://php.net/set_error_handler
-        $this->original_error_handler = set_error_handler(array($this,'handleErrors'), E_ALL);
+        $this->original_error_handler = set_error_handler(array($this,'handleErrors'),  E_ERROR | E_WARNING | E_PARSE );
         // http://php.net/set_exception_handler
         $this->original_exception_handler = set_exception_handler(array($this,'handleExceptions'));
 
@@ -48,9 +48,9 @@ class ExceptionsCollector implements Collectable
      * @param  String  $message
      * @param  string  $file
      * @param  integer $line
-     * @param  array  $context
+     * @param  array  $context (Deprecated in php 7.2)
      */
-    public function handleErrors($severity = 0, $message = '', $file = '', $line = 0, $context = [])
+    public function handleErrors($severity = 0, $message = '', $file = '', $line = 0)
     {
         //LIMITATION
         //The following error types cannot be handled with a user defined function:
@@ -64,8 +64,7 @@ class ExceptionsCollector implements Collectable
                             $severity,
                             $message,
                             $file,
-                            $line,
-                            $context);
+                            $line);
         }
     }
 
@@ -114,7 +113,9 @@ class ExceptionsCollector implements Collectable
             return call_user_func($this->original_exception_handler, $exception);
         }
 
-        throw $exception;
+        if($is_exception){
+            throw $exception;
+        }
     }
 
     /**
@@ -158,10 +159,8 @@ class ExceptionsCollector implements Collectable
         }
 
         //contacting server failed for somereason , store locally
-
         $error = time().'-'.$exception->getCode().'-'.$exception->getFile().'-'.$exception->getLine().'-'.$exception->getMessage()."\n";
         file_put_contents($logFile, $error, FILE_APPEND | LOCK_EX);
-
         return;
     }
 
