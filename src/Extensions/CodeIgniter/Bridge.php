@@ -2,7 +2,7 @@
 namespace Shieldfy\Extensions\CodeIgniter;
 
 use Shieldfy\Guard;
-use Shieldfy\Extentions\CodeIgniter\DBProxy;
+use Shieldfy\Extensions\CodeIgniter\DBProxy;
 
 class Bridge
 {
@@ -18,18 +18,16 @@ class Bridge
         $ourHook = function() use($guard)
         {
             $CI =& get_instance();
-            //echo 'Called';
-            // var_dump($CI);
             self::load($guard,$CI);
         };
 
-        if(!is_null($hook) && isset($hook['post_controller']))
+        if(!is_null($hook) && isset($hook['post_controller_constructor']))
         {
-            if (is_array($hook['post_controller']) && ! isset($hook['post_controller']['function'])){
-                return array_merge($hook['post_controller'],[$ourHook]);
+            if (is_array($hook['post_controller_constructor']) && ! isset($hook['post_controller_constructor']['function'])){
+                return array_merge($hook['post_controller_constructor'],[$ourHook]);
             }else{
                 return array(
-                    $hook['post_controller'],
+                    $hook['post_controller_constructor'],
                     $ourHook
                 );
             }
