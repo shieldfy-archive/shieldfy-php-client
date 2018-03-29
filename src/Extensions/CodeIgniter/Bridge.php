@@ -2,7 +2,7 @@
 namespace Shieldfy\Extensions\CodeIgniter;
 
 use Shieldfy\Guard;
-use Shieldfy\Extensions\CodeIgniter\DBProxy;
+use Shieldfy\Extensions\DBProxy;
 
 class Bridge
 {
