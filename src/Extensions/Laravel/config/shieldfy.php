@@ -46,7 +46,7 @@ return [
      | Shieldfy default block page directory
      |--------------------------------------------------------------------------
      */
-    'blockPage' => view('shieldfy::block'),
+    'blockPage' => 'shieldfy::block',
 
 
     /*
