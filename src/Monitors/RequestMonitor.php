@@ -31,8 +31,7 @@ class RequestMonitor extends MonitorBase
 
     public function log()
     {
-
-        if($this->dispatcher->hasData()){
+        if ($this->dispatcher->hasData()) {
             return; //already there is a threat in the pipeline
         }
 
@@ -53,12 +52,12 @@ class RequestMonitor extends MonitorBase
                 $charge['value'] = $value;
                 $charge['key'] = $key;
                 $severity = $this->parseScore($charge['score']);
-                if($severity == 'high') $severity = 'med';
+                if ($severity == 'high') {
+                    $severity = 'med';
+                }
                 $this->sendToJail($severity, $charge);
             }
         }
-
-
     }
 
     private function checkForCSRF(RequestCollector $request)

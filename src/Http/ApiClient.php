@@ -71,7 +71,6 @@ class ApiClient implements Exceptionable
      */
     public function request($url, $body)
     {
-
         $hash = $this->calculateBodyHash($body);
         $this->setupHeaders(strlen($body), $hash);
         $this->setOpt(CURLOPT_CUSTOMREQUEST, 'POST');

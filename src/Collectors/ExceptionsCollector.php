@@ -25,7 +25,7 @@ class ExceptionsCollector implements Collectable
         $this->config = $config;
         $this->dispatcher = $dispatcher;
         // http://php.net/set_error_handler
-        $this->original_error_handler = set_error_handler(array($this,'handleErrors'),  E_ERROR | E_WARNING | E_PARSE );
+        $this->original_error_handler = set_error_handler(array($this,'handleErrors'), E_ERROR | E_WARNING | E_PARSE);
         // http://php.net/set_exception_handler
         $this->original_exception_handler = set_exception_handler(array($this,'handleExceptions'));
 
@@ -113,7 +113,7 @@ class ExceptionsCollector implements Collectable
             return call_user_func($this->original_exception_handler, $exception);
         }
 
-        if($is_exception){
+        if ($is_exception) {
             throw $exception;
         }
     }

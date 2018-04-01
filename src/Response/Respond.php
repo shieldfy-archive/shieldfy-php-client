@@ -41,9 +41,9 @@ class Respond
 
     private function prepareBlockResponse($incidentId)
     {
-        if($this->blockPage && file_exists($this->blockPage) && is_readable($this->blockPage)){
+        if ($this->blockPage && file_exists($this->blockPage) && is_readable($this->blockPage)) {
             $blockHTML = file_get_contents($this->blockPage);
-        }else{
+        } else {
             $blockHTML = file_get_contents(__dir__.'/block.html');
         }
 

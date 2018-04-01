@@ -13,19 +13,17 @@ class Bridge
         }
     }
 
-    public static function hook($guard,$hook)
+    public static function hook($guard, $hook)
     {
-        $ourHook = function() use($guard)
-        {
+        $ourHook = function () use ($guard) {
             $CI =& get_instance();
-            self::load($guard,$CI);
+            self::load($guard, $CI);
         };
 
-        if(!is_null($hook) && isset($hook['post_controller_constructor']))
-        {
-            if (is_array($hook['post_controller_constructor']) && ! isset($hook['post_controller_constructor']['function'])){
-                return array_merge($hook['post_controller_constructor'],[$ourHook]);
-            }else{
+        if (!is_null($hook) && isset($hook['post_controller_constructor'])) {
+            if (is_array($hook['post_controller_constructor']) && ! isset($hook['post_controller_constructor']['function'])) {
+                return array_merge($hook['post_controller_constructor'], [$ourHook]);
+            } else {
                 return array(
                     $hook['post_controller_constructor'],
                     $ourHook
