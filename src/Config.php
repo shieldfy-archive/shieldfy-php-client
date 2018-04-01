@@ -37,6 +37,7 @@ class Config implements ArrayAccess
             "app_secret"        => "",
             "debug"             => false,
             "action"            => "block",
+            "blockPage"         => null,
             "headers"           => [
                 "X-XSS-Protection"       =>  "1; mode=block",
                 "X-Content-Type-Options" =>  "nosniff",

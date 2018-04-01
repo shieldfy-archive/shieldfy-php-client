@@ -19,11 +19,17 @@ class ShieldfyMiddleware
      */
     public function handle($request, Closure $next)
     {
+        if($blockPage = config('shieldfy.blockPage')){
+            if(is_object($blockPage) && get_class($blockPage) == 'Illuminate\View\View'){
+                $blockPage = $blockPage->getPath();
+            }
+        }
         $shieldfy = Guard::init([
                 'app_key'        => config('shieldfy.keys.app_key', env('SHIELDFY_APP_KEY')),
                 'app_secret'     => config('shieldfy.keys.app_secret', env('SHIELDFY_APP_SECRET')),
                 'debug'          => config('shieldfy.debug'),
                 'action'         => config('shieldfy.action'),
+                'blockPage'      => $blockPage,
                 'headers'        => config('shieldfy.headers'),
                 'disable'        => config('shieldfy.disable'),
         ]);

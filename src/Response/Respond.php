@@ -7,10 +7,16 @@ class Respond
     private $blockMessage = 'Dangerous Request Blocked :: Shieldfy Web Shield';
 
     protected $protocol;
+    protected $blockPage = null;
 
     public function __construct($protocol = 'HTTP/1.1')
     {
         $this->protocol = $protocol;
+    }
+
+    public function setBlockPage($blockPage)
+    {
+        $this->blockPage = $blockPage;
     }
 
     public function block($incidentId)
@@ -35,7 +41,12 @@ class Respond
 
     private function prepareBlockResponse($incidentId)
     {
-        $blockHTML = file_get_contents(__dir__.'/block.html');
+        if($this->blockPage && file_exists($this->blockPage) && is_readable($this->blockPage)){
+            $blockHTML = file_get_contents($this->blockPage);
+        }else{
+            $blockHTML = file_get_contents(__dir__.'/block.html');
+        }
+
         return str_replace('{incidentId}', $incidentId, $blockHTML);
     }
 

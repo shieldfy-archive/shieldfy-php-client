@@ -71,7 +71,7 @@ class ApiClient implements Exceptionable
      */
     public function request($url, $body)
     {
-        //var_dump($this->curl);
+
         $hash = $this->calculateBodyHash($body);
         $this->setupHeaders(strlen($body), $hash);
         $this->setOpt(CURLOPT_CUSTOMREQUEST, 'POST');
@@ -82,13 +82,12 @@ class ApiClient implements Exceptionable
         $result = curl_exec($this->curl);
         if ($error = curl_error($this->curl)) {
             $this->errors = [
-                'code'   => curl_errno($this->curl),
+                'code'   => $curlErrorNo = curl_errno($this->curl),
                 'message'=> $error,
             ];
-
-            return false;
+            return (object) ['status'=>'error','errorCode'=>$curlErrorNo, 'message'=>$error];
         }
-        
+
         $res = $this->parseResult($result);
         if (!$res) {
             $this->throwException(new ServerErrorException($this->errors['message'], $this->errors['code']));
@@ -112,8 +111,7 @@ class ApiClient implements Exceptionable
                 'code'   => '101',
                 'message'=> 'Unexpected Server Response',
             ];
-
-            return false;
+            return (object) ['status'=>'error','errorCode'=>'101', 'message'=>'Unexpected Server Response : '.$result];
         }
 
         if ($res->status == 'error') {
@@ -121,8 +119,6 @@ class ApiClient implements Exceptionable
                 'code'   => $res->errorCode,
                 'message'=> $res->message,
             ];
-
-            return false;
         }
 
         return $res;

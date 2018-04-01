@@ -17,9 +17,16 @@ class ShieldfyServiceProvider extends ServiceProvider
      */
     public function boot(Router $router)
     {
+        $this->loadViewsFrom(__DIR__.'/views', 'shieldfy');
+
+        $this->publishes([
+            __DIR__.'/views' => resource_path('views/vendor/shieldfy'),
+        ], 'view');
+
         $this->publishes([
             __DIR__.'/config/shieldfy.php' => config_path('shieldfy.php'),
         ], 'config');
+        
         //register middlewares
         $this->registerMiddleWare($router);
     }

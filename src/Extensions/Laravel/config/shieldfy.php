@@ -43,6 +43,14 @@ return [
 
     /*
      |--------------------------------------------------------------------------
+     | Shieldfy default block page directory
+     |--------------------------------------------------------------------------
+     */
+    'blockPage' => view('shieldfy::block'),
+
+
+    /*
+     |--------------------------------------------------------------------------
      | List of headers exposed to shieldfy to overwrite
      | format
      | key => value
