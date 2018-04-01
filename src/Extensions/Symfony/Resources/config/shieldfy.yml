@@ -1,0 +1,4 @@
+# config/packages/shieldfy.yaml
+shieldfy:
+    app_key: "somekey1"
+    app_secret: "secret1"

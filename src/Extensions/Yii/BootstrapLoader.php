@@ -12,7 +12,7 @@ class BootstrapLoader implements BootstrapInterface
     public function bootstrap($app)
     {
         $app->on(Application::EVENT_BEFORE_REQUEST, function () {
-            echo 'Hello Yii';
+            
         });
     }
 }
