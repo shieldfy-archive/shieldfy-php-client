@@ -56,25 +56,32 @@ class UpdateCallback extends Callback implements Dispatchable, Exceptionable
         if ($response->status == 'success') {
             $this->save((array)$response->data);
         }
-        
+
         return [
             'status' => 'success'
         ];
     }
 
     /**
-     * Save grapped data
+     * Save rules data
+     * Rules is used to identify threats across application layers
+     * Stored only in vendors -> shieldfy -> data folder
      * @param  [type] $data
      */
     private function save(array $data = [])
     {
+        //if not writable , try to chmod it
+        if (!is_writable($this->config['paths']['data'])) {
+            @chmod($this->config['paths']['data'], 0755);
+            if (!is_writable($this->config['paths']['data'])) {
+                throw new InstallationException('Data folder :'.$this->config['paths']['data'].' Is not writable', 200);
+            }
+        }
+
         $data_path = $this->config['paths']['data'];
-        
-        $data_path = $this->config['rootDir'].'/data';
         if (!file_exists($data_path.'/installed')) {
             file_put_contents($data_path.'/installed', time());
         }
-        file_put_contents($data_path.'/updated', time());
 
         foreach ($data['rules'] as $ruleName => $ruleContent):
             $content = base64_decode($ruleContent);
@@ -82,5 +89,11 @@ class UpdateCallback extends Callback implements Dispatchable, Exceptionable
             file_put_contents($data_path.'/'.$ruleName.'.json', $content);
         }
         endforeach;
+    }
+
+    private function isJson($string)
+    {
+        json_decode($string);
+        return (json_last_error() == JSON_ERROR_NONE);
     }
 }

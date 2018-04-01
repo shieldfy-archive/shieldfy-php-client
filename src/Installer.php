@@ -66,7 +66,9 @@ class Installer implements Exceptionable
     }
 
     /**
-     * Save grapped data
+     * Save rules data
+     * Rules is used to identify threats across application layers
+     * Stored only in vendors -> shieldfy -> data folder
      * @param  array $data
      */
     private function save(array $data = [])
