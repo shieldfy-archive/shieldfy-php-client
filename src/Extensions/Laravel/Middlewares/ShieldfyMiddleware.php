@@ -19,7 +19,6 @@ class ShieldfyMiddleware
      */
     public function handle($request, Closure $next)
     {
-
         $shieldfy = Guard::init([
                 'endpoint'       => config('shieldfy.endpoint'),
                 'app_key'        => config('shieldfy.keys.app_key', env('SHIELDFY_APP_KEY')),

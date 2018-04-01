@@ -17,7 +17,7 @@ class DBProxy
         return self::$db->$name;
     }
 
-    public function __set($name , $value)
+    public function __set($name, $value)
     {
         return self::$db->$name = $value;
     }
