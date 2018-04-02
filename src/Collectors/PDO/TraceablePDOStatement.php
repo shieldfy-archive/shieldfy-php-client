@@ -104,7 +104,7 @@ class TraceablePDOStatement extends PDOStatement
         }
 
         if ($this->pdo->events !== null) {
-            $this->pdo->events->trigger('db.query', [$sql,$args]);
+            $this->pdo->events->trigger('db.query', [$this->queryString,$boundParameters]);
         }
 
         $ex = null;
