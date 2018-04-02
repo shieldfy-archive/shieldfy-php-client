@@ -45,8 +45,7 @@
             "providers": [
                 "Shieldfy\\Extensions\\Laravel\\ShieldfyServiceProvider"
             ]
-        },
-        "bootstrap": "Shieldfy\\Extensions\\Yii\\BootstrapLoader"
+        }
     },
     "config": {
         "sort-packages": true
