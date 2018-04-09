@@ -10,6 +10,6 @@ $shieldfy = \Shieldfy\Guard::init([
 $db = new PDO('sqlite::memory:');
 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-$shieldfy->attachPDO($pdo);
+$shieldfy->attachPDO($db);
 
 echo '<h1> Hi I am an Example </h1>';
