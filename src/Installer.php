@@ -52,11 +52,11 @@ class Installer implements Exceptionable
             'display_errors' => ini_get('display_errors')
         ]);
         if (!$response) {
-            throw new InstallationException('Unknown error happened', 200);
+            $this->throwException(new InstallationException('Unknown error happened', 200));
             return false;
         }
         if ($response->status == 'error') {
-            throw new InstallationException($response->message, $response->code);
+            $this->throwException(new InstallationException($response->message));
             return false;
         }
         if ($response->status == 'success') {
@@ -78,7 +78,7 @@ class Installer implements Exceptionable
         if (!is_writable($this->config['paths']['data'])) {
             @chmod($this->config['paths']['data'], 0755);
             if (!is_writable($this->config['paths']['data'])) {
-                throw new InstallationException('Data folder :'.$this->config['paths']['data'].' Is not writable', 200);
+                $this->throwException(new InstallationException('Data folder :'.$this->config['paths']['data'].' Is not writable', 200));
             }
         }
 

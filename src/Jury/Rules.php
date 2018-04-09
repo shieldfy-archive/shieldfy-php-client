@@ -13,6 +13,7 @@ class Rules implements Exceptionable
     use Exceptioner;
     protected $ruleBag = null;
     protected $config = null;
+    protected $rules = [];
 
     /**
      * [Construct Rules]
