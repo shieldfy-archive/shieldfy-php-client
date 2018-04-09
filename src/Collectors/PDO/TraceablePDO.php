@@ -5,6 +5,7 @@ namespace Shieldfy\Collectors\PDO;
 use PDO;
 use Closure;
 use PDOException;
+use Shieldfy\Events;
 use Shieldfy\Collectors\PDO\TraceablePDOStatement;
 
 /**
@@ -14,15 +15,15 @@ class TraceablePDO extends PDO
 {
     /** @var PDO */
     protected $pdo;
-    public $callback = null;
+    public $events = null;
 
     /** @var array */
     protected $executedStatements = array();
 
-    public function __construct(PDO $pdo, $callback = null)
+    public function __construct(PDO $pdo, Events $events)
     {
         $this->pdo = $pdo;
-        $this->callback = $callback;
+        $this->events = $events;
         $this->pdo->setAttribute(PDO::ATTR_STATEMENT_CLASS, array('Shieldfy\Collectors\PDO\TraceablePDOStatement', array($this)));
     }
 
@@ -200,8 +201,8 @@ class TraceablePDO extends PDO
      */
     protected function profileCall($method, $sql, array $args)
     {
-        if ($this->callback !== null) {
-            call_user_func($this->callback, 'pdo', $sql, $args);
+        if ($this->events !== null) {
+            $this->events->trigger('db.query', [$sql,$args]);
         }
 
         $ex = null;

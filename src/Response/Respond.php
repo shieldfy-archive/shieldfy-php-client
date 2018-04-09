@@ -3,19 +3,25 @@ namespace Shieldfy\Response;
 
 class Respond
 {
-    const BLOCKSTATUS = 403;
-    const BLOCKMESSAGE = 'Dangerous Request Blocked :: Shieldfy Web Shield';
+    private $blockStatus = 403;
+    private $blockMessage = 'Dangerous Request Blocked :: Shieldfy Web Shield';
 
     protected $protocol;
+    protected $blockPage = null;
 
     public function __construct($protocol = 'HTTP/1.1')
     {
         $this->protocol = $protocol;
     }
 
+    public function setBlockPage($blockPage)
+    {
+        $this->blockPage = $blockPage;
+    }
+
     public function block($incidentId)
     {
-        header($this->protocol.' '.self::BLOCKSTATUS.' '.self::BLOCKMESSAGE);
+        header($this->protocol.' '.$this->blockStatus.' '.$this->blockMessage);
         header('Content-Type: text/html; charset=utf-8');
         header('X-Shieldfy-Status: blocked');
         header('X-Shieldfy-Block-Id: '.$incidentId);
@@ -25,18 +31,22 @@ class Respond
 
     public function returnBlock($incidentId)
     {
-        header($this->protocol.' '.self::BLOCKSTATUS.' '.self::BLOCKMESSAGE);
+        header($this->protocol.' '.$this->blockStatus.' '.$this->blockMessage);
         header('Content-Type: text/html; charset=utf-8');
         header('X-Shieldfy-Status: blocked');
         header('X-Shieldfy-Block-Id: '.$incidentId);
         $response = $this->prepareBlockResponse($incidentId);
-        ;
         return $response;
     }
 
     private function prepareBlockResponse($incidentId)
     {
-        $blockHTML = file_get_contents(__dir__.'/block.html');
+        if ($this->blockPage && file_exists($this->blockPage) && is_readable($this->blockPage)) {
+            $blockHTML = file_get_contents($this->blockPage);
+        } else {
+            $blockHTML = file_get_contents(__dir__.'/block.html');
+        }
+
         return str_replace('{incidentId}', $incidentId, $blockHTML);
     }
 

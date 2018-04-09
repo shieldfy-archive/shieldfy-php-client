@@ -17,6 +17,7 @@ class Rule
     {
         $this->id = $id;
         $this->data = $data;
+
         if (isset($data['normalize'])) {
             $this->normalize = $data['normalize'];
         }
@@ -90,6 +91,19 @@ class Rule
      */
     private function runContain($value)
     {
+
+        //multiple contain
+        if (strpos($this->data['rule'], '|') !== false) {
+            $rules = explode('|', $this->data['rule']);
+            foreach ($rules as $rule) {
+                if (strpos($value, $rule) !== false) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        //single contain
         if (strpos($value, $this->data['rule']) !== false) {
             return true;
         }

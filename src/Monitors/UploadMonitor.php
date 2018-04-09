@@ -7,23 +7,23 @@ class UploadMonitor extends MonitorBase
 {
     use Judge;
 
-    protected $name = "upload";
+    protected $name = "uploads";
 
     /**
      * run the monitor
      */
     public function run()
     {
+
         //get the request info
         $request = $this->collectors['request'];
         $info = $request->getInfo('files');
-
         if (empty($info['files'])) {
             return;
         }
 
         //analyze uploaded files
-        $this->issue('upload');
+        $this->issue('uploads');
 
         //prepare for nested uploads
         $files = [];
@@ -41,19 +41,20 @@ class UploadMonitor extends MonitorBase
             }
         });
 
-        $judgment = [
-            'score'=>0,
-            'infection' => []
-        ];
-        foreach ($files as $input => $file) {
-            list($score, $ruleIds) = array_values($this->analyzeFile($input, $file));
-            if ($score) {
-                $judgment['score'] += $score;
-                $judgment['infection'][$input] = $ruleIds;
-            }
-        }
 
-        $this->handle($judgment);
+        foreach ($files as $input => $file) {
+            list($score, $rulesIds) = array_values($this->analyzeFile($input, $file));
+            $charge = [
+                'score' => $score,
+                'rulesIds'=>$rulesIds,
+                'value'=>$file['name'],
+                'key'=> $input
+            ];
+            break;
+        }
+        
+
+        $this->sendToJail($this->parseScore($charge['score']), $charge);
     }
 
     public function analyzeFile($input = '', $file = [])
@@ -65,7 +66,7 @@ class UploadMonitor extends MonitorBase
         $nameResult = $this->sentence($file['name'], 'FILES:NAME');
         if ($nameResult['score']) {
             $score += $nameResult['score'];
-            $ruleIds = array_merge($ruleIds, $nameResult['ids']);
+            $ruleIds = array_merge($ruleIds, $nameResult['rulesIds']);
         }
 
         //analyze extention
@@ -73,7 +74,7 @@ class UploadMonitor extends MonitorBase
         $extResult = $this->sentence($extention, 'FILES:EXTENTION');
         if ($extResult['score']) {
             $score += $extResult['score'];
-            $ruleIds = array_merge($ruleIds, $extResult['ids']);
+            $ruleIds = array_merge($ruleIds, $extResult['rulesIds']);
         }
 
         //analyze content
@@ -82,7 +83,7 @@ class UploadMonitor extends MonitorBase
         $backdoorResult = $this->sentence($content, 'FILES:CONTENT', 'backdoor');
         if ($backdoorResult['score']) {
             $score += $backdoorResult['score'];
-            $ruleIds = array_merge($ruleIds, $backdoorResult['ids']);
+            $ruleIds = array_merge($ruleIds, $backdoorResult['rulesIds']);
         }
         //check for xxe
         $xxeResult = $this->sentence($content, 'FILES:CONTENT', 'xxe');
@@ -94,7 +95,7 @@ class UploadMonitor extends MonitorBase
                 //retrive old value : maybe developer uses it anywhere :(
                 libxml_disable_entity_loader($disableEntity);
             }
-            $ruleIds = array_merge($ruleIds, $xxeResult['ids']);
+            $ruleIds = array_merge($ruleIds, $xxeResult['rulesIds']);
         }
         return compact('score', 'ruleIds');
     }

@@ -9,13 +9,18 @@ class ConfigTest extends TestCase
 {
     public function testLoadDefaults()
     {
-        $config = new Config(['defaultKey'=>'defaultValue']);
-        $this->assertEquals($config['defaultKey'], 'defaultValue');
+        $config = new Config([]);
+        $this->assertEquals('', $config['api_key']);
+        $this->assertEquals('', $config['api_secret']);
+        $this->assertEquals(false, $config['debug']);
     }
+
+    
+
     public function testOverrideDefaults()
     {
-        $config = new Config(['defaultKey'=>'defaultValue'], ['defaultKey'=>'anotherValue']);
-        $this->assertEquals('anotherValue', $config['defaultKey']);
+        $config = new Config(['debug'=>true]);
+        $this->assertEquals(true, $config['debug']);
     }
     public function testSetGet()
     {

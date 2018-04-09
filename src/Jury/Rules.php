@@ -13,6 +13,7 @@ class Rules implements Exceptionable
     use Exceptioner;
     protected $ruleBag = null;
     protected $config = null;
+    protected $rules = [];
 
     /**
      * [Construct Rules]
@@ -23,7 +24,7 @@ class Rules implements Exceptionable
     {
         $this->config = $config;
 
-        $bagFile = $config['rootDir'].'/data/'.$name.'.json';
+        $bagFile = $config['paths']['data'].'/'.$name.'.json';
         if (!file_exists($bagFile) || !is_readable($bagFile)) {
             $this->throwException(new RulesNotFoundException('Rules not found', 303));
         }
