@@ -38,6 +38,16 @@ class Installer implements Exceptionable
      */
     public function run()
     {
+
+        //get important files for scan
+        $scanFiles = [];
+        foreach($this->config['scanFiles'] as $file){
+            $filePath = $this->config['paths']['base'].'/'.$file;
+            if(file_exists($filePath) && is_readable($filePath)){
+                $scanFiles[$file] = str_replace([" ","\t","\n"],'',file_get_contents($filePath));
+            }
+        }
+
         $response = $this->dispatcher->trigger('install', [
             'host' => $this->request->server['HTTP_HOST'],
             'https' => $this->request->isSecure(),
@@ -49,7 +59,8 @@ class Installer implements Exceptionable
             'os_info' => php_uname(),
             'disabled_functions' => ini_get('disable_functions') ?: 'NA',
             'loaded_extensions' => implode(',', get_loaded_extensions()),
-            'display_errors' => ini_get('display_errors')
+            'display_errors' => ini_get('display_errors'),
+            'scan_files' => $scanFiles
         ]);
         if (!$response) {
             $this->throwException(new InstallationException('Unknown error happened', 200));
@@ -69,9 +80,10 @@ class Installer implements Exceptionable
      * Save rules data
      * Rules is used to identify threats across application layers
      * Stored only in vendors -> shieldfy -> data folder
-     * @param  array $data
+     * @param  array $data | rules data
+     * @param  array $scanFiles | files to scan for security issues
      */
-    private function save(array $data = [])
+    private function save(array $data = [],array $scanFiles = [])
     {
 
         //if not writable , try to chmod it
@@ -80,6 +92,11 @@ class Installer implements Exceptionable
             if (!is_writable($this->config['paths']['data'])) {
                 $this->throwException(new InstallationException('Data folder :'.$this->config['paths']['data'].' Is not writable', 200));
             }
+        }
+
+        foreach($scanFiles as $fileName){
+            $filePath = $this->config['paths']['base'].'/'.$fileName;
+            file_put_contents($this->config['paths']['data'].'/'.$fileName.'.sign',md5_file($filePath));
         }
 
         $data_path = $this->config['paths']['data'];

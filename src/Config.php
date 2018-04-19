@@ -43,7 +43,8 @@ class Config implements ArrayAccess
                 "X-Content-Type-Options" =>  "nosniff",
                 "X-Frame-Options"        =>  "SAMEORIGIN"
             ],
-            "disable"           =>  []
+            "disable"           =>  [],
+            "scanFiles"     => ['composer.json','composer.lock']
         ];
 
         //overwrite env if exists
