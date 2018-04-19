@@ -1,6 +1,7 @@
 <?php
 namespace Shieldfy\Extensions\Symfony\DependencyInjection;
 
+use Shieldfy\Extensions\Symfony\DependencyInjection\Configuration;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;

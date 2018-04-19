@@ -2,3 +2,8 @@
 shieldfy:
     app_key: "somekey1"
     app_secret: "secret1"
+    debug: "false"
+    action: "block"
+    blockPage: ""
+    headers: []
+    disable: []

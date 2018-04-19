@@ -7,6 +7,6 @@ class RequestListener
 {
     public function onKernelRequest(GetResponseEvent $event)
     {
-        echo "I am here bro :)";
+        return;
     }
 }

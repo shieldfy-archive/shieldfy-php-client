@@ -20,6 +20,11 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('app_key')->defaultValue('')->end()
                 ->scalarNode('app_secret')->defaultValue('')->end()
+                ->scalarNode('debug')->defaultValue('')->end()
+                ->scalarNode('action')->defaultValue('')->end()
+                ->scalarNode('blockPage')->defaultValue('')->end()
+                ->arrayNode('headers')->end()
+                ->arrayNode('disable')->end()
             ->end();
 
         return $treeBuilder;

@@ -2,3 +2,6 @@ services:
     Shieldfy\Extensions\Symfony\EventListener\RequestListener:
         tags:
             - { name: kernel.event_listener, event: kernel.request }
+    Shieldfy\Extensions\Symfony\EventListener\DatabaseListener:
+        tags:
+            - { name: doctrine.event_listener, event: postPersist }
