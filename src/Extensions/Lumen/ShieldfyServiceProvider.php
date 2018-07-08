@@ -16,10 +16,6 @@ class ShieldfyServiceProvider extends ServiceProvider
     {
         $this->loadViewsFrom(__DIR__.'/views', 'shieldfy');
 
-        $this->publishes([
-            __DIR__.'/views' => resource_path('views/vendor/shieldfy'),
-        ], 'view');
-
         $this->registerMiddleWare();
     }
 
@@ -33,9 +29,6 @@ class ShieldfyServiceProvider extends ServiceProvider
         $this->app->middleware([
             ShieldfyMiddleware::class
         ]);
-        // $this->app->routeMiddleware([
-        //     'web' => ShieldfyMiddleware::class
-        // ]);
     }
 
     /**
