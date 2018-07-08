@@ -3,7 +3,6 @@
 namespace Shieldfy\Extensions\Lumen\Middlewares;
 
 use Closure;
-use DB;
 use Shieldfy\Guard;
 
 class ShieldfyMiddleware
@@ -29,7 +28,7 @@ class ShieldfyMiddleware
                 'disable'        => config('shieldfy.disable'),
         ]);
 
-        DB::listen(function ($query) use ($shieldfy) {
+        app('db')->listen(function ($query) use ($shieldfy) {
             $shieldfy->events->trigger('db.query', [$query->sql,$query->bindings]);
         });
 
