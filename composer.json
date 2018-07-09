@@ -32,7 +32,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Shieldfy\\Test": "tests"
+            "Shieldfy\\Test\\": "tests"
         }
     },
     "scripts": {
