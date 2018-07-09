@@ -36,9 +36,13 @@ class DBMonitor extends MonitorBase
         $foundGuilty = false;
         $charge = [];
         $this->issue('db');
+
+        if(is_array($query)){
+            $query = implode(' ',$query);
+        }
+
         foreach ($params as $key => $value) {
             if (stripos($query, $value) !== false || in_array($value, $bindings)) {
-
                 //found parameter
                 //check infection
                 $charge = $this->sentence($value);
