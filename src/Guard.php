@@ -1,5 +1,5 @@
 <?php
-namespace shieldfy;
+namespace Shieldfy;
 
 use PDO;
 use Shieldfy\Config;
