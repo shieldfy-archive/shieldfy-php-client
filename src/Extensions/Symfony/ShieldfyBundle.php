@@ -21,5 +21,4 @@ class ShieldfyBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
             'app_secret' => getenv('SHIELDFY_APP_SECRET')
         ]);
     }
-
 }

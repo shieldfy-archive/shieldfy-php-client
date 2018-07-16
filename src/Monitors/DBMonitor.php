@@ -37,8 +37,8 @@ class DBMonitor extends MonitorBase
         $charge = [];
         $this->issue('db');
 
-        if(is_array($query)){
-            $query = implode(' ',$query);
+        if (is_array($query)) {
+            $query = implode(' ', $query);
         }
 
         foreach ($params as $key => $value) {
