@@ -50,7 +50,7 @@ class Logger implements SQLLogger
     {
         if ($params) {
             list($sql, $params, $types) = SQLParserUtils::expandListParameters($sql, $params, $types);
-            $query = vsprintf(str_replace('?', "%s", $sql), call_user_func(function() use ($params, $types) {
+            $query = vsprintf(str_replace('?', "%s", $sql), call_user_func(function () use ($params, $types) {
                 $quotedParams = array();
                 foreach ($params as $typeIndex => $value) {
                     $quotedParams[] = $this->connection->quote($value, $types[$typeIndex]);
@@ -82,7 +82,6 @@ class Logger implements SQLLogger
      */
     public function stopQuery()
     {
-
     }
 
     /**

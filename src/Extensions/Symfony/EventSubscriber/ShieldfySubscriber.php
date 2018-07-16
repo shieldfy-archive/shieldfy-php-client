@@ -10,7 +10,6 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 class ShieldfySubscriber implements EventSubscriberInterface
 {
-    
     public function onKernelController(FilterControllerEvent $event)
     {
         $controller = $event->getController();
@@ -24,7 +23,6 @@ class ShieldfySubscriber implements EventSubscriberInterface
             $logger = new \Shieldfy\Extensions\Symfony\Logger($em->getConnection());
             $em->getConnection()->getConfiguration()->setSQLLogger($logger);
         }
-        
     }
 
     public static function getSubscribedEvents()

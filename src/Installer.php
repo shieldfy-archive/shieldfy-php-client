@@ -41,10 +41,10 @@ class Installer implements Exceptionable
 
         //get important files for scan
         $scanFiles = [];
-        foreach($this->config['scanFiles'] as $file){
+        foreach ($this->config['scanFiles'] as $file) {
             $filePath = $this->config['paths']['base'].'/'.$file;
-            if(file_exists($filePath) && is_readable($filePath)){
-                $scanFiles[$file] = str_replace([" ","\t","\n"],'',file_get_contents($filePath));
+            if (file_exists($filePath) && is_readable($filePath)) {
+                $scanFiles[$file] = str_replace([" ","\t","\n"], '', file_get_contents($filePath));
             }
         }
 
@@ -83,7 +83,7 @@ class Installer implements Exceptionable
      * @param  array $data | rules data
      * @param  array $scanFiles | files to scan for security issues
      */
-    private function save(array $data = [],array $scanFiles = [])
+    private function save(array $data = [], array $scanFiles = [])
     {
 
         //if not writable , try to chmod it
@@ -94,9 +94,9 @@ class Installer implements Exceptionable
             }
         }
 
-        foreach($scanFiles as $fileName){
+        foreach ($scanFiles as $fileName) {
             $filePath = $this->config['paths']['base'].'/'.$fileName;
-            file_put_contents($this->config['paths']['data'].'/'.$fileName.'.sign',md5_file($filePath));
+            file_put_contents($this->config['paths']['data'].'/'.$fileName.'.sign', md5_file($filePath));
         }
 
         $data_path = $this->config['paths']['data'];
