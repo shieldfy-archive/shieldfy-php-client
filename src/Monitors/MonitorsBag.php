@@ -20,7 +20,7 @@ class MonitorsBag
          'MemoryMonitor'             =>    \Shieldfy\Monitors\MemoryMonitor::class,
          'ViewMonitor'               =>    \Shieldfy\Monitors\ViewMonitor::class,
          'ExceptionsMonitor'         =>    \Shieldfy\Monitors\ExceptionsMonitor::class,
-         'LibraryMonitor'            =>    \Shieldfy\Monitors\LibraryMonitor::class
+         //'LibraryMonitor'            =>    \Shieldfy\Monitors\LibraryMonitor::class
     ];
 
     /**
