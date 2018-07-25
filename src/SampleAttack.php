@@ -30,7 +30,7 @@ class SampleAttack
         $this->dispatcher = $dispatcher;
         $this->collectors = $collectors;
         $this->events = $events;
-        if ( $this->collectors['request']->get['simpleattack'] == 'send' ) {
+        if ( $this->collectors['request']->get['sampleattack'] == 'send' ) {
             $this->send($this->collectors['request']->get['hash']);
         }
     }
