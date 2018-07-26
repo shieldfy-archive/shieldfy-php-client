@@ -30,7 +30,7 @@ class SampleAttack
         $this->dispatcher = $dispatcher;
         $this->collectors = $collectors;
         $this->events = $events;
-        if ( $this->collectors['request']->get['sampleattack'] == 'send' ) {
+        if ( isset($this->collectors['request']->get['sampleattack']) ) {
             $this->send($this->collectors['request']->get['hash']);
         }
     }
@@ -38,7 +38,7 @@ class SampleAttack
     public function send($hash)
     {
         $appHash = hash_hmac('sha256', $this->config['app_secret'], $this->config['app_key']);
-        if ( $hash === $appHash ) {
+        if ( $this->collectors['request']->get['sampleattack'] == 'send' && $hash === $appHash ) {
             (new SampleMonitor($this->config, $this->session, $this->dispatcher, $this->collectors, $this->events))->run();
         }
     }
