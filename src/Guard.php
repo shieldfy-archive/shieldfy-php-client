@@ -15,6 +15,7 @@ use Shieldfy\Collectors\UserCollector;
 use Shieldfy\Collectors\RequestCollector;
 use Shieldfy\Collectors\ExceptionsCollector;
 use Shieldfy\Collectors\PDO\TraceablePDO;
+use Shieldfy\SampleAttack;
 
 class Guard
 {
@@ -97,6 +98,9 @@ class Guard
 
         //start shieldfy guard
         $this->startGuard();
+
+        // simple attack
+        new SampleAttack($this->config, $this->session, $this->dispatcher, $this->collectors, $this->events);
     }
 
     /**
