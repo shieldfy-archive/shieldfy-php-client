@@ -4,22 +4,26 @@ namespace Shieldfy\Callbacks;
 use Shieldfy\Config;
 use Shieldfy\Collectors\RequestCollector;
 use Shieldfy\Response\Response;
+use Shieldfy\Http\Dispatcher;
 
 class CallbackHandler
 {
     use Response;
     protected $request;
     protected $config;
+    protected $dispatcher;
 
     protected $callbacks = [
         'health' => \Shieldfy\Callbacks\HealthCheckCallback::class,
-        'update' => \Shieldfy\Callbacks\UpdateCallback::class
+        'update' => \Shieldfy\Callbacks\UpdateCallback::class,
+        'vendor' => \Shieldfy\Callbacks\VendorCallback::class
     ];
 
-    public function __construct(RequestCollector $request, Config $config)
+    public function __construct(RequestCollector $request, Config $config, Dispatcher $dispatcher)
     {
         $this->request = $request;
         $this->config  = $config;
+        $this->dispatcher = $dispatcher;
     }
 
     public function catchCallback()
@@ -37,7 +41,7 @@ class CallbackHandler
         }
 
         $callbackClass = $this->callbacks[$callback];
-        $callback = new $callbackClass($this->config);
+        $callback = new $callbackClass($this->config, $this->dispatcher);
         $callback->handle();
     }
 

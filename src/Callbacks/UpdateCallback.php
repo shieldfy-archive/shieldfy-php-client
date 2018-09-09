@@ -8,13 +8,9 @@ use Shieldfy\Exceptions\Exceptionable;
 use Shieldfy\Exceptions\Exceptioner;
 use Shieldfy\Exceptions\InstallationException;
 
-use Shieldfy\Dispatcher\Dispatchable;
-use Shieldfy\Dispatcher\Dispatcher;
-
-class UpdateCallback extends Callback implements Dispatchable, Exceptionable
+class UpdateCallback extends Callback implements Exceptionable
 {
     use Response;
-    use Dispatcher;
     use Exceptioner;
 
     public function handle()
@@ -27,7 +23,7 @@ class UpdateCallback extends Callback implements Dispatchable, Exceptionable
      */
     private function update()
     {
-        $response = $this->trigger('update', [
+        $response = $this->dispatcher->trigger('update', [
             'sdk_version'=>$this->config['version'],
             'php_version'=>PHP_VERSION,
             'sapi_type' =>@php_sapi_name(),
