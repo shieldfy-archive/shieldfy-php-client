@@ -28,7 +28,9 @@ class VendorCallback
             'loaded_extensions'=>implode(',', @get_loaded_extensions()),
             'display_errors'=>@ini_get('display_errors'),
         ]);
-        $this->save($response);
+        if ($response->status == 'success') {
+            $this->save($response->data);
+        }
     }
 
     private function save($data)
