@@ -78,8 +78,6 @@ abstract class MonitorBase
 
         if ($severity == 'high' && $this->config['action'] == 'block') {
             if ($this->name == 'view') {
-                /* view is special case because it uses ob_start so we need to flush data here */
-                $this->dispatcher->flush();
                 return $this->respond()->returnBlock($incidentId);
             }
             $this->respond()->block($incidentId);

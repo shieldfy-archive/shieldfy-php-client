@@ -2,19 +2,23 @@
 
 namespace Shieldfy\Callbacks;
 
-use Shieldfy\Config;
-use Shieldfy\Http\Dispatcher;
+use Shieldfy\Callbacks\Callback;
+use Shieldfy\Response\Response;
 
-class VendorCallback
+use Shieldfy\Exceptions\Exceptionable;
+use Shieldfy\Exceptions\Exceptioner;
+use Shieldfy\Exceptions\InstallationException;
+
+
+class VendorCallback extends Callback implements Exceptionable
 {
-    public function __construct(Config $config, Dispatcher $dispatcher, $collectors)
+
+    use Response;
+    use Exceptioner;
+
+    public function handle()
     {
-        $this->config = $config;
-        $this->dispatcher = $dispatcher;
-        $this->collectors = $collectors;
-        if ($this->collectors['request']->get['shieldfy'] == 'update-vendor') {
-            $this->update();
-        }
+        $this->respond()->json($this->update());
     }
 
     private function update()
@@ -28,7 +32,15 @@ class VendorCallback
             'loaded_extensions'=>implode(',', @get_loaded_extensions()),
             'display_errors'=>@ini_get('display_errors'),
         ]);
-        $this->save($response);
+        if ($response->status == 'success') {
+            $this->save($response->data);
+            return [
+                'status' => 'success'
+            ];
+        }
+        return [
+            'status' => 'error'
+        ];
     }
 
     private function save($data)

@@ -10,7 +10,6 @@ use Shieldfy\Http\ApiClient;
 use Shieldfy\Http\Dispatcher;
 use Shieldfy\Monitors\MonitorsBag;
 use Shieldfy\Callbacks\CallbackHandler;
-use Shieldfy\Callbacks\VendorCallback;
 use Shieldfy\Collectors\CodeCollector;
 use Shieldfy\Collectors\UserCollector;
 use Shieldfy\Collectors\RequestCollector;
@@ -109,8 +108,6 @@ class Guard
 
         // simple attack
         new SampleAttack($this->config, $this->session, $this->dispatcher, $this->collectors, $this->events);
-
-        new VendorCallback($this->config, $this->dispatcher, $this->collectors);
     }
 
     /**
@@ -166,7 +163,7 @@ class Guard
      */
     public function catchCallbacks(RequestCollector $request, Config $config)
     {
-        (new CallbackHandler($request, $config))->catchCallback();
+        (new CallbackHandler($request, $config,$this->dispatcher))->catchCallback();
     }
 
     /**
