@@ -1,5 +1,5 @@
 <?php
-namespace Shieldfy;
+namespace Shieldfy\Verified;
 
 use Shieldfy\Monitors\SampleMonitor;
 
