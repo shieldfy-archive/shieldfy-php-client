@@ -15,6 +15,7 @@ use Shieldfy\Collectors\UserCollector;
 use Shieldfy\Collectors\RequestCollector;
 use Shieldfy\Collectors\ExceptionsCollector;
 use Shieldfy\Collectors\PDO\TraceablePDO;
+use Shieldfy\Exceptions\InstallationException;
 // Verified
 use Shieldfy\Verified\SampleAttack;
 use Shieldfy\Verified\CheckInstall;
@@ -92,15 +93,16 @@ class Guard
         //catch callbacks
         $this->catchCallbacks($this->collectors['request'], $this->config);
 
-        // check install
-        (new CheckInstall($this->config))->run($this->isInstalled());
-
         //check the installation
         if (!$this->isInstalled()) {
-            $install = (new Installer($this->collectors['request'], $this->dispatcher, $this->config))->run();
-            if (!$install) {
-                return false;
-            }
+            $CheckInstall = new CheckInstall($this->config);
+            try{
+                (new Installer($this->collectors['request'], $this->dispatcher, $this->config))->run();
+                $CheckInstall->run('The installation process is successful');
+            }catch(InstallationException $e){
+                $CheckInstall->run($e->message);
+                return;
+            }            
         }
 
         //start shieldfy guard
