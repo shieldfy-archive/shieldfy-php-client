@@ -100,7 +100,7 @@ class Guard
                 (new Installer($this->collectors['request'], $this->dispatcher, $this->config))->run();
                 $CheckInstall->run('The installation process is successful');
             } catch (InstallationException $e) {
-                $CheckInstall->run($e->message);
+                $CheckInstall->run($e->message, false);
                 return;
             }
         }
