@@ -30,13 +30,14 @@ class Rules implements Exceptionable
         }
 
         //parse json file
-        $rules = file_get_contents($bagFile);
-        $decodedRules =  json_decode($rules, 1);
-        if (!$decodedRules || json_last_error() !== JSON_ERROR_NONE) {
-            $this->throwException(new RulesNotFoundException('Rules not found', 304));
+        if (file_exists($bagFile)) {
+            $rules = file_get_contents($bagFile);
+            $decodedRules =  json_decode($rules, 1);
+            if (!$decodedRules || json_last_error() !== JSON_ERROR_NONE) {
+                $this->throwException(new RulesNotFoundException('Rules not found', 304));
+            }
+            $this->rules = $decodedRules;
         }
-
-        $this->rules = $decodedRules;
     }
 
     /**
