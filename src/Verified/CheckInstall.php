@@ -2,6 +2,7 @@
 namespace Shieldfy\Verified;
 
 use Shieldfy\Config;
+use Shieldfy\Response\Notification;
 
 class CheckInstall
 {
@@ -9,15 +10,9 @@ class CheckInstall
     {
         $this->config = $config;
         $this->collectors = $collectors;
+        $this->notification = new Notification;
     }
-    public function theme($message)
-    {
-        $html = '<div style="position: fixed;top: 0;left: 0;width: 500px;background: #000000db;color: #fff;font-size: 15px;font-family: sans-serif;text-align: center;padding: 15px">';
-        $html .= '<p style="color: #fff; font-size:15px;">' . $message . '</p>';
-        $html .= '</div>';
-        return $html;
-    }
-    public function run($message)
+    public function run($message, $status = true)
     {
         if (!isset($this->collectors['request']->get['shieldfy'])) {
             return;
@@ -31,11 +26,19 @@ class CheckInstall
 
         // check of keys
         if ($hash !== $appHash) {
-            echo $this->theme('There is an error in the installation keys');
+            $this->notification->error([
+                'message' => 'There is an error in the installation keys',
+            ]);
             return;
         }
 
         // verified install
-        echo $this->theme($message);
+        $notificationType = 'success';
+        if (!$status) {
+            $notificationType = 'error';
+        }
+        $this->notification->$notificationType([
+            'message' => $message
+        ]);
     }
 }
