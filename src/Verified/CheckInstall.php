@@ -28,7 +28,7 @@ class CheckInstall
         }
 
         // check of keys
-        if ($hash !== $appHash){
+        if ($hash !== $appHash) {
             echo $this->theme('There is an error in the installation keys');
         }
     }
