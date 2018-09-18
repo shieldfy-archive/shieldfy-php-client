@@ -17,6 +17,7 @@ class Dispatcher implements Exceptionable
     private $events = [
         'install',
         'update',
+        'update/vendors',
         'session/start',
         'session/step',
         'session/threat',

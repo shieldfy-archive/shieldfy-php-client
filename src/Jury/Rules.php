@@ -46,6 +46,9 @@ class Rules implements Exceptionable
     public function build()
     {
         $rules = [];
+        if (!$this->rules) {
+            return $rules;
+        }
         foreach ($this->rules as $id => $rule) {
             $rules[] = new Rule($id, $rule);
         }
