@@ -9,10 +9,8 @@ use Shieldfy\Exceptions\Exceptionable;
 use Shieldfy\Exceptions\Exceptioner;
 use Shieldfy\Exceptions\InstallationException;
 
-
 class VendorCallback extends Callback implements Exceptionable
 {
-
     use Response;
     use Exceptioner;
 
