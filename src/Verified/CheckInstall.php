@@ -19,7 +19,7 @@ class CheckInstall
     }
     public function run($message)
     {
-        if($this->collectors['request']->get['shieldfy'] != 'verified' ){
+        if ($this->collectors['request']->get['shieldfy'] != 'verified') {
             return;
         }
 
@@ -34,6 +34,5 @@ class CheckInstall
 
         // verified install
         echo $this->theme($message);
-        
     }
 }
