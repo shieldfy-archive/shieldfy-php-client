@@ -27,17 +27,16 @@ class Rules implements Exceptionable
         $bagFile = $config['paths']['data'].'/'.$name.'.json';
         if (!file_exists($bagFile) || !is_readable($bagFile)) {
             $this->throwException(new RulesNotFoundException('Rules not found', 303));
+            return;
         }
 
         //parse json file
-        if (file_exists($bagFile)) {
-            $rules = file_get_contents($bagFile);
-            $decodedRules =  json_decode($rules, 1);
-            if (!$decodedRules || json_last_error() !== JSON_ERROR_NONE) {
-                $this->throwException(new RulesNotFoundException('Rules not found', 304));
-            }
-            $this->rules = $decodedRules;
+        $rules = file_get_contents($bagFile);
+        $decodedRules =  json_decode($rules, 1);
+        if (!$decodedRules || json_last_error() !== JSON_ERROR_NONE) {
+            $this->throwException(new RulesNotFoundException('Rules not found', 304));
         }
+        $this->rules = $decodedRules;
     }
 
     /**

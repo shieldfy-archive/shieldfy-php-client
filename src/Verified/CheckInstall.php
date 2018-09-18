@@ -19,17 +19,21 @@ class CheckInstall
     }
     public function run($message)
     {
+        if($this->collectors['request']->get['shieldfy'] != 'verified' ){
+            return;
+        }
+
         $hash = $this->collectors['request']->get['hash'];
         $appHash = hash_hmac('sha256', $this->config['app_secret'], $this->config['app_key']);
-
-        // verified install
-        if ($this->collectors['request']->get['shieldfy'] == 'verified' && $hash === $appHash) {
-            echo $this->theme($message);
-        }
 
         // check of keys
         if ($hash !== $appHash) {
             echo $this->theme('There is an error in the installation keys');
+            return;
         }
+
+        // verified install
+        echo $this->theme($message);
+        
     }
 }
