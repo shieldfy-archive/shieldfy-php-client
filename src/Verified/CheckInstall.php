@@ -19,9 +19,8 @@ class CheckInstall
     }
     public function run($message)
     {
-        if ($this->collectors['request']->get['shieldfy'] != 'verified') {
-            return;
-        }
+        if (!isset($this->collectors['request']->get['shieldfy'])) return;
+        if ($this->collectors['request']->get['shieldfy'] != 'verified') return;
 
         $hash = $this->collectors['request']->get['hash'];
         $appHash = hash_hmac('sha256', $this->config['app_secret'], $this->config['app_key']);
