@@ -95,7 +95,7 @@ class Guard
 
         //check the installation
         if (!$this->isInstalled()) {
-            $CheckInstall = new CheckInstall($this->config);
+            $CheckInstall = new CheckInstall($this->config, $this->collectors);
             try {
                 (new Installer($this->collectors['request'], $this->dispatcher, $this->config))->run();
                 $CheckInstall->run('The installation process is successful');
