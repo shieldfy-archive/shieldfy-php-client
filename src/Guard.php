@@ -96,13 +96,13 @@ class Guard
         //check the installation
         if (!$this->isInstalled()) {
             $CheckInstall = new CheckInstall($this->config);
-            try{
+            try {
                 (new Installer($this->collectors['request'], $this->dispatcher, $this->config))->run();
                 $CheckInstall->run('The installation process is successful');
-            }catch(InstallationException $e){
+            } catch (InstallationException $e) {
                 $CheckInstall->run($e->message);
                 return;
-            }            
+            }
         }
 
         //start shieldfy guard
@@ -165,7 +165,7 @@ class Guard
      */
     public function catchCallbacks(RequestCollector $request, Config $config)
     {
-        (new CallbackHandler($request, $config,$this->dispatcher))->catchCallback();
+        (new CallbackHandler($request, $config, $this->dispatcher))->catchCallback();
     }
 
     /**
