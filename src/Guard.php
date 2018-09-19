@@ -17,7 +17,6 @@ use Shieldfy\Collectors\ExceptionsCollector;
 use Shieldfy\Collectors\PDO\TraceablePDO;
 use Shieldfy\Exceptions\InstallationException;
 // Verified
-use Shieldfy\Verified\SampleAttack;
 use Shieldfy\Verified\CheckInstall;
 
 class Guard
@@ -107,9 +106,6 @@ class Guard
 
         //start shieldfy guard
         $this->startGuard();
-
-        // simple attack
-        new SampleAttack($this->config, $this->session, $this->dispatcher, $this->collectors, $this->events);
     }
 
     /**
