@@ -8,13 +8,13 @@ class CheckInstall
 {
     public function __construct(Config $config, $collectors)
     {
-        header('X-shieldfy-verification: install');
         $this->config = $config;
         $this->collectors = $collectors;
         $this->notification = new Notification;
     }
     public function run($message, $status = true)
     {
+        header('X-shieldfy-verification: install');
         if (!isset($this->collectors['request']->get['shieldfy'])) {
             return;
         }
