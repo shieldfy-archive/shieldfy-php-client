@@ -92,12 +92,12 @@ class Guard
         $this->catchCallbacks($this->collectors['request'], $this->config);
 
 
-        $verifier = (new Verifier($this->config,$this->collectors['request']))->whoIsCalling();
+        $verifier = (new Verifier($this->config, $this->collectors['request']))->whoIsCalling();
         
         //check the installation
         if (!$this->isInstalled()) {
             try {
-                (new Installer($this->collectors['request'], $this->dispatcher, $this->config))->run();                
+                (new Installer($this->collectors['request'], $this->dispatcher, $this->config))->run();
                 $verifier->success();
             } catch (InstallationException $e) {
                 $verifier->error($e->getMessage());
