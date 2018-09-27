@@ -5,19 +5,18 @@ use PDO;
 use Shieldfy\Config;
 use Shieldfy\Events;
 use Shieldfy\Session;
-use Shieldfy\Installer;
 use Shieldfy\Http\ApiClient;
 use Shieldfy\Http\Dispatcher;
+use Shieldfy\Install\Verifier;
+use Shieldfy\Install\Installer;
 use Shieldfy\Monitors\MonitorsBag;
 use Shieldfy\Callbacks\CallbackHandler;
 use Shieldfy\Collectors\CodeCollector;
 use Shieldfy\Collectors\UserCollector;
 use Shieldfy\Collectors\RequestCollector;
-use Shieldfy\Collectors\ExceptionsCollector;
 use Shieldfy\Collectors\PDO\TraceablePDO;
+use Shieldfy\Collectors\ExceptionsCollector;
 use Shieldfy\Exceptions\InstallationException;
-// Verified
-use Shieldfy\Verified\CheckInstall;
 
 class Guard
 {
@@ -92,19 +91,22 @@ class Guard
         //catch callbacks
         $this->catchCallbacks($this->collectors['request'], $this->config);
 
+
+        $verifier = (new Verifier($this->config,$this->collectors['request']))->whoIsCalling();
+        
         //check the installation
-        $CheckInstall = new CheckInstall($this->config, $this->collectors);
         if (!$this->isInstalled()) {
             try {
-                (new Installer($this->collectors['request'], $this->dispatcher, $this->config))->run();
-                $CheckInstall->run('The installation process is successful');
+                (new Installer($this->collectors['request'], $this->dispatcher, $this->config))->run();                
+                $verifier->success();
             } catch (InstallationException $e) {
-                $CheckInstall->run($e->message, false);
+                $verifier->error($e->getMessage());
                 return;
             }
-        } else {
-            $CheckInstall->run('The protection system stable');
         }
+
+        //verify installation
+        $verifier->check();
 
         //start shieldfy guard
         $this->startGuard();

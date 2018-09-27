@@ -3,13 +3,10 @@ namespace Shieldfy\Response;
 
 class Notification
 {
-    public function view($file, $data)
+    public function view($file, $message)
     {
         $html = file_get_contents(__dir__.'/Views/' . $file . '.html');
-        $data['logo'] = __FILE__.'/Views/img/logo.png';
-        foreach ($data as $key => $value) {
-            $html = str_replace('{'. $key .'}', $value, $html);
-        }
+        $html = str_replace('{message}', $message, $html);
         return $html;
     }
 

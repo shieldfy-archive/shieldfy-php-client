@@ -15,14 +15,16 @@ class VendorMonitor extends MonitorBase
     public function run()
     {
         $this->issue('vendors');
-
         // request
         $request = $this->collectors['request'];
         $params = array_merge($request->post, $request->get);
         foreach ($params as $key => $value) {
-            $charge = $this->sentence($value, $request->server['PATH_INFO'] . ':' . $request->requestMethod . ':' . $key);
+            $path_info = (isset($request->server['PATH_INFO'])) ? $request->server['PATH_INFO'] : '';
+            $charge = $this->sentence($value, $path_info . ':' . $request->requestMethod . ':' . $key);
             $severity = $this->parseScore($charge['score']);
-            $this->sendToJail($severity, $charge);
+            if ($charge && $charge['score']) {
+                $this->sendToJail($severity, $charge);
+            }
         }
     }
 }
