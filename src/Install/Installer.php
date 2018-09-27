@@ -50,7 +50,7 @@ class Installer implements Exceptionable
             'display_errors' => ini_get('display_errors')
         ]);
         if (!$response) {
-            throw new InstallationException('Unknown error happened', 200);        
+            throw new InstallationException('Unknown error happened', 200);
         }
         if ($response->status == 'error') {
             throw new InstallationException($response->message);
