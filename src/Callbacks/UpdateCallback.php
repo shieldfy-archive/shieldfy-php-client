@@ -66,7 +66,7 @@ class UpdateCallback extends Callback implements Exceptionable
      */
     private function save(array $data = [])
     {
-        //if not writable , try to chmod it
+        // If not writable, try to chmod it.
         if (!is_writable($this->config['paths']['data'])) {
             @chmod($this->config['paths']['data'], 0755);
             if (!is_writable($this->config['paths']['data'])) {

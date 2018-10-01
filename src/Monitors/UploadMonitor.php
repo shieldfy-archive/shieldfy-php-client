@@ -52,7 +52,7 @@ class UploadMonitor extends MonitorBase
             ];
             break;
         }
-        
+
 
         $this->sendToJail($this->parseScore($charge['score']), $charge);
     }

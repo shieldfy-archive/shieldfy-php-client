@@ -15,7 +15,7 @@ class ConfigTest extends TestCase
         $this->assertEquals(false, $config['debug']);
     }
 
-    
+
 
     public function testOverrideDefaults()
     {

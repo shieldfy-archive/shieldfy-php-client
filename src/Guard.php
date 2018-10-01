@@ -127,7 +127,7 @@ class Guard
                         );
 
 
-        register_shutdown_function([$this,'flush']);
+        register_shutdown_function([$this, 'flush']);
 
         //expose essential headers
         $this->exposeHeaders();
@@ -220,7 +220,7 @@ class Guard
         header('X-Shieldfy-Signature: '.$signature);
     }
 
-    /* singelton protection */
+    /* Singleton protection. */
     protected function __clone()
     {
     }

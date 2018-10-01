@@ -120,7 +120,7 @@ class RequestCollector implements Collectable
 
     /**
      * get request info.
-     * @TODO add function to strip sensetive data before report it (ex: passwords , tokens , creditcards ... )
+     * @TODO Add a function to strip sensitive data before reporting it (e.g., passwords, tokens, credit cards, etc).
      * @return array info
      */
     public function getInfo($parameter = '')
@@ -158,7 +158,7 @@ class RequestCollector implements Collectable
         unset($info['cookies']);
         unset($info['files']);
 
-        //TODO: add filter to strip (cookie info , files ,   passwords  , creditcards .. etc)
+        // TODO: Add a function to strip sensitive data before reporting it (e.g., passwords, tokens, credit cards, etc).
         return $info;
     }
 

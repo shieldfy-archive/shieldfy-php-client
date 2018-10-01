@@ -53,7 +53,7 @@ class ViewMonitor extends MonitorBase
     public function runAnalyzers(array $infected = [])
     {
         $this->infected = $infected;
-        ob_start(array($this,'deepAnalyze'));
+        ob_start(array($this, 'deepAnalyze'));
     }
 
     public function deepAnalyze($content)
