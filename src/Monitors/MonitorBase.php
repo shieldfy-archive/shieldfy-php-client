@@ -48,7 +48,7 @@ abstract class MonitorBase
     protected function sendToJail($severity = 'low', $charge  = [], $code = [])
     {
 
-        //based on severity and config , lets judge it
+        // Based on severity and config. Let's judge it.
         $incidentId = $this->generateIncidentId($this->collectors['user']->getId());
 
         if ($this->dispatcher->hasData() && $severity  != 'high') {

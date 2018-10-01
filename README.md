@@ -2,7 +2,7 @@
 
 This is the official PHP SDK for Shieldfy (shieldfy.io) https://shieldfy.io
 
-Shieldfy is a strong application protection platform that help businesses to secure their applications online.
+Shieldfy is a strong application protection platform that helps businesses to secure their applications online.
 
 
 [![Packagist](https://img.shields.io/packagist/v/shieldfy/shieldfy-php-client.svg?label=Packagist&style=flat-square)](https://packagist.org/packages/shieldfy/shieldfy-php-client)
@@ -14,7 +14,7 @@ Shieldfy is a strong application protection platform that help businesses to sec
 
 ## Installation
 
-You will need first to register on [shieldfy.io](https://shieldfy.io/) to get your APP Key & APP Secret.
+You will first need to register on [shieldfy.io](https://shieldfy.io/) to get your APP Key & APP Secret.
 
 
 Through Composer (the recommended way):

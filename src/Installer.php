@@ -78,7 +78,7 @@ class Installer implements Exceptionable
 
     /**
      * Save rules data
-     * Rules is used to identify threats across application layers
+     * Rules are used to identify threats across application layers.
      * Stored only in vendors -> shieldfy -> data folder
      * @param  array $data | rules data
      * @param  array $scanFiles | files to scan for security issues
@@ -86,7 +86,7 @@ class Installer implements Exceptionable
     private function save(array $data = [], array $scanFiles = [])
     {
 
-        //if not writable , try to chmod it
+        // If not writable, try to chmod it
         if (!is_writable($this->config['paths']['data'])) {
             @chmod($this->config['paths']['data'], 0755);
             if (!is_writable($this->config['paths']['data'])) {

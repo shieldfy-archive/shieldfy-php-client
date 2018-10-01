@@ -47,11 +47,11 @@ class Session implements Exceptionable
     }
 
     /**
-     * Retrive current user info (Local|Remote)
+     * Retrieve current user info (Local|Remote).
      */
     public function getUser()
     {
-        //check if there is session register to this user
+        // Check where there's a session registered to this user.
         if (! $this->_isset('ShieldfyUser')) {
             $this->loadNewUser();
         } else {
@@ -67,7 +67,7 @@ class Session implements Exceptionable
 
 
     /**
-     * Local info found , load existing user
+     * Local info found. Load existing user.
      */
     public function loadExistingUser()
     {
@@ -78,7 +78,7 @@ class Session implements Exceptionable
     }
 
     /**
-     * Local info not found , Load remote info
+     * Local info not found. Load remote info.
      */
     public function loadNewUser()
     {
@@ -100,22 +100,22 @@ class Session implements Exceptionable
     public function flush()
     {
 
-        // there is no need to block the request for sync , we will do this after request is finishing
-        // close session writing to be availabe for next request
+        // There is no need to block the request for sync. We will do this after request has finished
+        // and session writing has been closed, to be available for the next request.
         if (function_exists('session_write_close')) {
             session_write_close();
         }
-        // //finish the request and send the respond to the browser
+        // Finish the request and send the responce to the browser.
         if (function_exists('fastcgi_finish_request')) {
             fastcgi_finish_request();
         }
 
         $this->events->trigger('request.finish');
 
-        // send the step to the API sever
+        // Send the step to the API sever.
         if ($this->dispatcher->hasData()) {
 
-            // there is threat/warning need to be sent to the server , data is already waiting at the dispatcher
+            // There are threats/warnings that need to be sent to the server. Data is already waiting at the dispatcher.
             $this->dispatcher->flush();
             return;
         }
@@ -164,7 +164,7 @@ class Session implements Exceptionable
 
     private function _load($key)
     {
-        return (isset($_SESSION[$key]))?json_decode($_SESSION[$key], 1):false;
+        return (isset($_SESSION[$key]))?json_decode($_SESSION[$key], 1) : false;
     }
 
 

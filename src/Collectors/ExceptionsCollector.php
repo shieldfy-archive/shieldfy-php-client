@@ -25,12 +25,12 @@ class ExceptionsCollector implements Collectable
         $this->config = $config;
         $this->dispatcher = $dispatcher;
         // http://php.net/set_error_handler
-        $this->original_error_handler = set_error_handler(array($this,'handleErrors'), E_ERROR | E_WARNING | E_PARSE);
+        $this->original_error_handler = set_error_handler(array($this, 'handleErrors'), E_ERROR | E_WARNING | E_PARSE);
         // http://php.net/set_exception_handler
-        $this->original_exception_handler = set_exception_handler(array($this,'handleExceptions'));
+        $this->original_exception_handler = set_exception_handler(array($this, 'handleExceptions'));
 
         // http://php.net/register_shutdown_function
-        register_shutdown_function(array($this,'handleFatalErrors'));
+        register_shutdown_function(array($this, 'handleFatalErrors'));
     }
 
     /**
@@ -131,12 +131,12 @@ class ExceptionsCollector implements Collectable
 
         $logFile = $this->config['logsDir'].DIRECTORY_SEPARATOR.date('Ymd').'.log';
 
-        // No need to delay the request any more lets finish it
-        // close session writing to be availabe for next request
+        // No need to delay the request anymore. Let's finish closing
+        // session writing, to be available for the next request.
         if (function_exists('session_write_close')) {
             session_write_close();
         }
-        //finish the request and send the respond to the browser
+        // Finish the request and send the responce to the browser.
         if (function_exists('fastcgi_finish_request')) {
             fastcgi_finish_request();
         }
@@ -158,7 +158,7 @@ class ExceptionsCollector implements Collectable
             return;
         }
 
-        //contacting server failed for somereason , store locally
+        // Contacting the server failed for some reason. Store locally.
         $error = time().'-'.$exception->getCode().'-'.$exception->getFile().'-'.$exception->getLine().'-'.$exception->getMessage()."\n";
         file_put_contents($logFile, $error, FILE_APPEND | LOCK_EX);
         return;
