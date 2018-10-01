@@ -47,11 +47,11 @@ class Session implements Exceptionable
     }
 
     /**
-     * Retrive current user info (Local|Remote)
+     * Retrieve current user info (Local|Remote).
      */
     public function getUser()
     {
-        //check if there is session register to this user
+        // Check where there's a session registered to this user.
         if (! $this->_isset('ShieldfyUser')) {
             $this->loadNewUser();
         } else {
@@ -112,10 +112,10 @@ class Session implements Exceptionable
 
         $this->events->trigger('request.finish');
 
-        // send the step to the API sever
+        // Send the step to the API sever.
         if ($this->dispatcher->hasData()) {
 
-            // There is threat/warning that needs to be sent to the server. Data is already waiting at the dispatcher.
+            // There are threats/warnings that need to be sent to the server. Data is already waiting at the dispatcher.
             $this->dispatcher->flush();
             return;
         }
@@ -164,7 +164,7 @@ class Session implements Exceptionable
 
     private function _load($key)
     {
-        return (isset($_SESSION[$key]))?json_decode($_SESSION[$key], 1):false;
+        return (isset($_SESSION[$key]))?json_decode($_SESSION[$key], 1) : false;
     }
 
 
