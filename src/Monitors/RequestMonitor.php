@@ -44,8 +44,6 @@ class RequestMonitor extends MonitorBase
         $charge = [];
         $this->issue('request');
         foreach ($params as $key => $value) {
-            // ignore
-            $value = (new IgnoreMonitor('request'))->filter($key, $value);
             //found parameter
             //check infection
             $charge = $this->sentence($value);

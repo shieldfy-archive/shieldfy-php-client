@@ -6,6 +6,7 @@ use Shieldfy\Http\ApiClient;
 use Shieldfy\Exceptions\Exceptioner;
 use Shieldfy\Exceptions\Exceptionable;
 use Shieldfy\Exceptions\EventNotExistsException;
+use Shieldfy\Jury\ScrubbingData;
 
 class Dispatcher implements Exceptionable
 {
@@ -35,10 +36,15 @@ class Dispatcher implements Exceptionable
     {
         $this->config = $config;
         $this->apiClient = $apiClient;
+        $this->scrubbing = new ScrubbingData();
     }
 
     public function setData($data)
     {
+        $data['request']['uri'] = $this->scrubbing->url($data['request']['uri']);
+        $data['request']['get'] = $this->scrubbing->data($data['request']['get']);
+        $data['request']['post'] = $this->scrubbing->data($data['request']['post']);
+        $data['charge'] = $this->scrubbing->charge($data['charge']);
         $this->data = $data;
     }
 
