@@ -41,10 +41,14 @@ class Dispatcher implements Exceptionable
 
     public function setData($data)
     {
-        $data['request']['uri'] = $this->scrubbing->url($data['request']['uri']);
-        $data['request']['get'] = $this->scrubbing->data($data['request']['get']);
-        $data['request']['post'] = $this->scrubbing->data($data['request']['post']);
-        $data['charge'] = $this->scrubbing->charge($data['charge']);
+        if (isset($data['request'])) {
+            $data['request']['uri'] = $this->scrubbing->url($data['request']['uri']);
+            $data['request']['get'] = $this->scrubbing->data($data['request']['get']);
+            $data['request']['post'] = $this->scrubbing->data($data['request']['post']);
+        }
+        if (isset($data['charge'])) {
+            $data['charge'] = $this->scrubbing->charge($data['charge']);
+        }
         $this->data = $data;
     }
 
