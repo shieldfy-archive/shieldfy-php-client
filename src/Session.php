@@ -35,7 +35,7 @@ class Session implements Exceptionable
         $this->dispatcher = $dispatcher;
         $this->events = $events;
 
-        //check for session handler
+        // Check for session handler.
         if (session_status() == PHP_SESSION_NONE) {
             session_name('_swaf_request_id');
             session_start([
@@ -85,11 +85,11 @@ class Session implements Exceptionable
         $this->sessionId = $this->_generateSessionId();
         $this->user->setSessionId($this->sessionId);
 
-        //lookup for this user & start session
+        // Lookup for this user & start session.
         $response = $this->dispatcher->trigger('session/start', [
-            'sessionId' =>  $this->sessionId,
-            'host'      =>  $this->request->getHost(),
-            'user'      =>  $this->user->getInfo()
+            'sessionId' => $this->sessionId,
+            'host'      => $this->request->getHost(),
+            'user'      => $this->user->getInfo()
         ]);
 
         if ($response && $response->status == 'success') {
@@ -105,7 +105,7 @@ class Session implements Exceptionable
         if (function_exists('session_write_close')) {
             session_write_close();
         }
-        // Finish the request and send the responce to the browser.
+        // Finish the request and send the response to the browser.
         if (function_exists('fastcgi_finish_request')) {
             fastcgi_finish_request();
         }

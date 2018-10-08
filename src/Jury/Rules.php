@@ -30,7 +30,7 @@ class Rules implements Exceptionable
             return;
         }
 
-        //parse json file
+        // Parse json file.
         $rules = file_get_contents($bagFile);
         $decodedRules =  json_decode($rules, 1);
         if (!$decodedRules || json_last_error() !== JSON_ERROR_NONE) {

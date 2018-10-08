@@ -51,13 +51,13 @@ abstract class MonitorBase
         $incidentId = $this->generateIncidentId($this->collectors['user']->getId());
 
         if ($this->dispatcher->hasData() && $severity  != 'high') {
-            //merge
+            // Merge.
             $data = $this->dispatcher->getData();
             if ($data['charge']['key'] == $charge['key']) {
-                //same
+                // Same.
                 $charge['score'] += $data['charge']['score'];
                 $charge['rulesIds'] = array_merge($data['charge']['rulesIds'], $charge['rulesIds']);
-                //recalculate the severity
+                // Recalculate the severity.
                 $severity = $this->parseScore($charge['score']);
             }
         }

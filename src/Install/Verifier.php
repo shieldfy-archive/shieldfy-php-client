@@ -6,11 +6,11 @@ use Shieldfy\Response\Notification;
 
 /**
  * Verify installation
- * usage :
+ * Usage:
  * $verifier = (new Verifier($config, $request))->whoIsCalling();
- * $verifier->success(); //installation successful
- * $verifier->error($message); //installation has errors
- * $verifier->check(); //check the installation after success (just to be clear everything is good)
+ * $verifier->success(); // Installation successful.
+ * $verifier->error($message); // Installation has errors.
+ * $verifier->check(); // Check the installation after success (just to be clear everything is good).
  */
 class Verifier
 {
@@ -29,7 +29,7 @@ class Verifier
     {
         if (isset($this->request->get['shieldfy']) && $this->request->get['shieldfy'] == 'verified') {
 
-            //shieldfy is calling , so lets silent is false;
+            // shieldfy is calling, so let's set silent to false.
             $this->silent = false;
             $this->notification = new Notification;
 
@@ -37,7 +37,7 @@ class Verifier
             $appHash = hash_hmac('sha256', $this->config['app_secret'], $this->config['app_key']);
             if ($hash !== $appHash) {
                 $this->error('There installation keys is incorrect');
-                exit; // exit because its a special request sent by shieldfy only
+                exit; // Exit because it's a special request sent by shieldfy only.
             }
         }
         return $this;
@@ -49,7 +49,7 @@ class Verifier
             return;
         }
 
-        //It passes all the installation process & keys are correct so all code
+        // It passes all the installation process & keys are correct so all code.
         $this->success();
     }
 

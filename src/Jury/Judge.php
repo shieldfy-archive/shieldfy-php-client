@@ -17,25 +17,25 @@ trait Judge
     }
 
     /**
-     * Normalize data
+     * Normalize data.
      * @param  mixed $value
      * @param  string $normalizedValue
      * @return normalized value
      */
     public function normalize($value, $normalizedValue = '')
     {
-        //no need to normalize if it already normalized
+        // No need to normalize if it already normalized.
         if ($normalizedValue != '') {
             return $normalizedValue;
         }
 
-        //normalizer
+        // Normalizer.
         $value = (new Normalizer($value))->runAll();
         return $value;
     }
 
     /**
-     * The Judge Result
+     * The Judge Result.
      * @param  mixed $value
      * @param  string $target
      * @param  string $tag

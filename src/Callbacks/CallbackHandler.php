@@ -29,7 +29,7 @@ class CallbackHandler
     public function catchCallback()
     {
         if (!isset($this->request->server['HTTP_X_SHIELDFY_CALLBACK'])) {
-            return; //no callback
+            return; // No callback.
         }
         $callback = $this->request->server['HTTP_X_SHIELDFY_CALLBACK'];
         if (!isset($this->callbacks[$callback])) {

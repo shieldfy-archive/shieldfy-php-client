@@ -45,7 +45,7 @@ class ViewMonitor extends MonitorBase
             }
         }
         if (count($infected) > 0) {
-            //it's time to listen
+            // It's time to listen
             $this->runAnalyzers($infected);
         }
     }

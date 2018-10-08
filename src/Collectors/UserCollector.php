@@ -50,7 +50,7 @@ class UserCollector implements Collectable
      */
     public function setIp(array $server = [])
     {
-        $userIp = '0.0.0.0'; //unknown ip
+        $userIp = '0.0.0.0'; // Unknown ip.
         if (array_key_exists('REMOTE_ADDR', $server)) {
             $userIp = $server['REMOTE_ADDR'];
         }
@@ -92,7 +92,7 @@ class UserCollector implements Collectable
      */
     public function getId()
     {
-        return (int)$this->userId; //force integer
+        return (int)$this->userId; // Force integer.
     }
 
     /**

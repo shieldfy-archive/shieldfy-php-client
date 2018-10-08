@@ -39,8 +39,8 @@ class MemoryMonitor extends MonitorBase
             $this->issue('memory');
             foreach ($params as $key => $value) {
                 if (stripos($value, $object) !== false) {
-                    //found parameter
-                    //check infection
+                    // Found parameter.
+                    // Check infection.
                     $charge = $this->sentence($value);
 
                     if ($charge && $charge['score']) {
