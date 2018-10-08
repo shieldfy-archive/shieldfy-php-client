@@ -2,8 +2,7 @@
 
 This is the official PHP SDK for Shieldfy (shieldfy.io) https://shieldfy.io
 
-Shieldfy is a strong application protection platform that help businesses to secure their applications online.
-
+Shieldfy is a strong application protection platform that helps businesses to secure their applications online.
 
 [![Packagist](https://img.shields.io/packagist/v/shieldfy/shieldfy-php-client.svg?label=Packagist&style=flat-square)](https://packagist.org/packages/shieldfy/shieldfy-php-client)
 [![Code Climate](https://img.shields.io/codeclimate/github/shieldfy/shieldfy-php-client.svg)](https://codeclimate.com/github/shieldfy/shieldfy-php-client)
@@ -11,11 +10,9 @@ Shieldfy is a strong application protection platform that help businesses to sec
 [![Travis](https://img.shields.io/travis/shieldfy/shieldfy-php-client.svg)](https://travis-ci.org/shieldfy/shieldfy-php-client)
 
 
-
 ## Installation
 
-You will need first to register on [shieldfy.io](https://shieldfy.io/) to get your APP Key & APP Secret.
-
+You will first need to register on [shieldfy.io](https://shieldfy.io/) to get your APP Key & APP Secret.
 
 Through Composer (the recommended way):
 
@@ -33,9 +30,11 @@ Shieldfy\Guard::init([
 ]);
 ```
 
-## Configurations
 
-For more information about configurations and usage, refer to the official documentation [docs.shieldfy.io](https://docs.shieldfy.io)
+## Configuration
+
+For more information about configurations and usage, refer to the official documentation at [docs.shieldfy.io](https://docs.shieldfy.io).
+
 
 ## Contributing
 
@@ -45,4 +44,4 @@ Bug reports, feature requests, and pull requests are very welcome.
 
 ## Security Vulnerabilities
 
-If you discover a security vulnerability within this project, please send an e-mail to security@shieldfy.com.
+If you discover a security vulnerability within this project, please send an e-mail to `security@shieldfy.com`.

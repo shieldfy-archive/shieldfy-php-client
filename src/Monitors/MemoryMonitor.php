@@ -12,7 +12,7 @@ class MemoryMonitor extends MonitorBase
 
 
     /**
-     * run the monitor
+     * Run the monitor.
      */
     public function run()
     {

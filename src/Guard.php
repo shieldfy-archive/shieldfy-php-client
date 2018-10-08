@@ -93,7 +93,7 @@ class Guard
 
 
         $verifier = (new Verifier($this->config, $this->collectors['request']))->whoIsCalling();
-        
+
         //check the installation
         if (!$this->isInstalled()) {
             try {
@@ -127,7 +127,7 @@ class Guard
                         );
 
 
-        register_shutdown_function([$this,'flush']);
+        register_shutdown_function([$this, 'flush']);
 
         //expose essential headers
         $this->exposeHeaders();
@@ -169,7 +169,7 @@ class Guard
     }
 
     /**
-     * check if guard installed
+     * Check whether guard is installed.
      * @return boolean
      */
     public function isInstalled()
@@ -220,10 +220,11 @@ class Guard
         header('X-Shieldfy-Signature: '.$signature);
     }
 
-    /* singelton protection */
+    /* Singleton protection. */
     protected function __clone()
     {
     }
+
     protected function __wakeup()
     {
     }

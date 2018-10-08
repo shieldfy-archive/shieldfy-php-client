@@ -1,5 +1,4 @@
 <?php
-
 namespace Shieldfy\Callbacks;
 
 use Shieldfy\Callbacks\Callback;
@@ -22,13 +21,13 @@ class VendorCallback extends Callback implements Exceptionable
     private function update()
     {
         $response = $this->dispatcher->trigger('update/vendors', [
-            'sdk_version'=>$this->config['version'],
-            'php_version'=>PHP_VERSION,
-            'sapi_type' =>@php_sapi_name(),
-            'os_info'=>@php_uname(),
-            'disabled_functions'=>(@ini_get('disable_functions') ? @ini_get('disable_functions') : 'NA'),
-            'loaded_extensions'=>implode(',', @get_loaded_extensions()),
-            'display_errors'=>@ini_get('display_errors'),
+            'sdk_version' => $this->config['version'],
+            'php_version' => PHP_VERSION,
+            'sapi_type' => @php_sapi_name(),
+            'os_info' => @php_uname(),
+            'disabled_functions' => (@ini_get('disable_functions') ? @ini_get('disable_functions') : 'NA'),
+            'loaded_extensions' => implode(',', @get_loaded_extensions()),
+            'display_errors' => @ini_get('display_errors'),
         ]);
         if ($response->status == 'success') {
             $this->save($response->data);

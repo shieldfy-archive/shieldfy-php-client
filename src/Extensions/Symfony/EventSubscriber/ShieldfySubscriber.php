@@ -1,5 +1,4 @@
 <?php
-
 namespace Shieldfy\Extensions\Symfony\EventSubscriber;
 
 use Shieldfy\Extensions\Symfony\ShieldfySymfonyControllerInterface;

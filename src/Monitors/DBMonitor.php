@@ -11,7 +11,7 @@ class DBMonitor extends MonitorBase
     protected $infected = [];
 
     /**
-     * run the monitor
+     * Run the monitor.
      */
     public function run()
     {

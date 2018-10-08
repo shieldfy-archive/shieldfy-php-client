@@ -88,7 +88,7 @@ class Config implements ArrayAccess
     }
 
     /**
-     * retrive base directory
+     * Retrieve base directory.
      */
     public function getBaseDirectory()
     {
@@ -142,7 +142,7 @@ class Config implements ArrayAccess
     }
 
     /**
-     * Check if key exists.
+     * Check whether key exists.
      *
      * @param type $key
      *

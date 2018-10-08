@@ -35,17 +35,17 @@ class UpdateCallback extends Callback implements Exceptionable
 
         if (!$response) {
             return [
-                'status' 	=> 'error',
-                'code'   	=> '000',
-                'message' 	=> 'Unknown error happened'
+                'status'    => 'error',
+                'code'      => '000',
+                'message'   => 'Unknown error happened'
             ];
         }
 
         if ($response->status == 'error') {
             return [
-                'status' 	=> 'error',
-                'code'   	=> $response->code,
-                'message' 	=> $response->message
+                'status'    => 'error',
+                'code'      => $response->code,
+                'message'   => $response->message
             ];
         }
 
@@ -60,13 +60,13 @@ class UpdateCallback extends Callback implements Exceptionable
 
     /**
      * Save rules data
-     * Rules is used to identify threats across application layers
+     * Rules are used to identify threats across application layers
      * Stored only in vendors -> shieldfy -> data folder
      * @param  [type] $data
      */
     private function save(array $data = [])
     {
-        //if not writable , try to chmod it
+        // If not writable, try to chmod it.
         if (!is_writable($this->config['paths']['data'])) {
             @chmod($this->config['paths']['data'], 0755);
             if (!is_writable($this->config['paths']['data'])) {

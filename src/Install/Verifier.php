@@ -52,7 +52,7 @@ class Verifier
         //It passes all the installation process & keys are correct so all code
         $this->success();
     }
-    
+
 
     public function success()
     {

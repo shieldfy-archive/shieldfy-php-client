@@ -11,7 +11,7 @@ class RequestMonitor extends MonitorBase
     protected $name = "request";
 
     /**
-     * run the monitor
+     * Run the monitor.
      */
     public function run()
     {

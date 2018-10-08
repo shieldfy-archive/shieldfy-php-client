@@ -76,7 +76,7 @@ class CodeCollector implements Collectable
         $this->code = [
             'file' => $filePath,
             'line' => $line,
-            'content'=> $content
+            'content' => $content
         ];
         return $this->code;
     }
@@ -86,7 +86,7 @@ class CodeCollector implements Collectable
         $content = explode("\n", $text);
         $line = 0;
         $code = [];
-        for ($i=0; $i < count($content); $i++) {
+        for ($i = 0; $i < count($content); $i++) {
             if (stripos($content[$i], $value) !== false) {
                 $line = $i;
                 $start = $i - 4;

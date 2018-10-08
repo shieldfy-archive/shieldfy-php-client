@@ -11,7 +11,7 @@ class ExceptionsMonitor extends MonitorBase
 
 
     /**
-     * run the monitor
+     * Run the monitor.
      */
     public function run()
     {
@@ -52,7 +52,7 @@ class ExceptionsMonitor extends MonitorBase
         }
 
         $code = $this->collectors['code']->collectFromFile($exception->getFile(), $exception->getLine());
-        
+
         $this->sendToJail($this->parseScore($charge['score']), $charge, [
             'stack' => $exception->getTrace(),
             'code' => $code

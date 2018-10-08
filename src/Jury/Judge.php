@@ -60,8 +60,8 @@ trait Judge
             }
         }
         return [
-            'score'=>$score,
-            'rulesIds'=>$ruleIds
+            'score' => $score,
+            'rulesIds' => $ruleIds
         ];
     }
 }

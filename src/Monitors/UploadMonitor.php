@@ -10,22 +10,22 @@ class UploadMonitor extends MonitorBase
     protected $name = "uploads";
 
     /**
-     * run the monitor
+     * Run the monitor.
      */
     public function run()
     {
 
-        //get the request info
+        // Get the request info.
         $request = $this->collectors['request'];
         $info = $request->getInfo('files');
         if (empty($info['files'])) {
             return;
         }
 
-        //analyze uploaded files
+        // Analyze uploaded files.
         $this->issue('uploads');
 
-        //prepare for nested uploads
+        // Prepare for nested uploads.
         $files = [];
         array_walk($info['files'], function ($value, $key) use (&$files) {
             //grap key
@@ -46,13 +46,13 @@ class UploadMonitor extends MonitorBase
             list($score, $rulesIds) = array_values($this->analyzeFile($input, $file));
             $charge = [
                 'score' => $score,
-                'rulesIds'=>$rulesIds,
-                'value'=>$file['name'],
-                'key'=> $input
+                'rulesIds' => $rulesIds,
+                'value' => $file['name'],
+                'key' => $input
             ];
             break;
         }
-        
+
 
         $this->sendToJail($this->parseScore($charge['score']), $charge);
     }
@@ -62,37 +62,37 @@ class UploadMonitor extends MonitorBase
         $score = 0;
         $ruleIds = [];
 
-        //analyze name
+        // Analyze name.
         $nameResult = $this->sentence($file['name'], 'FILES:NAME');
         if ($nameResult['score']) {
             $score += $nameResult['score'];
             $ruleIds = array_merge($ruleIds, $nameResult['rulesIds']);
         }
 
-        //analyze extention
-        $extention = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $extResult = $this->sentence($extention, 'FILES:EXTENTION');
+        // Analyze extension.
+        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+        $extResult = $this->sentence($extension, 'FILES:EXTENTION');
         if ($extResult['score']) {
             $score += $extResult['score'];
             $ruleIds = array_merge($ruleIds, $extResult['rulesIds']);
         }
 
-        //analyze content
+        // Analyze content.
         $content = file_get_contents($file['tmp_name']);
-        //check for backdoors
+        // Check for backdoors.
         $backdoorResult = $this->sentence($content, 'FILES:CONTENT', 'backdoor');
         if ($backdoorResult['score']) {
             $score += $backdoorResult['score'];
             $ruleIds = array_merge($ruleIds, $backdoorResult['rulesIds']);
         }
-        //check for xxe
+        // Check for XXE.
         $xxeResult = $this->sentence($content, 'FILES:CONTENT', 'xxe');
         if ($xxeResult['score']) {
             $score += $xxeResult['score'];
             $disableEntity = libxml_disable_entity_loader(true);
             if ($disableEntity === false) {
                 $score += 50;
-                //retrive old value : maybe developer uses it anywhere :(
+                // Retrieve old value (maybe the developer uses it somewhere). :(
                 libxml_disable_entity_loader($disableEntity);
             }
             $ruleIds = array_merge($ruleIds, $xxeResult['rulesIds']);
