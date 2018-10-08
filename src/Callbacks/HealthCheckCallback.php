@@ -9,6 +9,6 @@ class HealthCheckCallback extends Callback
     use Response;
     public function handle()
     {
-        $this->respond()->json(['status'=>'success','version'=>$this->config['version']]);
+        $this->respond()->json(['status' => 'success', 'version' => $this->config['version']]);
     }
 }

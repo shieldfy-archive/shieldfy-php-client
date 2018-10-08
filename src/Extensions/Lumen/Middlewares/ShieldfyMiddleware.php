@@ -1,5 +1,4 @@
 <?php
-
 namespace Shieldfy\Extensions\Lumen\Middlewares;
 
 use Closure;

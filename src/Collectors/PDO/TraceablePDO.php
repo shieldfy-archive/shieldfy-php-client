@@ -1,5 +1,4 @@
 <?php
-
 namespace Shieldfy\Collectors\PDO;
 
 use PDO;

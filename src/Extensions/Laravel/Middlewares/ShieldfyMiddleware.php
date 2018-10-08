@@ -1,5 +1,4 @@
 <?php
-
 namespace Shieldfy\Extensions\Laravel\Middlewares;
 
 use Closure;

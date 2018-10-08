@@ -25,12 +25,12 @@ class ExceptionsCollector implements Collectable
         $this->config = $config;
         $this->dispatcher = $dispatcher;
         // http://php.net/set_error_handler
-        $this->original_error_handler = set_error_handler(array($this,'handleErrors'), E_ERROR | E_WARNING | E_PARSE);
+        $this->original_error_handler = set_error_handler(array($this, 'handleErrors'), E_ERROR | E_WARNING | E_PARSE);
         // http://php.net/set_exception_handler
-        $this->original_exception_handler = set_exception_handler(array($this,'handleExceptions'));
+        $this->original_exception_handler = set_exception_handler(array($this, 'handleExceptions'));
 
         // http://php.net/register_shutdown_function
-        register_shutdown_function(array($this,'handleFatalErrors'));
+        register_shutdown_function(array($this, 'handleFatalErrors'));
     }
 
     /**
@@ -52,10 +52,10 @@ class ExceptionsCollector implements Collectable
      */
     public function handleErrors($severity = 0, $message = '', $file = '', $line = 0)
     {
-        //LIMITATION
-        //The following error types cannot be handled with a user defined function:
-        //E_ERROR, E_PARSE, E_CORE_ERROR, E_CORE_WARNING, E_COMPILE_ERROR, E_COMPILE_WARNING, and most of E_STRICT raised in the file where set_error_handler() is called.
-        //see: http://stackoverflow.com/questions/8527894/set-error-handler-doenst-work-for-fatal-error
+        // LIMITATION
+        // The following error types cannot be handled with a user defined function:
+        // E_ERROR, E_PARSE, E_CORE_ERROR, E_CORE_WARNING, E_COMPILE_ERROR, E_COMPILE_WARNING, and most of E_STRICT raised in the file where set_error_handler() is called.
+        // See: http://stackoverflow.com/questions/8527894/set-error-handler-doenst-work-for-fatal-error
 
         $this->handleExceptions(new ErrorException($message, 0, $severity, $file, $line), false);
 
@@ -98,7 +98,7 @@ class ExceptionsCollector implements Collectable
 
         if (strpos($exception->getFile(), $this->config['rootDir']) !== false) {
             $this->logInternalError($exception);
-            //if debug and no external error handler show the error
+            // If debugging and if there's no external error handler show the error.
             if (
                 $is_exception &&
                 $this->original_exception_handler === null &&
@@ -131,12 +131,12 @@ class ExceptionsCollector implements Collectable
 
         $logFile = $this->config['logsDir'].DIRECTORY_SEPARATOR.date('Ymd').'.log';
 
-        // No need to delay the request any more lets finish it
-        // close session writing to be availabe for next request
+        // No need to delay the request anymore. Let's finish closing
+        // session writing, to be available for the next request.
         if (function_exists('session_write_close')) {
             session_write_close();
         }
-        //finish the request and send the respond to the browser
+        // Finish the request and send the response to the browser.
         if (function_exists('fastcgi_finish_request')) {
             fastcgi_finish_request();
         }
@@ -151,14 +151,14 @@ class ExceptionsCollector implements Collectable
         ]);
 
         if ($response && $response->status == 'success') {
-            //unlink the old file
+            // Unlink the old file.
             if (file_exists($logFile)) {
                 unlink($logFile);
             }
             return;
         }
 
-        //contacting server failed for somereason , store locally
+        // Contacting the server failed for some reason. Store locally.
         $error = time().'-'.$exception->getCode().'-'.$exception->getFile().'-'.$exception->getLine().'-'.$exception->getMessage()."\n";
         file_put_contents($logFile, $error, FILE_APPEND | LOCK_EX);
         return;

@@ -65,36 +65,36 @@ class Guard
     private function __construct(array $userConfig)
     {
 
-        //set config container
+        // Set config container.
         $userConfig['version'] = $this->version;
         $this->config = new Config($userConfig);
 
-        //overwrite the endpoint
+        // Overwrite the endpoint.
         if (isset($this->config['endpoint'])) {
             $this->endpoint = $this->config['endpoint'];
         }
 
 
-        //set Dispatcher
+        // Set Dispatcher.
         $apiClient = new ApiClient($this->endpoint, $this->config);
         $this->dispatcher = new Dispatcher($this->config, $apiClient);
 
 
-        //starting collectors
+        // Starting collectors.
         $this->collectors = $this->startCollecting();
 
 
-        //starting events
+        // Starting events.
         $this->events = new Events;
 
 
-        //catch callbacks
+        // Catch callbacks.
         $this->catchCallbacks($this->collectors['request'], $this->config);
 
 
         $verifier = (new Verifier($this->config, $this->collectors['request']))->whoIsCalling();
-        
-        //check the installation
+
+        // Check the installation.
         if (!$this->isInstalled()) {
             try {
                 (new Installer($this->collectors['request'], $this->dispatcher, $this->config))->run();
@@ -105,10 +105,10 @@ class Guard
             }
         }
 
-        //verify installation
+        // Verify installation.
         $verifier->check();
 
-        //start shieldfy guard
+        // Start shieldfy guard.
         $this->startGuard();
     }
 
@@ -118,7 +118,7 @@ class Guard
     private function startGuard()
     {
 
-        //starting session
+        // Starting session.
         $this->session = new Session(
                                 $this->collectors['user'],
                                 $this->collectors['request'],
@@ -127,19 +127,19 @@ class Guard
                         );
 
 
-        register_shutdown_function([$this,'flush']);
+        register_shutdown_function([$this, 'flush']);
 
-        //expose essential headers
+        // Expose essential headers.
         $this->exposeHeaders();
 
-        //starting monitors
+        // Starting monitors.
         $monitors = new MonitorsBag($this->config, $this->session, $this->dispatcher, $this->collectors, $this->events);
         $monitors->run();
     }
 
 
     /**
-     * Start Collecting data needed
+     * Start Collecting needed data.
      * @return Array CollectorsBag
      */
     private function startCollecting()
@@ -169,7 +169,7 @@ class Guard
     }
 
     /**
-     * check if guard installed
+     * Check whether guard is installed.
      * @return boolean
      */
     public function isInstalled()
@@ -220,10 +220,11 @@ class Guard
         header('X-Shieldfy-Signature: '.$signature);
     }
 
-    /* singelton protection */
+    /* Singleton protection. */
     protected function __clone()
     {
     }
+
     protected function __wakeup()
     {
     }

@@ -29,15 +29,15 @@ class CallbackHandler
     public function catchCallback()
     {
         if (!isset($this->request->server['HTTP_X_SHIELDFY_CALLBACK'])) {
-            return; //no callback
+            return; // No callback.
         }
         $callback = $this->request->server['HTTP_X_SHIELDFY_CALLBACK'];
         if (!isset($this->callbacks[$callback])) {
-            $this->respond()->json(['status'=>'error'], 404, 'Callback not found');
+            $this->respond()->json(['status' => 'error'], 404, 'Callback not found');
         }
 
         if (!$this->verify()) {
-            $this->respond()->json(['status'=>'error'], 401, 'Unauthorized callback');
+            $this->respond()->json(['status' => 'error'], 401, 'Unauthorized callback');
         }
 
         $callbackClass = $this->callbacks[$callback];

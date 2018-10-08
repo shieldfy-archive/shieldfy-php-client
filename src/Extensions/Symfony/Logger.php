@@ -1,5 +1,4 @@
 <?php
-
 namespace Shieldfy\Extensions\Symfony;
 
 use Shieldfy\Guard;

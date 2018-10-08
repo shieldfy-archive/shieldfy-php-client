@@ -35,7 +35,7 @@ class Session implements Exceptionable
         $this->dispatcher = $dispatcher;
         $this->events = $events;
 
-        //check for session handler
+        // Check for session handler.
         if (session_status() == PHP_SESSION_NONE) {
             session_name('_swaf_request_id');
             session_start([
@@ -47,11 +47,11 @@ class Session implements Exceptionable
     }
 
     /**
-     * Retrive current user info (Local|Remote)
+     * Retrieve current user info (Local|Remote)
      */
     public function getUser()
     {
-        //check if there is session register to this user
+        // Check whether there is a session registered to this user.
         if (! $this->_isset('ShieldfyUser')) {
             $this->loadNewUser();
         } else {
@@ -67,7 +67,7 @@ class Session implements Exceptionable
 
 
     /**
-     * Local info found , load existing user
+     * Local info found. Load existing user.
      */
     public function loadExistingUser()
     {
@@ -78,18 +78,18 @@ class Session implements Exceptionable
     }
 
     /**
-     * Local info not found , Load remote info
+     * Local info not found. Load remote info.
      */
     public function loadNewUser()
     {
         $this->sessionId = $this->_generateSessionId();
         $this->user->setSessionId($this->sessionId);
 
-        //lookup for this user & start session
+        // Lookup for this user & start session.
         $response = $this->dispatcher->trigger('session/start', [
-            'sessionId' =>  $this->sessionId,
-            'host'      =>  $this->request->getHost(),
-            'user'      =>  $this->user->getInfo()
+            'sessionId' => $this->sessionId,
+            'host'      => $this->request->getHost(),
+            'user'      => $this->user->getInfo()
         ]);
 
         if ($response && $response->status == 'success') {
@@ -100,22 +100,22 @@ class Session implements Exceptionable
     public function flush()
     {
 
-        // there is no need to block the request for sync , we will do this after request is finishing
-        // close session writing to be availabe for next request
+        // There is no need to block the request for sync. We will do this after request has finished
+        // and session writing has been closed, to be available for the next request.
         if (function_exists('session_write_close')) {
             session_write_close();
         }
-        // //finish the request and send the respond to the browser
+        // Finish the request and send the response to the browser.
         if (function_exists('fastcgi_finish_request')) {
             fastcgi_finish_request();
         }
 
         $this->events->trigger('request.finish');
 
-        // send the step to the API sever
+        // Send the step to the API sever.
         if ($this->dispatcher->hasData()) {
 
-            // there is threat/warning need to be sent to the server , data is already waiting at the dispatcher
+            // There are threats/warnings that need to be sent to the server. Data is already waiting at the dispatcher.
             $this->dispatcher->flush();
             return;
         }
@@ -123,8 +123,8 @@ class Session implements Exceptionable
         // Trigger Step
         $this->dispatcher->trigger('session/step', [
             'sessionId' => $this->getId(),
-            'host'	=>	$this->request->getHost(),
-            'info' 	=> 	array_merge(
+            'host' => $this->request->getHost(),
+            'info' => array_merge(
                 $this->request->getShortInfo(),
                 [
                     'code' => http_response_code(),
@@ -140,7 +140,6 @@ class Session implements Exceptionable
         return $this->sessionId;
     }
 
-
     /**
      * Set / Read new cache value in Session
      * @param string $key
@@ -155,16 +154,14 @@ class Session implements Exceptionable
         return isset($_SESSION[$key])? $_SESSION[$key] : false;
     }
 
-
     private function _isset($key)
     {
         return isset($_SESSION[$key]);
     }
 
-
     private function _load($key)
     {
-        return (isset($_SESSION[$key]))?json_decode($_SESSION[$key], 1):false;
+        return isset($_SESSION[$key]) ? json_decode($_SESSION[$key], 1) : false;
     }
 
 

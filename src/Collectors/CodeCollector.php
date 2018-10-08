@@ -27,7 +27,7 @@ class CodeCollector implements Collectable
     public function pushStack(array $stack = array())
     {
         $this->stack = $stack;
-        //exit;
+        // Exit.
         return $this;
     }
 
@@ -39,13 +39,13 @@ class CodeCollector implements Collectable
             if (!isset($trace['file'])) {
                 continue;
             }
-        //dirty fix START
+        // Dirty fix START.
         if (strstr($trace['file'], 'shieldfy-php-client')) {
             continue;
         }
-        //dirty fix ENDS
+        // Dirty fix END.
         if (strpos($trace['file'], $this->config['paths']['vendors']) === false) {
-            //this is probably our guy ( the last file called outside vendor file)
+            // This is probably our guy (the last file called outside vendor file).
             return [
                     'stack' => $stack,
                     'code'  => $this->collectFromFile($trace['file'], $trace['line'])
@@ -76,7 +76,7 @@ class CodeCollector implements Collectable
         $this->code = [
             'file' => $filePath,
             'line' => $line,
-            'content'=> $content
+            'content' => $content
         ];
         return $this->code;
     }
@@ -86,7 +86,7 @@ class CodeCollector implements Collectable
         $content = explode("\n", $text);
         $line = 0;
         $code = [];
-        for ($i=0; $i < count($content); $i++) {
+        for ($i = 0; $i < count($content); $i++) {
             if (stripos($content[$i], $value) !== false) {
                 $line = $i;
                 $start = $i - 4;
@@ -97,7 +97,7 @@ class CodeCollector implements Collectable
 
         $this->code = [
             'file' => 'none',
-            'line' => $line + 1, //to fix array 0 index
+            'line' => $line + 1, // To fix array 0 index.
             'content' => $code
         ];
         return [

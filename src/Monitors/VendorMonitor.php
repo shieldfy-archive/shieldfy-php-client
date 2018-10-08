@@ -10,7 +10,7 @@ class VendorMonitor extends MonitorBase
     protected $name = "vendor";
 
     /**
-     * run the monitor
+     * Run the monitor.
      */
     public function run()
     {

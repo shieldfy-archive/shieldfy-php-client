@@ -15,7 +15,7 @@ class ViewMonitor extends MonitorBase
     ];
 
     /**
-     * run the monitor
+     * Run the monitor.
      */
     public function run()
     {
@@ -45,7 +45,7 @@ class ViewMonitor extends MonitorBase
             }
         }
         if (count($infected) > 0) {
-            //it's time to listen
+            // It's time to listen
             $this->runAnalyzers($infected);
         }
     }
@@ -53,7 +53,7 @@ class ViewMonitor extends MonitorBase
     public function runAnalyzers(array $infected = [])
     {
         $this->infected = $infected;
-        ob_start(array($this,'deepAnalyze'));
+        ob_start(array($this, 'deepAnalyze'));
     }
 
     public function deepAnalyze($content)

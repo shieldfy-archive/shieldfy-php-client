@@ -11,7 +11,7 @@ class DBMonitor extends MonitorBase
     protected $infected = [];
 
     /**
-     * run the monitor
+     * Run the monitor.
      */
     public function run()
     {
@@ -27,7 +27,7 @@ class DBMonitor extends MonitorBase
     public function analyze($query, $bindings = [])
     {
 
-        //get the parameters (all)
+        // Get the parameters (all).
         $request = $this->collectors['request'];
         $info = $request->getInfo();
 
@@ -43,8 +43,8 @@ class DBMonitor extends MonitorBase
 
         foreach ($params as $key => $value) {
             if (stripos($query, $value) !== false || in_array($value, $bindings)) {
-                //found parameter
-                //check infection
+                // Found parameter.
+                // Check infection.
                 $charge = $this->sentence($value);
                 if ($charge && $charge['score']) {
                     $foundGuilty = true;

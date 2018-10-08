@@ -1,5 +1,4 @@
 <?php
-
 namespace Shieldfy\Extensions\Lumen;
 
 use Illuminate\Support\ServiceProvider;

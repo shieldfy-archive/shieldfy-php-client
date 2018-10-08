@@ -11,7 +11,7 @@ class ExceptionsMonitor extends MonitorBase
 
 
     /**
-     * run the monitor
+     * Run the monitor.
      */
     public function run()
     {
@@ -26,11 +26,11 @@ class ExceptionsMonitor extends MonitorBase
     {
         $this->issue('exceptions');
         if (!$this->isInScope($exception)) {
-            //echo 'NON';
+            // echo 'NON';
             return;
         }
 
-        //in scope lets analyze it
+        // In scope let's analyze it
         $request = $this->collectors['request'];
         $info = $request->getInfo();
         $params = array_merge($info['get'], $info['post'], $info['cookies']);
@@ -52,7 +52,7 @@ class ExceptionsMonitor extends MonitorBase
         }
 
         $code = $this->collectors['code']->collectFromFile($exception->getFile(), $exception->getLine());
-        
+
         $this->sendToJail($this->parseScore($charge['score']), $charge, [
             'stack' => $exception->getTrace(),
             'code' => $code
