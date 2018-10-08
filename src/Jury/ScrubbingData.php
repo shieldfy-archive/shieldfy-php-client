@@ -21,7 +21,7 @@ class ScrubbingData
 
     public function url($query)
     {
-        $query = str_replace('/?','', $query);
+        $query = str_replace('/?', '', $query);
         parse_str($query, $get_array);
         $outData = '/?';
         foreach ($get_array as $key => $value) {
