@@ -36,7 +36,7 @@ class Verifier
             $hash = isset($this->request->get['hash']) ? $this->request->get['hash'] : '';
             $appHash = hash_hmac('sha256', $this->config['app_secret'], $this->config['app_key']);
             if ($hash !== $appHash) {
-                $this->error('There installation keys is incorrect');
+                $this->error('The installation keys are incorrect');
                 exit; // Exit because it's a special request sent by shieldfy only.
             }
         }
