@@ -13,7 +13,14 @@ class ScrubbingData
             'current-password' => '*******',
 
             'credit-number' => '****-****-****-xxx',
-            'credit-cvc' => '***'
+            'credit-cvc' => '***',
+            'cc-name' => 'xxxxxxx',
+            'cc-number' => '****-****-****-xxx',
+            'cc-exp' => 'MM/YY',
+            'cc-exp-month' => 'MM',
+            'cc-exp-year' => 'YY',
+            'cc-csc' => '***',
+            'cc-type' => 'xxxxx'
         ];
     }
 
