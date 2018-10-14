@@ -7,7 +7,10 @@ class ScrubbingData
     {
         return [
             'address' => 'xxxxxxx',
+
             'password' => '*******',
+            'new-password' => '*******',
+            'current-password' => '*******',
 
             'credit-number' => '****-****-****-xxx',
             'credit-cvc' => '***'
