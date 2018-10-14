@@ -6,7 +6,11 @@ class ScrubbingData
     private function filterData()
     {
         return [
+            'address' => 'xxxxxxx',
             'password' => '*******',
+
+            'credit-number' => '****-****-****-xxx',
+            'credit-cvc' => '***'
         ];
     }
 
