@@ -44,7 +44,7 @@ class Respond
         if ($this->blockPage && file_exists($this->blockPage) && is_readable($this->blockPage)) {
             $blockHTML = file_get_contents($this->blockPage);
         } else {
-            $blockHTML = file_get_contents(__dir__.'/block.html');
+            $blockHTML = file_get_contents(__dir__.'/Views/block.html');
         }
 
         return str_replace('{incidentId}', $incidentId, $blockHTML);

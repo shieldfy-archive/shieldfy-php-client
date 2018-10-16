@@ -11,7 +11,7 @@ class SampleMonitor extends MonitorBase
     protected $name = "sample";
 
     /**
-     * run the monitor
+     * Run the monitor.
      */
     public function run()
     {

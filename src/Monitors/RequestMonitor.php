@@ -11,7 +11,7 @@ class RequestMonitor extends MonitorBase
     protected $name = "request";
 
     /**
-     * run the monitor
+     * Run the monitor.
      */
     public function run()
     {
@@ -32,7 +32,7 @@ class RequestMonitor extends MonitorBase
     public function log()
     {
         if ($this->dispatcher->hasData()) {
-            return; //already there is a threat in the pipeline
+            return; // There is already a threat in the pipeline.
         }
 
         $request = $this->collectors['request'];
@@ -44,8 +44,8 @@ class RequestMonitor extends MonitorBase
         $charge = [];
         $this->issue('request');
         foreach ($params as $key => $value) {
-            //found parameter
-            //check infection
+            // Found parameter.
+            // Check infection.
             $charge = $this->sentence($value);
             if ($charge && $charge['score']) {
                 $foundGuilty = true;

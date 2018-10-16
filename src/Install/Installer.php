@@ -1,15 +1,13 @@
 <?php
-namespace Shieldfy;
+namespace Shieldfy\Install;
 
 use Shieldfy\Config;
+use Composer\Script\Event;
+use Shieldfy\Http\Dispatcher;
+use Shieldfy\Collectors\RequestCollector;
 use Shieldfy\Exceptions\Exceptionable;
 use Shieldfy\Exceptions\Exceptioner;
 use Shieldfy\Exceptions\InstallationException;
-use Shieldfy\Http\Dispatcher;
-use Shieldfy\Collectors\RequestCollector;
-
-use Composer\Script\Event;
-use Composer\Installer\PackageEvent;
 
 class Installer implements Exceptionable
 {
@@ -33,21 +31,12 @@ class Installer implements Exceptionable
         $this->dispatcher = $dispatcher;
         $this->config = $config;
     }
+
     /**
      * Run installation
      */
     public function run()
     {
-
-        //get important files for scan
-        $scanFiles = [];
-        foreach ($this->config['scanFiles'] as $file) {
-            $filePath = $this->config['paths']['base'].'/'.$file;
-            if (file_exists($filePath) && is_readable($filePath)) {
-                $scanFiles[$file] = str_replace([" ","\t","\n"], '', file_get_contents($filePath));
-            }
-        }
-
         $response = $this->dispatcher->trigger('install', [
             'host' => $this->request->server['HTTP_HOST'],
             'https' => $this->request->isSecure(),
@@ -59,16 +48,13 @@ class Installer implements Exceptionable
             'os_info' => php_uname(),
             'disabled_functions' => ini_get('disable_functions') ?: 'NA',
             'loaded_extensions' => implode(',', get_loaded_extensions()),
-            'display_errors' => ini_get('display_errors'),
-            'scan_files' => $scanFiles
+            'display_errors' => ini_get('display_errors')
         ]);
         if (!$response) {
-            $this->throwException(new InstallationException('Unknown error happened', 200));
-            return false;
+            throw new InstallationException('Unknown error happened', 200);
         }
         if ($response->status == 'error') {
-            $this->throwException(new InstallationException($response->message));
-            return false;
+            throw new InstallationException($response->message);
         }
         if ($response->status == 'success') {
             $this->save((array)$response->data);
@@ -78,25 +64,18 @@ class Installer implements Exceptionable
 
     /**
      * Save rules data
-     * Rules is used to identify threats across application layers
+     * Rules are used to identify threats across application layers.
      * Stored only in vendors -> shieldfy -> data folder
      * @param  array $data | rules data
-     * @param  array $scanFiles | files to scan for security issues
      */
-    private function save(array $data = [], array $scanFiles = [])
+    private function save(array $data = [])
     {
-
-        //if not writable , try to chmod it
+        // If not writable, try to chmod it.
         if (!is_writable($this->config['paths']['data'])) {
             @chmod($this->config['paths']['data'], 0755);
             if (!is_writable($this->config['paths']['data'])) {
-                $this->throwException(new InstallationException('Data folder :'.$this->config['paths']['data'].' Is not writable', 200));
+                throw new InstallationException('Data folder :'.$this->config['paths']['data'].' Is not writable', 200);
             }
-        }
-
-        foreach ($scanFiles as $fileName) {
-            $filePath = $this->config['paths']['base'].'/'.$fileName;
-            file_put_contents($this->config['paths']['data'].'/'.$fileName.'.sign', md5_file($filePath));
         }
 
         $data_path = $this->config['paths']['data'];
@@ -109,8 +88,6 @@ class Installer implements Exceptionable
         }
         endforeach;
     }
-
-
 
     private function isJson($string)
     {

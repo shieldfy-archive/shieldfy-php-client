@@ -1,5 +1,4 @@
 <?php
-
 namespace Shieldfy\Http;
 
 use Shieldfy\Config;
@@ -43,15 +42,15 @@ class ApiClient implements Exceptionable
         $this->config = $config;
 
         if (!extension_loaded('curl')) {
-            //critical error package cannot load without
+            // Critical error package cannot load without.
             throw new FailedExtentionLoadingException('cURL library is not loaded');
         }
 
         $this->curl = curl_init();
 
         $this->setApiKey([
-            'app_key'   => $this->config['app_key'],
-            'app_secret'=> $this->config['app_secret'],
+            'app_key' => $this->config['app_key'],
+            'app_secret' => $this->config['app_secret'],
         ]);
         $this->setBaseUrl($endpoint);
 
@@ -81,10 +80,10 @@ class ApiClient implements Exceptionable
         $result = curl_exec($this->curl);
         if ($error = curl_error($this->curl)) {
             $this->errors = [
-                'code'   => $curlErrorNo = curl_errno($this->curl),
-                'message'=> $error,
+                'code' => $curlErrorNo = curl_errno($this->curl),
+                'message' => $error,
             ];
-            return (object) ['status'=>'error','errorCode'=>$curlErrorNo, 'message'=>$error];
+            return (object)['status' => 'error', 'errorCode' => $curlErrorNo, 'message' => $error];
         }
 
         $res = $this->parseResult($result);
@@ -107,16 +106,16 @@ class ApiClient implements Exceptionable
         $res = json_decode($result);
         if (!$res) {
             $this->errors = [
-                'code'   => '101',
-                'message'=> 'Unexpected Server Response',
+                'code' => '101',
+                'message' => 'Unexpected Server Response',
             ];
-            return (object) ['status'=>'error','errorCode'=>'101', 'message'=>'Unexpected Server Response : '.$result];
+            return (object)['status' => 'error', 'errorCode' => '101', 'message' => 'Unexpected Server Response : '.$result];
         }
 
         if ($res->status == 'error') {
             $this->errors = [
-                'code'   => $res->errorCode,
-                'message'=> $res->message,
+                'code' => $res->errorCode,
+                'message' => $res->message,
             ];
         }
 

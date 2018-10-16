@@ -84,7 +84,7 @@ class RequestCollector implements Collectable
     }
 
     /**
-     * check if request is done through ssl or not.
+     * Check whether the request is done through SSL or not.
      *
      * @return bool
      */
@@ -101,9 +101,10 @@ class RequestCollector implements Collectable
             $key=>$param
         ]);
     }
+
     private function prepareRequestParameterRecursive($params, $prefix = '', $data = [])
     {
-        foreach ($params as $key=> $value):
+        foreach ($params as $key => $value):
             if (!is_array($value)) {
                 $data[$prefix.$key] = $value;
             } else {
@@ -120,7 +121,7 @@ class RequestCollector implements Collectable
 
     /**
      * get request info.
-     * @TODO add function to strip sensetive data before report it (ex: passwords , tokens , creditcards ... )
+     * @TODO Add a function to strip sensitive data before reporting it (e.g., passwords, tokens, credit cards, etc).
      * @return array info
      */
     public function getInfo($parameter = '')
@@ -158,7 +159,7 @@ class RequestCollector implements Collectable
         unset($info['cookies']);
         unset($info['files']);
 
-        //TODO: add filter to strip (cookie info , files ,   passwords  , creditcards .. etc)
+        // TODO: Add a filter to strip cookie info, files, passwords, credit cards, etc.
         return $info;
     }
 
@@ -166,7 +167,7 @@ class RequestCollector implements Collectable
     {
         return [
             'method' => $this->requestMethod,
-            'uri'    => (isset($this->server['REQUEST_URI']))? $this->server['REQUEST_URI'] : ''
+            'uri' => isset($this->server['REQUEST_URI']) ? $this->server['REQUEST_URI'] : ''
         ];
     }
 }

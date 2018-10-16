@@ -1,5 +1,4 @@
 <?php
-
 namespace Shieldfy\Extensions\Laravel;
 
 use Illuminate\Routing\Router;
@@ -26,7 +25,7 @@ class ShieldfyServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/config/shieldfy.php' => config_path('shieldfy.php'),
         ], 'config');
-        
+
         //register middlewares
         $this->registerMiddleWare($router);
     }

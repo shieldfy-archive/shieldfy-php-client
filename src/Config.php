@@ -47,7 +47,7 @@ class Config implements ArrayAccess
             "scanFiles"     => ['composer.json','composer.lock']
         ];
 
-        //overwrite env if exists
+        // Overwrite env if exists.
         if (getenv('SHIELDFY_APP_KEY')) {
             $defaults['app_key'] = getenv('SHIELDFY_APP_KEY');
         }
@@ -88,14 +88,14 @@ class Config implements ArrayAccess
     }
 
     /**
-     * retrive base directory
+     * Retrieve base directory.
      */
     public function getBaseDirectory()
     {
 
         // -- first method --
         //
-        //search stack for find original folder from composer folder
+        // Search stack to find the original folder from the Composer folder.
         $stack = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
         foreach ($stack as $frame) {
             if ($frame['function'] == 'getLoader') {
@@ -142,7 +142,7 @@ class Config implements ArrayAccess
     }
 
     /**
-     * Check if key exists.
+     * Check whether key exists.
      *
      * @param type $key
      *

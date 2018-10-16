@@ -66,7 +66,7 @@ class Rule
     private function runEqual($value)
     {
 
-        //multiple equals
+        // Multiple equals.
         if (strpos($this->data['rule'], '|') !== false) {
             $rules = explode('|', $this->data['rule']);
             foreach ($rules as $rule) {
@@ -77,7 +77,7 @@ class Rule
             return false;
         }
 
-        //single equal
+        // Single equal.
         if (trim($value) === $this->data['rule']) {
             return true;
         }
@@ -92,7 +92,7 @@ class Rule
     private function runContain($value)
     {
 
-        //multiple contain
+        // Multiple contain.
         if (strpos($this->data['rule'], '|') !== false) {
             $rules = explode('|', $this->data['rule']);
             foreach ($rules as $rule) {
@@ -103,7 +103,7 @@ class Rule
             return false;
         }
 
-        //single contain
+        // Single contain.
         if (strpos($value, $this->data['rule']) !== false) {
             return true;
         }
@@ -142,7 +142,7 @@ class Rule
     }
 
     /**
-     * get rule info
+     * Get rule info.
      * @return array $info;
      */
     public function getInfo()
