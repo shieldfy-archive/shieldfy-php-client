@@ -121,7 +121,7 @@ class Session implements Exceptionable
         }
 
         // Trigger Step
-        $this->dispatcher->trigger('session/step', [
+        $result = $this->dispatcher->trigger('session/step', [
             'sessionId' => $this->getId(),
             'host' => $this->request->getHost(),
             'info' => array_merge(
@@ -133,6 +133,15 @@ class Session implements Exceptionable
             ),
             'user' => $this->user->getInfo()
         ]);
+        
+        // check ip blocking
+        if (isset($result->blockIp)) {
+            $this->_save('ShieldfyUser', [
+                'sId'   => $this->sessionId,
+                'ip'    => $this->user->getIp(),
+                'score' => $result->score
+            ]);
+        }
     }
 
     public function getId()
