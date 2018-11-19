@@ -60,7 +60,7 @@ class ScrubbingData
     {
         if (!isset($charge['key'])) {
             return [];
-        }    
+        }
         $key_ = explode('.', $charge['key'])[1];
         $charge['value'] = $this->filter($key_, $charge['value']);
         return $charge;
