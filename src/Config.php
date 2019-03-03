@@ -44,7 +44,7 @@ class Config implements ArrayAccess
             "debug"             => false,
             "action"            => "block",
             "blockPage"         => null,
-            "queue"             => true,
+            "queue"             => false,
             "headers"           => [
                 "X-XSS-Protection"       =>  "1; mode=block",
                 "X-Content-Type-Options" =>  "nosniff",
