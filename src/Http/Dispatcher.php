@@ -1,6 +1,7 @@
 <?php
 namespace Shieldfy\Http;
 
+use Shieldfy\Cache;
 use Shieldfy\Config;
 use Shieldfy\Http\ApiClient;
 use Shieldfy\Exceptions\Exceptioner;
@@ -84,7 +85,19 @@ class Dispatcher implements Exceptionable
             $this->throwException(new EventNotExistsException('Event '.$event.' not loaded', 302));
             return false; // Return to avoid extra execution if errors are off.
         }
-        $data = json_encode($data);
-        return $this->apiClient->request('/'.$event, $data);
+
+        if (!$this->config->getDefaults()['queue']) {
+            $data = json_encode($data);
+            return $this->apiClient->request('/'.$event, $data);
+        }
+
+        $cache = new Cache();
+        $cache->setDriver('file', [
+            'path' => __DIR__.'/../../tmp/cache/'
+        ])->set(time(), [
+            'event' => '/'.$event,
+            'data' => $data
+        ]);
+        
     }
 }

@@ -25,6 +25,12 @@ class Config implements ArrayAccess
     public function __construct(array $userConfig = [])
     {
         $this->items = array_replace_recursive($this->getDefaults(), $userConfig);
+
+        file_put_contents(__DIR__.'/Queue/userConfig.json', json_encode([
+            'app_key' => $userConfig['app_key'],
+            'app_secret' => $userConfig['app_secret'],
+            'endpoint' => $userConfig['endpoint'],
+        ]));
     }
 
     /**
@@ -38,6 +44,7 @@ class Config implements ArrayAccess
             "debug"             => false,
             "action"            => "block",
             "blockPage"         => null,
+            "queue"             => true,
             "headers"           => [
                 "X-XSS-Protection"       =>  "1; mode=block",
                 "X-Content-Type-Options" =>  "nosniff",
