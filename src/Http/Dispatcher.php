@@ -86,7 +86,7 @@ class Dispatcher implements Exceptionable
             return false; // Return to avoid extra execution if errors are off.
         }
 
-        if (!$this->config->getDefaults()['queue']) {
+        if (!$this->config['queue']) {
             $data = json_encode($data);
             return $this->apiClient->request('/'.$event, $data);
         }
