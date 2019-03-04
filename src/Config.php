@@ -26,11 +26,13 @@ class Config implements ArrayAccess
     {
         $this->items = array_replace_recursive($this->getDefaults(), $userConfig);
 
-        file_put_contents(__DIR__.'/Queue/userConfig.json', json_encode([
-            'app_key' => $userConfig['app_key'],
-            'app_secret' => $userConfig['app_secret'],
-            'endpoint' => $userConfig['endpoint'],
-        ]));
+        if (isset($userConfig['app_key']) && isset($userConfig['app_secret']) && isset($userConfig['endpoint'])) {
+            file_put_contents(__DIR__.'/Queue/userConfig.json', json_encode([
+                'app_key' => $userConfig['app_key'],
+                'app_secret' => $userConfig['app_secret'],
+                'endpoint' => $userConfig['endpoint'],
+            ]));
+        }
     }
 
     /**

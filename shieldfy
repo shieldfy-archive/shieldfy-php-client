@@ -15,4 +15,9 @@ require COMPOSER_INSTALL;
 
 use Shieldfy\Queue\ShieldfyJob;
 
-(new ShieldfyJob())->run();
+$arg = $argv[1];
+
+// worker
+if ($arg == 'worker') {
+    (new ShieldfyJob())->run();
+}
