@@ -25,10 +25,12 @@ class ShieldfyJob
         $files = array_slice(glob(__DIR__.'/../../tmp/cache/*.*'), 0, 5);
         
         foreach ($files as $file) {
-            $data = file_get_contents($file);
-            $data = json_decode($data);
-            $this->apiClient->request($data->event, json_encode($data->data));
-            unlink($file);
+            if (file_exists($file)) {
+                $data = file_get_contents($file);
+                $data = json_decode($data);
+                $this->apiClient->request($data->event, json_encode($data->data));
+                unlink($file);
+            }
         }
     }
 }

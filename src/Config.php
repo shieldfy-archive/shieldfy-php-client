@@ -69,6 +69,9 @@ class Config implements ArrayAccess
         if (getenv('SHIELDFY_ACTION')) {
             $defaults['action'] = getenv('SHIELDFY_ACTION');
         }
+        if (getenv('SHIELDFY_QUEUE')) {
+            $defaults['queue'] = getenv('SHIELDFY_QUEUE');
+        }
 
         $defaults['paths'] = [
             'base'      => $this->getBaseDirectory(),

@@ -19,5 +19,6 @@ $arg = $argv[1];
 
 // worker
 if ($arg == 'worker') {
+    echo "\e[0;32m👷 Worker run...\e[0m".PHP_EOL;
     (new ShieldfyJob())->run();
 }
