@@ -28,8 +28,10 @@ class ShieldfyJob
             if (file_exists($file)) {
                 $data = file_get_contents($file);
                 $data = json_decode($data);
-                $this->apiClient->request($data->event, json_encode($data->data));
-                unlink($file);
+                $res = $this->apiClient->request($data->event, json_encode($data->data));
+                if ($res->status == 'success') {
+                    unlink($file);
+                }
             }
         }
     }
