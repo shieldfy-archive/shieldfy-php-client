@@ -25,7 +25,6 @@ class ShieldfyMiddleware
                 'debug'          => config('shieldfy.debug'),
                 'action'         => config('shieldfy.action'),
                 'blockPage'      => ($blockPage = config('shieldfy.blockPage')) ? view($blockPage)->getPath() : null,
-                'queue'          => config('shieldfy.queue'),
                 'headers'        => config('shieldfy.headers'),
                 'disable'        => config('shieldfy.disable'),
         ]);
