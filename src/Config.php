@@ -25,14 +25,6 @@ class Config implements ArrayAccess
     public function __construct(array $userConfig = [])
     {
         $this->items = array_replace_recursive($this->getDefaults(), $userConfig);
-
-        if (isset($userConfig['app_key']) && isset($userConfig['app_secret']) && isset($userConfig['endpoint'])) {
-            file_put_contents(__DIR__.'/Queue/userConfig.json', json_encode([
-                'app_key' => $userConfig['app_key'],
-                'app_secret' => $userConfig['app_secret'],
-                'endpoint' => $userConfig['endpoint'],
-            ]));
-        }
     }
 
     /**
@@ -46,7 +38,6 @@ class Config implements ArrayAccess
             "debug"             => false,
             "action"            => "block",
             "blockPage"         => null,
-            "queue"             => false,
             "headers"           => [
                 "X-XSS-Protection"       =>  "1; mode=block",
                 "X-Content-Type-Options" =>  "nosniff",
@@ -68,9 +59,6 @@ class Config implements ArrayAccess
         }
         if (getenv('SHIELDFY_ACTION')) {
             $defaults['action'] = getenv('SHIELDFY_ACTION');
-        }
-        if (getenv('SHIELDFY_QUEUE')) {
-            $defaults['queue'] = getenv('SHIELDFY_QUEUE');
         }
 
         $defaults['paths'] = [

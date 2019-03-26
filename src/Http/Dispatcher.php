@@ -1,7 +1,6 @@
 <?php
 namespace Shieldfy\Http;
 
-use Shieldfy\Cache;
 use Shieldfy\Config;
 use Shieldfy\Http\ApiClient;
 use Shieldfy\Exceptions\Exceptioner;
@@ -86,18 +85,7 @@ class Dispatcher implements Exceptionable
             return false; // Return to avoid extra execution if errors are off.
         }
 
-        if (!$this->config['queue']) {
-            $data = json_encode($data);
-            return $this->apiClient->request('/'.$event, $data);
-        }
-
-        $cache = new Cache();
-        $cache->setDriver('file', [
-            'path' => __DIR__.'/../../tmp/cache/'
-        ])->set(time(), [
-            'event' => '/'.$event,
-            'data' => $data
-        ]);
-        
+        $data = json_encode($data);
+        return $this->apiClient->request('/'.$event, $data);
     }
 }
