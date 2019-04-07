@@ -48,7 +48,6 @@ return [
      */
     'blockPage' => 'shieldfy::block',
 
-
     /*
      |--------------------------------------------------------------------------
      | List of headers exposed to shieldfy to overwrite

@@ -84,6 +84,7 @@ class Dispatcher implements Exceptionable
             $this->throwException(new EventNotExistsException('Event '.$event.' not loaded', 302));
             return false; // Return to avoid extra execution if errors are off.
         }
+
         $data = json_encode($data);
         return $this->apiClient->request('/'.$event, $data);
     }
