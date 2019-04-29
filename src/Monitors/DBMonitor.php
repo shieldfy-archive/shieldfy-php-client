@@ -41,7 +41,7 @@ class DBMonitor extends MonitorBase
             $query = implode(' ', $query);
         }
 
-        if(!is_array($bindings)){
+        if (!is_array($bindings)) {
             $bindings = array($bindings);
         }
 
