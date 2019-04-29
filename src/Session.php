@@ -36,12 +36,14 @@ class Session implements Exceptionable
         $this->events = $events;
 
         // Check for session handler.
+        /*
         if (session_status() == PHP_SESSION_NONE) {
             session_name('_swaf_request_id');
             session_start([
                 'cookie_httponly' => true
             ]);
         }
+        */
 
         $this->getUser();
     }
