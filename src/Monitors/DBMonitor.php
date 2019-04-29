@@ -41,6 +41,10 @@ class DBMonitor extends MonitorBase
             $query = implode(' ', $query);
         }
 
+        if (!is_array($bindings)) {
+            $bindings = array($bindings);
+        }
+
         foreach ($params as $key => $value) {
             if (stripos($query, $value) !== false || in_array($value, $bindings)) {
                 // Found parameter.
