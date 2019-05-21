@@ -9,7 +9,6 @@ use Shieldfy\Queue\UserConfig;
 
 class ShieldfyJob
 {
-
     protected $config;
     protected $apiClient;
 
